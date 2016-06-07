@@ -1,77 +1,100 @@
 import React from 'react';
 import url from 'url';
-import {Button, Page, FormField, FormInput} from 'zooid-ui';
-import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
+import { Button, Page, FormField, FormInput } from 'zooid-ui';
+import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js';
 
-import {getMeshbluConfig} from '../services/auth-service'
-import {OCTOBLU_URL} from 'config'
+import { getMeshbluConfig } from '../services/auth-service';
+import { OCTOBLU_URL } from 'config';
 
 class CreateBluprint extends React.Component {
-  state = {}
+  constructor(props) {
+    super(props);
 
-  create = () => {
-    const meshblu = new MeshbluHttp(getMeshbluConfig())
-    meshblu.register(this.deviceDefaults(), (error, device) => {
-      if (error) throw error
+    this.state = { name: '' };
 
-      const {uuid} = device
-      const update = this.linksProperties({uuid})
-
-      meshblu.update(uuid, update, (error) => {
-        if (error) throw error
-
-        window.location = `${OCTOBLU_URL}/device/${device.uuid}`
-      })
-    })
+    this.handleCreate = this.handleCreate.bind(this);
   }
 
-  deviceDefaults = () => {
-    const USER_UUID = getMeshbluConfig().uuid
+  handleCreate(event) {
+    event.preventDefault();
 
+    const { appName } = event.target;
+
+    const meshblu = new MeshbluHttp(getMeshbluConfig());
+
+    meshblu.register(this.deviceDefaults({ name: appName.value }), (error, device) => {
+      if (error) throw error;
+
+      const { uuid } = device;
+      const update = this.linksProperties({ uuid });
+
+      meshblu.update(uuid, update, (updateError) => {
+        if (updateError) throw updateError;
+
+        window.location = `${OCTOBLU_URL}/device/${device.uuid}`;
+      });
+    });
+  }
+
+  deviceDefaults({ name }) {
+    const USER_UUID = getMeshbluConfig().uuid;
     return {
+      name,
       owner: USER_UUID,
       online: true,
+      type: 'octoblu:bluprint',
+      bluprint: {
+        version: '1.0.0',
+      },
       meshblu: {
         version: '2.0.0',
         whitelists: {
           configure: {
-            update: [{uuid: USER_UUID}]
+            update: [{ uuid: USER_UUID }],
           },
           discover: {
-            view: [{uuid: USER_UUID}]
-          }
-        }
+            view: [{ uuid: USER_UUID }],
+          },
+        },
       },
-    }
+    };
   }
 
-  linksProperties = ({uuid}) => {
-    const {protocol, hostname, port} = window.location
+  linksProperties({ uuid }) {
+    const { protocol, hostname, port } = window.location;
 
     return {
       octoblu: {
         links: [{
-          title: "Import Bluprint",
-          url: url.format({protocol, hostname, port, pathname: `/bluprints/${uuid}/import`})
-        }]
-      }
-    }
+          title: 'Import Bluprint',
+          url: url.format({ protocol, hostname, port, pathname: `/bluprints/${uuid}/import` }),
+        }],
+      },
+    };
   }
 
-  render = () => {
+  render() {
     return (
       <main>
         <Page>
-          <FormField label="App Name" name="app-name">
-            <FormInput name="app-name" value={this.state.name} />
-          </FormField>
-          <Button onClick={this.create} size="large" kind="primary">Create IoT App</Button>
+          <form onSubmit={this.handleCreate}>
+            <FormField name="appName">
+              <FormInput
+                name="appName"
+                defaultValue={this.state.name}
+                placeholder="App Name"
+                autofocus
+              />
+            </FormField>
+
+            <Button type="submit" size="large" kind="primary">Create IoT App</Button>
+          </form>
         </Page>
       </main>
-    )
+    );
   }
-};
+}
 
-CreateBluprint.propTypes = {}
+CreateBluprint.propTypes = {};
 
 export default CreateBluprint;
