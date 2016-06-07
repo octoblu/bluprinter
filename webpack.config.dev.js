@@ -18,6 +18,12 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
   ],
+  resolve: {
+    extensions: ['', '.js', '.jsx', '.json'],
+    alias: {
+      config: path.join(__dirname, 'src', 'config', 'development')
+    }
+  },
   module: {
     loaders: [{
       test: /\.js$/,
@@ -25,8 +31,8 @@ module.exports = {
       include: path.join(__dirname, 'src')
     },
     {
-      test: /\.css$/,
-      loader: 'style-loader!css-loader?modules&localIdentName=[name]__[local]___[hash:base64:5]&importLoaders=1!postcss-loader',
+      test:   /\.css$/,
+      loader: "style-loader!css-loader!postcss-loader"
     }]
   },
   postcss: function () {
