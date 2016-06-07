@@ -1,10 +1,10 @@
 import React from 'react';
-import url from 'url';
 import { Button, Page, FormField, FormInput } from 'zooid-ui';
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js';
+import url from 'url';
 
-import { getMeshbluConfig } from '../services/auth-service';
 import CreateAppForm from '../components/CreateAppForm';
+import { getMeshbluConfig } from '../services/auth-service';
 import { OCTOBLU_URL } from 'config';
 
 class CreateBluprint extends React.Component {
@@ -77,7 +77,7 @@ class CreateBluprint extends React.Component {
   render() {
     return (
       <main>
-        <Page>
+        <Page width="small">
           <CreateAppForm onCreate={this.handleCreate} />
         </Page>
       </main>
