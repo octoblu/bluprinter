@@ -1,17 +1,27 @@
 import React from 'react';
-import {Button, Page} from 'zooid-ui';
+import url from 'url';
+import {Button, Page, FormField, FormInput} from 'zooid-ui';
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 
 import {getMeshbluConfig} from '../services/auth-service'
 import {OCTOBLU_URL} from 'config'
 
 class CreateBluprint extends React.Component {
+  state = {}
+
   create = () => {
     const meshblu = new MeshbluHttp(getMeshbluConfig())
     meshblu.register(this.deviceDefaults(), (error, device) => {
       if (error) throw error
 
-      window.location = `${OCTOBLU_URL}/device/${device.uuid}`
+      const {uuid} = device
+      const update = this.linksProperties({uuid})
+
+      meshblu.update(uuid, update, (error) => {
+        if (error) throw error
+
+        window.location = `${OCTOBLU_URL}/device/${device.uuid}`
+      })
     })
   }
 
@@ -31,6 +41,19 @@ class CreateBluprint extends React.Component {
             view: [{uuid: USER_UUID}]
           }
         }
+      },
+    }
+  }
+
+  linksProperties = ({uuid}) => {
+    const {protocol, hostname, port} = window.location
+
+    return {
+      octoblu: {
+        links: [{
+          title: "Import Bluprint",
+          url: url.format({protocol, hostname, port, pathname: `/bluprints/${uuid}/import`})
+        }]
       }
     }
   }
@@ -39,6 +62,9 @@ class CreateBluprint extends React.Component {
     return (
       <main>
         <Page>
+          <FormField label="App Name" name="app-name">
+            <FormInput name="app-name" value={this.state.name} />
+          </FormField>
           <Button onClick={this.create} size="large" kind="primary">Create IoT App</Button>
         </Page>
       </main>
