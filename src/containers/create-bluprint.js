@@ -3,7 +3,7 @@ import {Button, Page} from 'zooid-ui';
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 
 import {getMeshbluConfig} from '../services/auth-service'
-import {OCTOBLU_CLIENT_URL} from 'config'
+import {OCTOBLU_URL} from 'config'
 
 class CreateBluprint extends React.Component {
   create = () => {
@@ -11,7 +11,7 @@ class CreateBluprint extends React.Component {
     meshblu.register(this.deviceDefaults(), (error, device) => {
       if (error) throw error
 
-      window.location = `${OCTOBLU_CLIENT_URL}/device/${device.uuid}`
+      window.location = `${OCTOBLU_URL}/device/${device.uuid}`
     })
   }
 
