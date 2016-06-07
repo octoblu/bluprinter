@@ -4,6 +4,7 @@ import { Button, Page, FormField, FormInput } from 'zooid-ui';
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js';
 
 import { getMeshbluConfig } from '../services/auth-service';
+import CreateAppForm from '../components/CreateAppForm';
 import { OCTOBLU_URL } from 'config';
 
 class CreateBluprint extends React.Component {
@@ -77,18 +78,7 @@ class CreateBluprint extends React.Component {
     return (
       <main>
         <Page>
-          <form onSubmit={this.handleCreate}>
-            <FormField name="appName">
-              <FormInput
-                name="appName"
-                defaultValue={this.state.name}
-                placeholder="App Name"
-                autofocus
-              />
-            </FormField>
-
-            <Button type="submit" size="large" kind="primary">Create IoT App</Button>
-          </form>
+          <CreateAppForm onCreate={this.handleCreate} />
         </Page>
       </main>
     );

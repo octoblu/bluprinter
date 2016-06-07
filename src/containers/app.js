@@ -18,9 +18,8 @@ export default class App extends React.Component {
             </a>
 
             <nav className="OctobluAppBar-nav OctobluAppBar-nav--primary" role="navigation">
-              <a className="OctobluAppBar-link" href="/">Data Forwarders</a>
+              <a className="OctobluAppBar-link" href="/">Bluprinter</a>
             </nav>
-
           </AppBarPrimary>
 
           <AppBarSecondary>
