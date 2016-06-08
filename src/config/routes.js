@@ -1,10 +1,13 @@
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
+
 import App from '../containers/app';
 import Home from '../containers/home';
 import CreateBluprint from '../containers/create-bluprint';
 import ImportBluprint from '../containers/import-bluprint';
+
 import NotFound from '../components/NotFound';
+
 import { storeAuthenticationAndRedirect } from '../services/auth-service';
 
 export default (

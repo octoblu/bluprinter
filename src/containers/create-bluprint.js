@@ -11,26 +11,44 @@ class CreateBluprint extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { name: '' };
+    this.state = {
+      name: '',
+      loading: false,
+      errror: null,
+    };
 
     this.handleCreate = this.handleCreate.bind(this);
   }
 
+  setErrorState(error) {
+    this.setState({
+      error,
+      loading: false,
+    });
+  }
+
   handleCreate(event) {
     event.preventDefault();
+    this.setState({ loading: true });
 
     const { appName } = event.target;
 
     const meshblu = new MeshbluHttp(getMeshbluConfig());
 
     meshblu.register(this.deviceDefaults({ name: appName.value }), (error, device) => {
-      if (error) throw error;
+      if (error) {
+        this.setErrorState(error);
+        return;
+      }
 
       const { uuid } = device;
       const update = this.linksProperties({ uuid });
 
       meshblu.update(uuid, update, (updateError) => {
-        if (updateError) throw updateError;
+        if (updateError) {
+          this.setErrorState(updateError);
+          return;
+        }
 
         window.location = `${OCTOBLU_URL}/device/${device.uuid}`;
       });
@@ -75,16 +93,20 @@ class CreateBluprint extends React.Component {
   }
 
   render() {
+    const { error, loading } = this.state;
+
     return (
       <main>
         <Page width="small">
-          <CreateAppForm onCreate={this.handleCreate} />
+          <CreateAppForm
+            onCreate={this.handleCreate}
+            loading={loading}
+            error={error}
+          />
         </Page>
       </main>
     );
   }
 }
-
-CreateBluprint.propTypes = {};
 
 export default CreateBluprint;

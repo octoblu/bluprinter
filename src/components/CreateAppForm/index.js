@@ -1,6 +1,6 @@
 import noop from 'lodash.noop';
 import React, { PropTypes } from 'react';
-import { Button, FormField, FormInput } from 'zooid-ui';
+import { Button, FormField, FormLabel, FormInput } from 'zooid-ui';
 
 const propTypes = {
   onCreate: PropTypes.func,
@@ -13,7 +13,7 @@ const defaultProps = {
 const CreateAppForm = ({ onCreate }) => {
   return (
     <form onSubmit={onCreate}>
-      <FormField name="appName">
+      <FormField label="IoT App Name" name="appName">
         <FormInput name="appName" placeholder="App Name" autofocus />
       </FormField>
 

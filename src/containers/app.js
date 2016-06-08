@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { AppBar, AppBarPrimary, AppBarSecondary } from 'zooid-ui';
 import 'zooid-ui/dist/style.css';
 import Authenticated from './authenticated';
+
 const propTypes = {
   children: PropTypes.element.isRequired,
 };
