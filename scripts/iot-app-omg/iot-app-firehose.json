@@ -1,0 +1,7 @@
+{
+  "uuid": "223d2b90-2fbd-4fe7-89d0-d3e954cf476c",
+  "token": "67aa2d8af7af92a0ec799f6962c30c0785b6d4fe",
+  "server": "meshblu-firehose-socket-io.octoblu.dev",
+  "protocol": "http",
+  "port": "80"
+}

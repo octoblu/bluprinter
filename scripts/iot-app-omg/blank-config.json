@@ -1,0 +1,74 @@
+{
+  "instanceId": "d26aa4de-5040-4c9a-a786-500493329f14",
+  "greeting": "goodbye",
+  "schemas": {
+    "configure": {
+      "bluprint": {
+        "properties": {
+          "greeting": {
+            "type": "string",
+            "x-node-map": [{"id": "808b8720-2f6c-11e6-a896-7fb57902a399", "property": "template"}]
+          }
+        }
+      }
+    }
+  },
+  "online": true,
+  "owner": "695baf6f-bdfc-4407-9f94-bbf5fc1672f1",
+  "type": "octoblu:flow",
+  "sendWhitelist": [
+    "695baf6f-bdfc-4407-9f94-bbf5fc1672f1"
+  ],
+  "receiveWhitelist": [
+    "695baf6f-bdfc-4407-9f94-bbf5fc1672f1"
+  ],
+  "configureWhitelist": [
+    "695baf6f-bdfc-4407-9f94-bbf5fc1672f1",
+    "695baf6f-bdfc-4407-9f94-bbf5fc1672f1"
+  ],
+  "discoverWhitelist": [
+    "695baf6f-bdfc-4407-9f94-bbf5fc1672f1"
+  ],
+  "meshblu": {
+    "forwarders": {
+      "configure": {
+        "sent": [
+          {
+            "type": "webhook",
+            "url": "http://requestb.in/1lp94lg1",
+            "generateAndForwardMeshbluCredentials": true,
+            "method": "POST"
+          },
+          {
+            "type": "webhook",
+            "url": "http://nanocyte-flow-deploy.octoblu.dev/bluprint/link/223d2b90-2fbd-4fe7-89d0-d3e954cf476c/e3b31ca9-c0cb-463f-a8a5-10671b431481",
+            "method": "POST",
+            "generateAndForwardMeshbluCredentials": true
+          }
+        ]
+      },
+      "broadcast": {
+        "received": [
+          {
+            "url": "http://nanocyte-engine-http.octoblu.dev/flows/74cd21c7-82f7-48b0-aa4a-d2a5137220b4/instances/d26aa4de-5040-4c9a-a786-500493329f14/messages",
+            "method": "POST",
+            "signRequest": true,
+            "name": "nanocyte-flow-deploy",
+            "type": "webhook"
+          }
+        ]
+      },
+      "message": {
+        "received": [
+          {
+            "url": "http://nanocyte-engine-http.octoblu.dev/flows/74cd21c7-82f7-48b0-aa4a-d2a5137220b4/instances/d26aa4de-5040-4c9a-a786-500493329f14/messages",
+            "method": "POST",
+            "signRequest": true,
+            "name": "nanocyte-flow-deploy",
+            "type": "webhook"
+          }
+        ]
+      }
+    }
+  }
+}

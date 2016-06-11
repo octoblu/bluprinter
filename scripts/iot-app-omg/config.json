@@ -1,0 +1,128 @@
+{
+  "uuid": "e322936b-250d-4888-8405-41697ffdb43c",
+  "token": "$2a$08$0xq3vt/rx.00Dt/fI76weeqFwfddMHwP7qSRjosyXglkSDCMKH11q",
+  "meshblu": {
+    "forwarders": {
+      "configure": {
+        "sent": [
+          {
+            "type": "webhook",
+            "url": "http://requestb.in/w0n9cvw0",
+            "generateAndForwardMeshbluCredentials": true,
+            "method": "POST"
+          },
+          {
+            "type": "webhook",
+            "url": "http://nanocyte-flow-deploy.octoblu.dev/bluprint/link/258af38d-9168-47a4-8c9e-2aac9df00159/0bc6b020-37ef-4d31-bd44-a7a2e10b4ff5",
+            "method": "POST",
+            "generateAndForwardMeshbluCredentials": true
+          }
+        ]
+      },
+      "broadcast": {
+        "received": [
+          {
+            "url": "http://nanocyte-engine-http.octoblu.dev/flows/e322936b-250d-4888-8405-41697ffdb43c/instances/7857ba4d-6474-4595-8c64-606877f73ea3/messages",
+            "method": "POST",
+            "signRequest": true,
+            "name": "nanocyte-flow-deploy",
+            "type": "webhook"
+          }
+        ]
+      },
+      "message": {
+        "received": [
+          {
+            "url": "http://nanocyte-engine-http.octoblu.dev/flows/e322936b-250d-4888-8405-41697ffdb43c/instances/7857ba4d-6474-4595-8c64-606877f73ea3/messages",
+            "method": "POST",
+            "signRequest": true,
+            "name": "nanocyte-flow-deploy",
+            "type": "webhook"
+          }
+        ]
+      }
+    }
+  },
+  "name": "blank-flow",
+  "draft": {
+    "flowId": "e322936b-250d-4888-8405-41697ffdb43c",
+    "name": "blank-flow",
+    "description": null,
+    "resource": {
+      "nodeType": "flow",
+      "owner": {
+        "uuid": "01b727fa-58e9-487d-8b71-6863a0e14428",
+        "nodeType": "user"
+      }
+    },
+    "drafted": true,
+    "hash": "2fefcd95",
+    "links": [],
+    "nodes": [],
+    "activated": true
+  },
+  "deploying": false,
+  "stopping": false,
+  "flow": {
+    "flowId": "e322936b-250d-4888-8405-41697ffdb43c",
+    "name": "blank-flow",
+    "description": null,
+    "resource": {
+      "nodeType": "flow",
+      "owner": {
+        "uuid": "01b727fa-58e9-487d-8b71-6863a0e14428",
+        "nodeType": "user"
+      }
+    },
+    "drafted": true,
+    "hash": "2fefcd95",
+    "links": [],
+    "nodes": [],
+    "activated": true
+  },
+  "messageSchema": {
+    "type": "object",
+    "properties": {
+      "from": {
+        "type": "string",
+        "title": "Trigger",
+        "required": true,
+        "enum": []
+      },
+      "payload": {
+        "title": "payload",
+        "description": "Use {{msg}} to send the entire message"
+      },
+      "replacePayload": {
+        "type": "string",
+        "default": "payload"
+      }
+    }
+  },
+  "messageFormSchema": [
+    {
+      "key": "from",
+      "titleMap": {}
+    },
+    {
+      "key": "payload",
+      "type": "input",
+      "title": "Payload",
+      "description": "Use {{msg}} to send the entire message"
+    }
+  ],
+  "schemas": {
+    "configure": {
+      "iotApp": {
+        "properties": {
+          "greeting": {
+            "type": "string",
+            "x-node-map": [{"id": "e1667950-2f4f-11e6-bed7-556d8bfb10e3", "property": "template"}]
+          }
+        }
+      }
+    }
+  },
+  "greeting": "goodbye!",
+  "instanceId": "7857ba4d-6474-4595-8c64-606877f73ea3"
+}
