@@ -1,0 +1,8 @@
+{
+  "devices": [ "74cd21c7-82f7-48b0-aa4a-d2a5137220b4"],
+  "topic": "button",
+  "qos": 0,
+  "payload": {
+    "from": "greet"
+  }
+}

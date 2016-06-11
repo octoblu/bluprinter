@@ -1,0 +1,274 @@
+{
+  "online": true,
+  "owner": "695baf6f-bdfc-4407-9f94-bbf5fc1672f1",
+  "type": "octoblu:flow",
+  "sendWhitelist": [
+    "695baf6f-bdfc-4407-9f94-bbf5fc1672f1",
+    "b560b6ee-c264-4ed9-b98e-e3376ce6ce64"
+  ],
+  "receiveWhitelist": [
+    "695baf6f-bdfc-4407-9f94-bbf5fc1672f1"
+  ],
+  "configureWhitelist": [
+    "695baf6f-bdfc-4407-9f94-bbf5fc1672f1"
+  ],
+  "discoverWhitelist": [
+    "*",
+    "695baf6f-bdfc-4407-9f94-bbf5fc1672f1"
+  ],
+  "uuid": "223d2b90-2fbd-4fe7-89d0-d3e954cf476c",
+  "token": "$2a$08$n0p8xaEx9HUz3DhTksLsz.AJ6zCw.mBVTZJSClBu0/xELqp3BnCMS",
+  "meshblu": {
+    "createdAt": "2016-06-10T17:35:57-07:00",
+    "hash": "pXQHntner0UMA+sS+EOUOcnWytvICBok6pAPVABJGog=",
+    "updatedAt": "2016-06-10T17:39:51-07:00",
+    "tokens": {
+      "1NKHZ1Euhklhu+vZwGXm7xD0hcZKXCAiYk0B2Py/Xv0=": {
+        "tag": "nanocyte-flow-deploy-service",
+        "createdAt": "2016-06-11T00:36:41.924Z"
+      },
+      "DhhCknol5Zcfe4a01rl4EaHMY48WfzocCx/tIVEY+oE=": {
+        "tag": "app.octoblu.com",
+        "createdAt": "2016-06-11T00:37:03.116Z"
+      },
+      "7wkfxvX2ziFgJOyIBV8yeec603Pi8ioC6OWId9jAvE0=": {
+        "tag": "nanocyte-flow-deploy-service",
+        "createdAt": "2016-06-11T00:39:50.598Z"
+      }
+    },
+    "forwarders": {
+      "broadcast": {
+        "received": [
+          {
+            "url": "http://nanocyte-engine-http.octoblu.dev/flows/223d2b90-2fbd-4fe7-89d0-d3e954cf476c/instances/e3b31ca9-c0cb-463f-a8a5-10671b431481/messages",
+            "method": "POST",
+            "signRequest": true,
+            "name": "nanocyte-flow-deploy",
+            "type": "webhook"
+          }
+        ]
+      },
+      "message": {
+        "received": [
+          {
+            "url": "http://nanocyte-engine-http.octoblu.dev/flows/223d2b90-2fbd-4fe7-89d0-d3e954cf476c/instances/e3b31ca9-c0cb-463f-a8a5-10671b431481/messages",
+            "method": "POST",
+            "signRequest": true,
+            "name": "nanocyte-flow-deploy",
+            "type": "webhook"
+          }
+        ]
+      }
+    }
+  },
+  "name": "template-broadcast",
+  "draft": {
+    "flowId": "223d2b90-2fbd-4fe7-89d0-d3e954cf476c",
+    "name": "template-broadcast",
+    "description": null,
+    "resource": {
+      "nodeType": "flow",
+      "owner": {
+        "uuid": "695baf6f-bdfc-4407-9f94-bbf5fc1672f1",
+        "nodeType": "user"
+      }
+    },
+    "drafted": true,
+    "links": [
+      {
+        "from": "7e0614c0-2f6c-11e6-a896-7fb57902a399",
+        "fromPort": 0,
+        "to": "808b8720-2f6c-11e6-a896-7fb57902a399",
+        "toPort": 0
+      },
+      {
+        "from": "808b8720-2f6c-11e6-a896-7fb57902a399",
+        "fromPort": 0,
+        "to": "8789fe80-2f6c-11e6-a896-7fb57902a399",
+        "toPort": 0
+      }
+    ],
+    "nodes": [
+      {
+        "name": "Trigger",
+        "class": "trigger",
+        "category": "operation",
+        "uuid": "37f0a74a-2f17-11e4-9617-a6c5e4d22fb7",
+        "type": "operation:trigger",
+        "nanocyte": {
+          "name": "nanocyte-node-trigger"
+        },
+        "omniboxItemTemplateUrl": "/pages/omnibox-flow-node.html",
+        "id": "7e0614c0-2f6c-11e6-a896-7fb57902a399",
+        "payloadType": "date",
+        "once": false,
+        "x": 450.7712707519531,
+        "y": 13.204605102539062,
+        "staticMessage": {},
+        "needsConfiguration": false,
+        "needsSetup": false,
+        "alias": "greet"
+      },
+      {
+        "name": "Template",
+        "class": "template",
+        "category": "operation",
+        "uuid": "8f2e02ff-08da-446d-ab50-e5115f511cba",
+        "type": "operation:template",
+        "nanocyte": {
+          "name": "nanocyte-node-template"
+        },
+        "omniboxItemTemplateUrl": "/pages/omnibox-flow-node.html",
+        "id": "808b8720-2f6c-11e6-a896-7fb57902a399",
+        "x": 582.3491821289062,
+        "y": 2.574432373046875,
+        "staticMessage": {},
+        "needsConfiguration": false,
+        "needsSetup": false,
+        "template": "yooooo"
+      },
+      {
+        "name": "Broadcast",
+        "class": "broadcast",
+        "category": "operation",
+        "uuid": "2be62b90-6519-11e4-867f-276797c27ed6",
+        "type": "operation:broadcast",
+        "nanocyte": {
+          "name": "nanocyte-node-broadcast"
+        },
+        "omniboxItemTemplateUrl": "/pages/omnibox-flow-node.html",
+        "id": "8789fe80-2f6c-11e6-a896-7fb57902a399",
+        "topic": "message",
+        "x": 724.7935180664062,
+        "y": 26.433269500732422,
+        "staticMessage": {},
+        "needsConfiguration": false,
+        "needsSetup": false
+      }
+    ],
+    "activated": true
+  },
+  "deploying": false,
+  "stopping": false,
+  "flow": {
+    "flowId": "223d2b90-2fbd-4fe7-89d0-d3e954cf476c",
+    "name": "template-broadcast",
+    "description": null,
+    "resource": {
+      "nodeType": "flow",
+      "owner": {
+        "uuid": "695baf6f-bdfc-4407-9f94-bbf5fc1672f1",
+        "nodeType": "user"
+      }
+    },
+    "drafted": true,
+    "links": [
+      {
+        "from": "7e0614c0-2f6c-11e6-a896-7fb57902a399",
+        "fromPort": 0,
+        "to": "808b8720-2f6c-11e6-a896-7fb57902a399",
+        "toPort": 0
+      },
+      {
+        "from": "808b8720-2f6c-11e6-a896-7fb57902a399",
+        "fromPort": 0,
+        "to": "8789fe80-2f6c-11e6-a896-7fb57902a399",
+        "toPort": 0
+      }
+    ],
+    "nodes": [
+      {
+        "name": "Trigger",
+        "class": "trigger",
+        "category": "operation",
+        "uuid": "37f0a74a-2f17-11e4-9617-a6c5e4d22fb7",
+        "type": "operation:trigger",
+        "nanocyte": {
+          "name": "nanocyte-node-trigger"
+        },
+        "omniboxItemTemplateUrl": "/pages/omnibox-flow-node.html",
+        "id": "7e0614c0-2f6c-11e6-a896-7fb57902a399",
+        "payloadType": "date",
+        "once": false,
+        "x": 450.7712707519531,
+        "y": 13.204605102539062,
+        "staticMessage": {},
+        "needsConfiguration": false,
+        "needsSetup": false,
+        "alias": "greet"
+      },
+      {
+        "name": "Template",
+        "class": "template",
+        "category": "operation",
+        "uuid": "8f2e02ff-08da-446d-ab50-e5115f511cba",
+        "type": "operation:template",
+        "nanocyte": {
+          "name": "nanocyte-node-template"
+        },
+        "omniboxItemTemplateUrl": "/pages/omnibox-flow-node.html",
+        "id": "808b8720-2f6c-11e6-a896-7fb57902a399",
+        "x": 582.3491821289062,
+        "y": 2.574432373046875,
+        "staticMessage": {},
+        "needsConfiguration": false,
+        "needsSetup": false,
+        "template": "yooooo"
+      },
+      {
+        "name": "Broadcast",
+        "class": "broadcast",
+        "category": "operation",
+        "uuid": "2be62b90-6519-11e4-867f-276797c27ed6",
+        "type": "operation:broadcast",
+        "nanocyte": {
+          "name": "nanocyte-node-broadcast"
+        },
+        "omniboxItemTemplateUrl": "/pages/omnibox-flow-node.html",
+        "id": "8789fe80-2f6c-11e6-a896-7fb57902a399",
+        "topic": "message",
+        "x": 724.7935180664062,
+        "y": 26.433269500732422,
+        "staticMessage": {},
+        "needsConfiguration": false,
+        "needsSetup": false
+      }
+    ],
+    "activated": true
+  },
+  "messageSchema": {
+    "type": "object",
+    "properties": {
+      "from": {
+        "type": "string",
+        "title": "Trigger",
+        "required": true,
+        "enum": [
+          "7e0614c0-2f6c-11e6-a896-7fb57902a399"
+        ]
+      },
+      "payload": {
+        "title": "payload",
+        "description": "Use {{msg}} to send the entire message"
+      },
+      "replacePayload": {
+        "type": "string",
+        "default": "payload"
+      }
+    }
+  },
+  "messageFormSchema": [
+    {
+      "key": "from",
+      "titleMap": {
+        "7e0614c0-2f6c-11e6-a896-7fb57902a399": "Trigger (7e0614c0)"
+      }
+    },
+    {
+      "key": "payload",
+      "type": "input",
+      "title": "Payload",
+      "description": "Use {{msg}} to send the entire message"
+    }
+  ]
+}
