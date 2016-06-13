@@ -2,14 +2,14 @@
   "bluprint": {
     "version": "1.0.0",
     "flowId": "abcd",
-    "flowVersion": "1.0.0"
-  },
-  "schemas": {
-    "configure": {
-      "bluprint": {
-        "properties": {
-          "greeting": {
-            "type": "string"
+    "flowVersion": "1.0.0",
+    "schemas": {
+      "configure": {
+        "bluprint": {
+          "properties": {
+            "greeting": {
+              "type": "string"
+            }
           }
         }
       }

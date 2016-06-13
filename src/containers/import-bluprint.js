@@ -8,13 +8,21 @@ import superagent from 'superagent'
 
 class ImportBluprint extends React.Component {
 
+  componentWillMount = () => {
+    this.bluprintId = this.props.params.uuid
+    this.meshblu = new MeshbluHttp(getMeshbluConfig())
+    this.meshblu.device(this.bluprintId, (error, bluprint) => {
+      this.setState({bluprint})
+    })
+  }
+
   importBluprint = () => {
     const {uuid, token} = getMeshbluConfig();
     superagent
       .post(`${OCTOBLU_URL}/api/flows`)
       .auth(uuid, token)
       .send({})
-      .end((error, response) => window.location  = `${OCTOBLU_URL}/design/115e0bef-2787-483e-a054-14d8acb50469`);
+      .end((error, response) => window.location = `${OCTOBLU_URL}/design/115e0bef-2787-483e-a054-14d8acb50469`);
   }
 
   render = () => {
