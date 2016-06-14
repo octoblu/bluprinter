@@ -1,17 +1,17 @@
-import React, { PropTypes } from 'react';
-import { Page } from 'zooid-ui';
-import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js';
-import url from 'url';
+import React, { PropTypes } from 'react'
+import { Page } from 'zooid-ui'
+import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
+import url from 'url'
 
-import CreateAppForm from '../components/CreateAppForm';
-import { getMeshbluConfig } from '../services/auth-service';
-import { OCTOBLU_URL, TOOLS_SCHEMA_REGISTRY_URL } from 'config';
-import superagent from 'superagent';
-import _ from 'lodash';
+import CreateAppForm from '../components/CreateAppForm'
+import { getMeshbluConfig } from '../services/auth-service'
+import { OCTOBLU_URL, TOOLS_SCHEMA_REGISTRY_URL } from 'config'
+import superagent from 'superagent'
+import _ from 'lodash'
 
 class CreateBluprint extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       name: '',
@@ -19,10 +19,10 @@ class CreateBluprint extends React.Component {
       errror: null,
       flowDevice: null,
       toolsSchema: null,
-    };
+    }
 
-    this.handleCreate = this.handleCreate.bind(this);
-    this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleCreate = this.handleCreate.bind(this)
+    this.handleUpdate = this.handleUpdate.bind(this)
   }
 
   setErrorState(error) {
@@ -31,85 +31,90 @@ class CreateBluprint extends React.Component {
       loading: false,
       flowDevice: null,
       toolsSchema: null,
-    });
+    })
   }
 
   componentWillMount() {
-    const { uuid } = this.props.routeParams;
-    const meshblu = new MeshbluHttp(getMeshbluConfig());
+    const { uuid } = this.props.routeParams
+    const meshblu = new MeshbluHttp(getMeshbluConfig())
     meshblu.device(uuid, (error, flowDevice) => {
       if (error) {
-        return this.setState({ error: error.message });
+        return this.setState({ error: error.message })
       }
       this.setState({
         flowDevice,
         loading: false,
-      });
-    });
+      })
+    })
     superagent
       .get(`${TOOLS_SCHEMA_REGISTRY_URL}`)
       .end((error, response) => {
-        const { body } = response;
-        if (error) return;
-        this.setState({ toolsSchema: body, loading: false });
-      });
+        const { body } = response
+        if (error) return
+        this.setState({ toolsSchema: body, loading: false })
+      })
   }
 
   handleUpdate(mappings) {
-    this.configSchema = this.mappingToConfig({ mappings });
+    this.configSchema = this.mappingToConfig({ mappings })
   }
 
   mappingToConfig({ mappings }) {
     const config = {
       type: 'object',
       properties: {},
-    };
+    }
 
     _.each(mappings, function (mapping) {
-      let property = config.properties[mapping.configureProperty];
-      property = property || { type: mapping.type };
-      property['x-node-map'] = property['x-node-map'] || [];
-      property['x-node-map'].push({ id: mapping.nodeId, property: mapping.nodeProperty });
-      config.properties[mapping.configureProperty] = property;
-    });
+      let property = config.properties[mapping.configureProperty]
+      property = property || { type: mapping.type }
+      property['x-node-map'] = property['x-node-map'] || []
+      property['x-node-map'].push({ id: mapping.nodeId, property: mapping.nodeProperty })
+      config.properties[mapping.configureProperty] = property
+    })
 
-    return config;
+    return config
   }
 
   handleCreate(event) {
-    event.preventDefault();
-    this.setState({ loading: true });
+    event.preventDefault()
+    this.setState({ loading: true })
 
-    const { appName } = event.target;
-    const { uuid } = this.props.routeParams;
-    const meshblu = new MeshbluHttp(getMeshbluConfig());
+    const { appName } = event.target
+    const { uuid } = this.props.routeParams
+    const meshblu = new MeshbluHttp(getMeshbluConfig())
+    const {flowDevice} = this.state
+    const bluprintConfig = this.deviceDefaults({
+      name: appName.value,
+      version: flowDevice.instanceId,
+      flowId: uuid,
+      configSchema: this.configSchema
+    })
 
-    const flowDevice = this.deviceDefaults({ name: appName.value, flowId: uuid, configSchema: this.configSchema })
-
-    meshblu.register(flowDevice, (error, device) => {
+    meshblu.register(bluprintConfig, (error, device) => {
       if (error) {
-        console.log('Error', error);
-        this.setErrorState(error);
-        return;
+        console.log('Error', error)
+        this.setErrorState(error)
+        return
       }
-      console.log('device', device);
+      console.log('device', device)
 
-      const { uuid } = device;
-      const update = this.linksProperties({ uuid });
+      const { uuid } = device
+      const update = this.linksProperties({ uuid })
 
       meshblu.update(uuid, update, (updateError) => {
         if (updateError) {
-          this.setErrorState(updateError);
-          return;
+          this.setErrorState(updateError)
+          return
         }
 
-        window.location = `${OCTOBLU_URL}/device/${device.uuid}`;
-      });
-    });
+        window.location = `${OCTOBLU_URL}/device/${device.uuid}`
+      })
+    })
   }
 
-  deviceDefaults({ flowId, name, configSchema }) {
-    const USER_UUID = getMeshbluConfig().uuid;
+  deviceDefaults({ flowId, name, configSchema, version }) {
+    const USER_UUID = getMeshbluConfig().uuid
     return {
       name,
       owner: USER_UUID,
@@ -117,16 +122,17 @@ class CreateBluprint extends React.Component {
       type: 'octoblu:bluprint',
       bluprint: {
         flowId,
-        latest: '1-0-0',
-        versions: {
-          '1-0-0': {
+        latest: version,
+        versions: [
+          {
+            version: version,
             schemas: {
               configure: {
-                bluprint: configSchema,
+                bluprint: configSchema
               },
             },
           },
-        },
+        ]
       },
       meshblu: {
         version: '2.0.0',
@@ -139,11 +145,11 @@ class CreateBluprint extends React.Component {
           },
         },
       },
-    };
+    }
   }
 
   linksProperties({ uuid }) {
-    const { protocol, hostname, port } = window.location;
+    const { protocol, hostname, port } = window.location
 
     return {
       octoblu: {
@@ -152,12 +158,12 @@ class CreateBluprint extends React.Component {
           url: url.format({ protocol, hostname, port, pathname: `/bluprints/${uuid}/import` }),
         }],
       },
-    };
+    }
   }
 
   render() {
-    const { error, loading, flowDevice, toolsSchema } = this.state;
-    if (!flowDevice || !toolsSchema) return null;
+    const { error, loading, flowDevice, toolsSchema } = this.state
+    if (!flowDevice || !toolsSchema) return null
 
     return (
       <main>
@@ -172,8 +178,8 @@ class CreateBluprint extends React.Component {
           />
         </Page>
       </main>
-    );
+    )
   }
 }
 
-export default CreateBluprint;
+export default CreateBluprint

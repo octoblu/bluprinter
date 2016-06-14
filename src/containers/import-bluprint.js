@@ -3,7 +3,7 @@ import {Button, Page, FormField, FormInput} from 'zooid-ui'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 
 import {getMeshbluConfig} from '../services/auth-service'
-import {OCTOBLU_URL} from 'config'
+import {OCTOBLU_URL, FLOW_DEPLOY_URL} from 'config'
 import superagent from 'superagent'
 import Form from 'react-jsonschema-form'
 
@@ -21,11 +21,18 @@ class ImportBluprint extends React.Component {
   }
 
   importBluprint = ({formData}) => {
-    this.createFlow(formData, (error, flow) => {
+    const flowData = formData
+    this.createFlow(flowData, (error, flow) => {
+      console.log('createFlow', {error, flow})
       if(error) return
       const {flowId} = flow
       this.deployFlow({flowId}, (error, flow) => {
+        console.log('deployFlow', {error, flow})
         if(error) return
+        this.linkFlowToIoTApp({flowId, flowData}, (error, flow) => {
+          console.log('linkFlowToIoTApp', {error, flow})
+          if(error) return
+        })
       })
     })
   }
@@ -36,7 +43,7 @@ class ImportBluprint extends React.Component {
       .post(`${OCTOBLU_URL}/api/flows`)
       .redirects(0)
       .auth(uuid, token)
-      .send(this.getDeviceData(flowData))
+      .send({})
       .end((error, response) => {
         if(error) return callback(error)
         return callback(null, response.body)
@@ -45,22 +52,43 @@ class ImportBluprint extends React.Component {
 
   deployFlow = ({flowId}, callback) => {
     const {uuid, token} = getMeshbluConfig()
-
     superagent
       .post(`${OCTOBLU_URL}/api/flows/${flowId}/instance`)
       .auth(uuid, token)
       .send({})
       .end((error, response) =>{
         if(error) return callback(error)
-        console.log(response.body);
         return callback(error, response.body)
       })
   }
 
-  getDeviceData = (formData) => {
+  linkFlowToIoTApp = ({flowId, flowData}, callback) => {
+    this.meshblu.update(flowId, this.getDeviceData(flowData), callback)
+  }
+
+  getDeviceData = (flowData) => {
     const {bluprint} = this.state
     const deviceData = {
       name: bluprint.name,
+      meshblu: {
+        forwarders: {
+          configure: {
+            sent: [ {
+                type: "webhook",
+                url: `${FLOW_DEPLOY_URL}/bluprint/link/${bluprint.flowId}/${bluprint.latest}`,
+                method: "POST",
+                generateAndForwardMeshbluCredentials: true
+              },
+              {
+                  type: "webhook",
+                  url: 'http://requestb.in/1bji3ej1',
+                  method: "POST",
+                  generateAndForwardMeshbluCredentials: true
+              }
+            ]
+          }
+        }
+      },
       bluprint: {
         flowId: bluprint.flowId,
         version: bluprint.latest
@@ -72,11 +100,11 @@ class ImportBluprint extends React.Component {
         }
       }
     }
-    return _.extend({}, deviceData, formData)
+    return _.extend({}, deviceData, flowData)
   }
 
   getLatestSchema = (bluprint) => {
-    return _.get(bluprint, `versions.${bluprint.latest}.schemas.configure.bluprint`)
+    return _.find(bluprint.versions, {version: bluprint.latest}).schemas.configure.bluprint
   }
 
   render = () => {
