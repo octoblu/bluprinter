@@ -22,5 +22,4 @@ describe('<CreateAppForm />', () => {
     sut.simulate('submit');
     expect(onCreateHandler).to.have.been.called;
   });
-
 });

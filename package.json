@@ -43,7 +43,8 @@
     "react-router": "^2.0.1",
     "superagent": "^2.0.0",
     "url": "^0.11.0",
-    "zooid-ui": "^5.2.0"
+    "zooid-ui": "^5.2.0",
+    "zooid-ui-bluprint-config-builder": "^2.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",

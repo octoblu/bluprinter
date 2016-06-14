@@ -53,10 +53,6 @@ class CreateBluprint extends React.Component {
       });
   }
 
-  componentDidMount() {
-
-  }
-
   handleUpdate(mappings) {
     this.configSchema = this.mappingToConfig({mappings});
   }
@@ -117,9 +113,9 @@ class CreateBluprint extends React.Component {
         version: '1.0.0',
         schemas: {
           configure: {
-            bluprint: configSchema
-          }
-        }
+            bluprint: configSchema,
+          },
+        },
       },
       meshblu: {
         version: '2.0.0',
@@ -150,26 +146,22 @@ class CreateBluprint extends React.Component {
 
   render() {
     const { error, loading, flowDevice, toolsSchema } = this.state;
-    // console.log('render flow', flowDevice)
-    if (flowDevice && toolsSchema) {
-      return (
-        <main>
-          <Page width="small">
-            <CreateAppForm
-              onCreate={this.handleCreate}
-              loading={loading}
-              error={error}
-              flow={flowDevice.flow}
-              toolsSchema={toolsSchema}
-              onUpdate={this.handleUpdate}
-            />
-          </Page>
-        </main>
-      );
-    } else {
-      return null;
-    }
+    if (!flowDevice || !toolsSchema) return null;
 
+    return (
+      <main>
+        <Page width="small">
+          <CreateAppForm
+            onCreate={this.handleCreate}
+            loading={loading}
+            error={error}
+            flow={flowDevice.flow}
+            toolsSchema={toolsSchema}
+            onUpdate={this.handleUpdate}
+          />
+        </Page>
+      </main>
+    );
   }
 }
 
