@@ -32,6 +32,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "async": "^1.5.2",
     "atob": "^2.0.3",
     "babel-preset-stage-0": "^6.5.0",
     "browser-meshblu-http": "^5.2.1",

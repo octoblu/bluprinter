@@ -1,5 +1,5 @@
-import React from 'react';
-import {Button, Page, FormField, FormInput} from 'zooid-ui';
+import React from 'react'
+import {Button, Page, FormField, FormInput} from 'zooid-ui'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 
 import {getMeshbluConfig} from '../services/auth-service'
@@ -22,18 +22,45 @@ class ImportBluprint extends React.Component {
   }
 
   importBluprint = ({formData}) => {
-    const {uuid, token} = getMeshbluConfig();
+    this.createFlow(formData, (error, flow) => {
+      if(error) return
+      const {flowId} = flow
+      this.deployFlow({flowId}, (error, flow) => {
+        if(error) return
+      })
+    })
+  }
+
+  createFlow = (flowData, callback) => {
+    const {uuid, token} = getMeshbluConfig()
     superagent
       .post(`${OCTOBLU_URL}/api/flows`)
       .redirects(0)
       .auth(uuid, token)
       .send(this.getDeviceData(formData))
-      .end((error, response) => console.log({error, response}))
+      .end((error, response) => {
+        if(error) return callback(error)
+        return callback(null, response.body)
+      })
+  }
+
+  deployFlow = ({flowId}, callback) => {
+    const {uuid, token} = getMeshbluConfig()
+
+    superagent
+      .post(`${OCTOBLU_URL}/api/flows/${flowId}/instance`)
+      .auth(uuid, token)
+      .send({})
+      .end((error, response) =>{
+        if(error) return callback(error)
+        return callback(error, response.body)
+      })
   }
 
   getDeviceData = (formData) => {
     const {bluprint} = this.state
     const deviceData = {
+      name: bluprint.name,
       bluprint: {
         flowId: bluprint.flowId,
         version: bluprint.latest
@@ -52,7 +79,9 @@ class ImportBluprint extends React.Component {
   getLatestSchema = (bluprint) => {
     return _.get(bluprint, `versions.${bluprint.latest}.schemas.configure.bluprint`)
   }
+
   render = () => {
+    console.log('hiiiii', this.state)
     const {bluprint} = this.state
     if(!bluprint) return <div>Hang On...</div>
     const latestSchema = this.getLatestSchema(bluprint)
@@ -64,8 +93,8 @@ class ImportBluprint extends React.Component {
       </main>
     )
   }
-};
+}
 
 ImportBluprint.propTypes = {}
 
-export default ImportBluprint;
+export default ImportBluprint
