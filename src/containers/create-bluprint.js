@@ -54,7 +54,6 @@ class CreateBluprint extends React.Component {
   }
 
   handleUpdate(mappings) {
-    console.log('mappings', mappings)
     this.configSchema = this.mappingToConfig({mappings});
   }
 
@@ -104,7 +103,6 @@ class CreateBluprint extends React.Component {
   }
 
   deviceDefaults({ name, configSchema }) {
-    console.log('configSchema is', configSchema)
     const USER_UUID = getMeshbluConfig().uuid;
     return {
       name,
@@ -113,10 +111,10 @@ class CreateBluprint extends React.Component {
       type: 'octoblu:bluprint',
       bluprint: {
         version: '1.0.0',
-      },
-      schemas: {
-        configure: {
-          bluprint: configSchema
+        schemas: {
+          configure: {
+            bluprint: configSchema
+          }
         }
       },
       meshblu: {
