@@ -37,7 +37,7 @@ class ImportBluprint extends React.Component {
       .post(`${OCTOBLU_URL}/api/flows`)
       .redirects(0)
       .auth(uuid, token)
-      .send(this.getDeviceData(formData))
+      .send(this.getDeviceData(flowData))
       .end((error, response) => {
         if(error) return callback(error)
         return callback(null, response.body)
@@ -81,7 +81,6 @@ class ImportBluprint extends React.Component {
   }
 
   render = () => {
-    console.log('hiiiii', this.state)
     const {bluprint} = this.state
     if(!bluprint) return <div>Hang On...</div>
     const latestSchema = this.getLatestSchema(bluprint)
