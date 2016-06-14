@@ -53,10 +53,6 @@ class CreateBluprint extends React.Component {
       });
   }
 
-  componentDidMount() {
-
-  }
-
   handleUpdate(mappings) {
     console.log('mappings', mappings)
     this.configSchema = this.mappingToConfig({mappings});
