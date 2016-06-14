@@ -15,9 +15,9 @@ class ImportBluprint extends React.Component {
   componentWillMount = () => {
     this.bluprintId = this.props.params.uuid
     this.meshblu = new MeshbluHttp(getMeshbluConfig())
-    this.setState({bluprint: deviceConfig.bluprint})
-    this.meshblu.device(this.bluprintId, (error, bluprint) => {
-      // this.setState({bluprint: deviceConfig.bluprint})
+    // this.setState({bluprint: deviceConfig.bluprint})
+    this.meshblu.device(this.bluprintId, (error, device) => {
+      this.setState({bluprint: device.bluprint})
     })
   }
 

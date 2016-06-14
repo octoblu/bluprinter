@@ -17,6 +17,8 @@ class CreateBluprint extends React.Component {
       name: '',
       loading: false,
       errror: null,
+      flowDevice: null,
+      toolsSchema: null,
     };
 
     this.handleCreate = this.handleCreate.bind(this);
@@ -54,7 +56,7 @@ class CreateBluprint extends React.Component {
   }
 
   handleUpdate(mappings) {
-    this.configSchema = this.mappingToConfig({mappings});
+    this.configSchema = this.mappingToConfig({ mappings });
   }
 
   mappingToConfig({ mappings }) {
@@ -79,14 +81,18 @@ class CreateBluprint extends React.Component {
     this.setState({ loading: true });
 
     const { appName } = event.target;
-
+    const { uuid } = this.props.routeParams;
     const meshblu = new MeshbluHttp(getMeshbluConfig());
 
-    meshblu.register(this.deviceDefaults({ name: appName.value, configSchema: this.configSchema }), (error, device) => {
+    const flowDevice = this.deviceDefaults({ name: appName.value, flowId: uuid, configSchema: this.configSchema })
+
+    meshblu.register(flowDevice, (error, device) => {
       if (error) {
+        console.log('Error', error);
         this.setErrorState(error);
         return;
       }
+      console.log('device', device);
 
       const { uuid } = device;
       const update = this.linksProperties({ uuid });
@@ -102,7 +108,7 @@ class CreateBluprint extends React.Component {
     });
   }
 
-  deviceDefaults({ name, configSchema }) {
+  deviceDefaults({ flowId, name, configSchema }) {
     const USER_UUID = getMeshbluConfig().uuid;
     return {
       name,
@@ -110,10 +116,15 @@ class CreateBluprint extends React.Component {
       online: true,
       type: 'octoblu:bluprint',
       bluprint: {
-        version: '1.0.0',
-        schemas: {
-          configure: {
-            bluprint: configSchema,
+        flowId,
+        latest: '1-0-0',
+        versions: {
+          '1-0-0': {
+            schemas: {
+              configure: {
+                bluprint: configSchema,
+              },
+            },
           },
         },
       },
