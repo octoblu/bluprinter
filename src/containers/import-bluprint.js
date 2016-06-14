@@ -26,11 +26,11 @@ class ImportBluprint extends React.Component {
       console.log('createFlow', {error, flow})
       if(error) return
       const {flowId} = flow
-      this.deployFlow({flowId}, (error, flow) => {
-        console.log('deployFlow', {error, flow})
+      this.linkFlowToIoTApp({flowId, flowData}, (error, flow) => {
+        console.log('linkFlowToIoTApp', {error, flow})
         if(error) return
-        this.linkFlowToIoTApp({flowId, flowData}, (error, flow) => {
-          console.log('linkFlowToIoTApp', {error, flow})
+        this.deployFlow({flowId}, (error, flow) => {
+          console.log('deployFlow', {error, flow})
           if(error) return
         })
       })
@@ -67,6 +67,7 @@ class ImportBluprint extends React.Component {
   }
 
   getDeviceData = (flowData) => {
+    console.log("WARNING: USE UPDATE DANGEROUSLY!! This is only working because of an order-of-operations thing.")
     const {bluprint} = this.state
     const deviceData = {
       name: bluprint.name,
