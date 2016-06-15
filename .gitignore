@@ -37,3 +37,5 @@ node_modules
 
 # dev files
 .*-dev
+#tmp folder
+.tmp/

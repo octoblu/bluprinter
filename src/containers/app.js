@@ -1,12 +1,12 @@
-import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
-import { AppBar, AppBarPrimary, AppBarSecondary } from 'zooid-ui';
-import 'zooid-ui/dist/style.css';
-import Authenticated from './authenticated';
+import React, { PropTypes } from 'react'
+import { Link } from 'react-router'
+import { AppBar, AppBarPrimary, AppBarSecondary } from 'zooid-ui'
+import 'zooid-ui/dist/style.css'
+import Authenticated from './authenticated'
 
 const propTypes = {
   children: PropTypes.element.isRequired,
-};
+}
 
 export default class App extends React.Component {
   render() {
@@ -30,8 +30,8 @@ export default class App extends React.Component {
 
         {this.props.children}
       </Authenticated>
-    );
+    )
   }
 }
 
-App.propTypes = propTypes;
+App.propTypes = propTypes

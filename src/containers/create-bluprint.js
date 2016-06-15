@@ -1,13 +1,21 @@
+import _ from 'lodash'
+import superagent from 'superagent'
 import React, { PropTypes } from 'react'
 import { Page } from 'zooid-ui'
-import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 import url from 'url'
+import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
+import { OCTOBLU_URL, TOOLS_SCHEMA_REGISTRY_URL } from 'config'
 
 import CreateAppForm from '../components/CreateAppForm'
+
+
 import { getMeshbluConfig } from '../services/auth-service'
-import { OCTOBLU_URL, TOOLS_SCHEMA_REGISTRY_URL } from 'config'
-import superagent from 'superagent'
-import _ from 'lodash'
+import FlowService from '../services/flow-service'
+
+
+const propTypes = {
+  routeParams: PropTypes.object,
+}
 
 class CreateBluprint extends React.Component {
   constructor(props) {
@@ -21,8 +29,37 @@ class CreateBluprint extends React.Component {
       toolsSchema: null,
     }
 
+    this.flowService = new FlowService()
+
     this.handleCreate = this.handleCreate.bind(this)
     this.handleUpdate = this.handleUpdate.bind(this)
+  }
+
+  componentWillMount() {
+    const { flowUuid } = this.props.routeParams
+
+    this.flowService.getFlowDevice(flowUuid, (error, flowDevice) => {
+      if (error) {
+        this.setErrorState(error)
+        return
+      }
+
+      this.flowService
+      .getNodeSchemaMap(flowDevice.flow)
+      .then((nodeSchemaMap) => {
+        console.log('Node Schema Map', nodeSchemaMap)
+      })
+    })
+
+    // superagent
+    //   .get(`${TOOLS_SCHEMA_REGISTRY_URL}`)
+    //   .end((error, response) => {
+    //     const { body } = response
+    //     if (error) return
+    //     this.setState({ toolsSchema: body, loading: false })
+    //   })
+
+    // desviceSchemaRegistry
   }
 
   setErrorState(error) {
@@ -32,27 +69,6 @@ class CreateBluprint extends React.Component {
       flowDevice: null,
       toolsSchema: null,
     })
-  }
-
-  componentWillMount() {
-    const { uuid } = this.props.routeParams
-    const meshblu = new MeshbluHttp(getMeshbluConfig())
-    meshblu.device(uuid, (error, flowDevice) => {
-      if (error) {
-        return this.setState({ error: error.message })
-      }
-      this.setState({
-        flowDevice,
-        loading: false,
-      })
-    })
-    superagent
-      .get(`${TOOLS_SCHEMA_REGISTRY_URL}`)
-      .end((error, response) => {
-        const { body } = response
-        if (error) return
-        this.setState({ toolsSchema: body, loading: false })
-      })
   }
 
   handleUpdate(mappings) {
@@ -81,23 +97,21 @@ class CreateBluprint extends React.Component {
     this.setState({ loading: true })
 
     const { appName } = event.target
-    const { uuid } = this.props.routeParams
+    const { flowUuid } = this.props.routeParams
     const meshblu = new MeshbluHttp(getMeshbluConfig())
-    const {flowDevice} = this.state
+    const { flowDevice } = this.state
     const bluprintConfig = this.deviceDefaults({
       name: appName.value,
       version: flowDevice.instanceId,
-      flowId: uuid,
-      configSchema: this.configSchema
+      flowId: flowUuid,
+      configSchema: this.configSchema,
     })
 
     meshblu.register(bluprintConfig, (error, device) => {
       if (error) {
-        console.log('Error', error)
         this.setErrorState(error)
         return
       }
-      console.log('device', device)
 
       const { uuid } = device
       const update = this.linksProperties({ uuid })
@@ -125,14 +139,14 @@ class CreateBluprint extends React.Component {
         latest: version,
         versions: [
           {
-            version: version,
+            version,
             schemas: {
               configure: {
-                bluprint: configSchema
+                bluprint: configSchema,
               },
             },
           },
-        ]
+        ],
       },
       meshblu: {
         version: '2.0.0',
@@ -181,5 +195,7 @@ class CreateBluprint extends React.Component {
     )
   }
 }
+
+CreateBluprint.propTypes = propTypes
 
 export default CreateBluprint

@@ -1,0 +1,32 @@
+{
+    "uuid": "my-iot-device-uuid",
+    "schemas": {
+    "version": "2.0.0",
+    "message": {
+      "example-message-01": {
+        "type": "object",
+        "properties": {
+          "example-opt": {
+            "type": "string"
+          },
+          "another-example-opt":{
+            "type": "string"
+          }
+        },
+        "required": ["example-opt", "another-example-opt"]
+      },
+      "example-message-02": {
+        "type": "object",
+        "properties": {
+          "some-opt": {
+            "type": "string"
+          },
+          "another-some-opt":{
+            "type": "string"
+          }
+        },
+        "required": ["some-opt", "another-some-opt"]
+      }
+    }
+  }
+}
