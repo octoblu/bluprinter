@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react'
 import { Page } from 'zooid-ui'
 import url from 'url'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
-import { OCTOBLU_URL, TOOLS_SCHEMA_REGISTRY_URL } from 'config'
+import { OCTOBLU_URL, TOOLS_SCHEMA_REGISTRY_URL, FLOW_DEPLOY_URL } from 'config'
 
 import CreateAppForm from '../components/CreateAppForm'
 
@@ -27,6 +27,7 @@ class CreateBluprint extends React.Component {
       errror: null,
       flowDevice: null,
       toolsSchema: null,
+      version: '1.0.0'
     }
 
     this.flowService = new FlowService()
@@ -98,14 +99,23 @@ class CreateBluprint extends React.Component {
 
     const { appName } = event.target
     const { flowUuid } = this.props.routeParams
-    const meshblu = new MeshbluHttp(getMeshbluConfig())
-    const { flowDevice } = this.state
+    const meshbluConfig = getMeshbluConfig()
+    const meshblu = new MeshbluHttp(meshbluConfig)
+    const { flowDevice, version } = this.state
     const bluprintConfig = this.deviceDefaults({
-      name: appName.value,
-      version: flowDevice.instanceId,
+      name: 'whatever',
+      version: version,
       flowId: flowUuid,
-      configSchema: this.configSchema,
+      configSchema: {type: 'object', properties: {}},
     })
+
+    superagent
+      .post(`${FLOW_DEPLOY_URL}/bluprint/${flowUuid}/${version}`)
+      .auth(meshbluConfig.uuid, meshbluConfig.token)
+      .end((error, response) => {
+        console.error(error)
+        console.log(response)
+      })
 
     meshblu.register(bluprintConfig, (error, device) => {
       if (error) {
@@ -182,14 +192,7 @@ class CreateBluprint extends React.Component {
     return (
       <main>
         <Page width="small">
-          <CreateAppForm
-            onCreate={this.handleCreate}
-            loading={loading}
-            error={error}
-            flow={flowDevice.flow}
-            toolsSchema={toolsSchema}
-            onUpdate={this.handleUpdate}
-          />
+          <button onClick={this.handleCreate}>create</button>
         </Page>
       </main>
     )

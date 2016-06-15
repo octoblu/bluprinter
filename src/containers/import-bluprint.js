@@ -76,7 +76,7 @@ class ImportBluprint extends React.Component {
           configure: {
             sent: [ {
                 type: "webhook",
-                url: `${FLOW_DEPLOY_URL}/bluprint/link/${bluprint.flowId}/${bluprint.latest}`,
+                url: `${FLOW_DEPLOY_URL}/bluprint/${bluprint.flowId}/${bluprint.latest}/link`,
                 method: "POST",
                 generateAndForwardMeshbluCredentials: true
               },
