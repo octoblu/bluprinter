@@ -32,6 +32,7 @@ class ImportBluprint extends React.Component {
         this.deployFlow({flowId}, (error, flow) => {
           console.log('deployFlow', {error, flow})
           if(error) return
+          window.location = `${OCTOBLU_URL}/device/${flowId}`
         })
       })
     })
@@ -76,7 +77,7 @@ class ImportBluprint extends React.Component {
           configure: {
             sent: [ {
                 type: "webhook",
-                url: `${FLOW_DEPLOY_URL}/bluprint/link/${bluprint.flowId}/${bluprint.latest}`,
+                url: `${FLOW_DEPLOY_URL}/bluprint/${bluprint.flowId}/${bluprint.latest}/link`,
                 method: "POST",
                 generateAndForwardMeshbluCredentials: true
               },

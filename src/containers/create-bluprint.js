@@ -3,7 +3,8 @@ import React, { PropTypes } from 'react'
 import { Page } from 'zooid-ui'
 import url from 'url'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
-import { OCTOBLU_URL } from 'config'
+import superagent from 'superagent'
+import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
 
 import CreateAppForm from '../components/CreateAppForm'
 
@@ -26,6 +27,7 @@ class CreateBluprint extends React.Component {
       errror: null,
       flowDevice: null,
       nodeSchemaMap: null,
+      version: '1.0.0'
     }
 
     this.flowService = new FlowService()
@@ -91,31 +93,41 @@ class CreateBluprint extends React.Component {
 
     const { appName } = event.target
     const { flowUuid } = this.props.routeParams
-    const meshblu = new MeshbluHttp(getMeshbluConfig())
-    const { flowDevice } = this.state
+    const meshbluConfig = getMeshbluConfig()
+    const meshblu = new MeshbluHttp(meshbluConfig)
+    const { flowDevice, version } = this.state
     const bluprintConfig = this.deviceDefaults({
       name: appName.value,
-      version: flowDevice.instanceId,
+      version: version,
       flowId: flowUuid,
       configSchema: this.configSchema,
     })
 
-    meshblu.register(bluprintConfig, (error, device) => {
-      if (error) {
-        this.setErrorState(error)
-        return
-      }
+    superagent
+      .post(`${FLOW_DEPLOY_URL}/bluprint/${flowUuid}/${version}`)
+      .auth(meshbluConfig.uuid, meshbluConfig.token)
+      .end((error, response) => {
+        console.error(error)
+        console.log(response)
 
-      const { uuid } = device
-      const update = this.linksProperties({ uuid })
 
-      meshblu.update(uuid, update, (updateError) => {
-        if (updateError) {
-          this.setErrorState(updateError)
+      meshblu.register(bluprintConfig, (error, device) => {
+        if (error) {
+          this.setErrorState(error)
           return
         }
 
-        window.location = `${OCTOBLU_URL}/device/${device.uuid}`
+        const { uuid } = device
+        const update = this.linksProperties({ uuid })
+
+        meshblu.update(uuid, update, (updateError) => {
+          if (updateError) {
+            this.setErrorState(updateError)
+            return
+          }
+
+          window.location = `${OCTOBLU_URL}/device/${device.uuid}`
+        })
       })
     })
   }
@@ -177,7 +189,7 @@ class CreateBluprint extends React.Component {
 
     return (
       <main>
-        <Page width="small">
+        <Page width="small">a
           <CreateAppForm
             flow={flowDevice.flow}
             nodeSchemaMap={nodeSchemaMap}
