@@ -4,25 +4,32 @@ import { Button, FormField, FormInput } from 'zooid-ui'
 import BluprintConfigBuilder from 'zooid-ui-bluprint-config-builder'
 
 const propTypes = {
-  onCreate: PropTypes.func,
   flow: PropTypes.object,
-  toolsSchema: PropTypes.object,
+  nodeSchemaMap: PropTypes.object,
+  onCreate: PropTypes.func,
   onUpdate: PropTypes.func,
 }
 
 const defaultProps = {
   onCreate: noop,
+  onUpdate: noop,
   flow: null,
-  toolsSchema: null,
+  nodeSchemaMap: null,
 }
 
-const CreateAppForm = ({ onCreate, onUpdate, flow, toolsSchema }) => {
+const CreateAppForm = ({ flow, nodeSchemaMap, onCreate, onUpdate }) => {
   return (
     <form onSubmit={onCreate}>
       <FormField label="IoT App Name" name="appName">
         <FormInput name="appName" placeholder="App Name" autofocus />
       </FormField>
-      <BluprintConfigBuilder flow={flow} nodeSchemas={toolsSchema} onUpdate={onUpdate} />
+
+      <BluprintConfigBuilder
+        flow={flow}
+        nodeSchemaMap={nodeSchemaMap}
+        onUpdate={onUpdate}
+      />
+
       <Button type="submit" kind="primary">Create IoT App</Button>
     </form>
   )

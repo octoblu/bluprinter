@@ -1,10 +1,9 @@
 import _ from 'lodash'
-import superagent from 'superagent'
 import React, { PropTypes } from 'react'
 import { Page } from 'zooid-ui'
 import url from 'url'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
-import { OCTOBLU_URL, TOOLS_SCHEMA_REGISTRY_URL } from 'config'
+import { OCTOBLU_URL } from 'config'
 
 import CreateAppForm from '../components/CreateAppForm'
 
@@ -23,10 +22,10 @@ class CreateBluprint extends React.Component {
 
     this.state = {
       name: '',
-      loading: false,
+      loading: true,
       errror: null,
       flowDevice: null,
-      toolsSchema: null,
+      nodeSchemaMap: null,
     }
 
     this.flowService = new FlowService()
@@ -44,22 +43,16 @@ class CreateBluprint extends React.Component {
         return
       }
 
+      this.setState({ flowDevice })
+
       this.flowService
-      .getNodeSchemaMap(flowDevice.flow)
-      .then((nodeSchemaMap) => {
-        console.log('Node Schema Map', nodeSchemaMap)
-      })
+        .getNodeSchemaMap(flowDevice.flow)
+        .then((nodeSchemaMap) => {
+          console.log("Node Schema Map", nodeSchemaMap)
+          this.setState({ nodeSchemaMap, loading: false })
+        })
     })
 
-    // superagent
-    //   .get(`${TOOLS_SCHEMA_REGISTRY_URL}`)
-    //   .end((error, response) => {
-    //     const { body } = response
-    //     if (error) return
-    //     this.setState({ toolsSchema: body, loading: false })
-    //   })
-
-    // desviceSchemaRegistry
   }
 
   setErrorState(error) {
@@ -67,7 +60,7 @@ class CreateBluprint extends React.Component {
       error,
       loading: false,
       flowDevice: null,
-      toolsSchema: null,
+      nodeSchemaMap: null,
     })
   }
 
@@ -176,18 +169,19 @@ class CreateBluprint extends React.Component {
   }
 
   render() {
-    const { error, loading, flowDevice, toolsSchema } = this.state
-    if (!flowDevice || !toolsSchema) return null
+    const { error, loading, flowDevice, nodeSchemaMap } = this.state
+    if (loading) return <div>Loading...</div>
+    if (error) return <div>Error: {error.message}</div>
+
+    if (!flowDevice || !nodeSchemaMap) return null
 
     return (
       <main>
         <Page width="small">
           <CreateAppForm
-            onCreate={this.handleCreate}
-            loading={loading}
-            error={error}
             flow={flowDevice.flow}
-            toolsSchema={toolsSchema}
+            nodeSchemaMap={nodeSchemaMap}
+            onCreate={this.handleCreate}
             onUpdate={this.handleUpdate}
           />
         </Page>

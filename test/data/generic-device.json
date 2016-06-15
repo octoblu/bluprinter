@@ -1,5 +1,11 @@
 {
-    "schemas": {
+  "uuid": "805facce-a857-492f-a4d7-9632d38bddb1",
+  "token": "a036e4c72c053ab8690888403240cf7289aec55c",
+  "server": "meshblu.octoblu.dev",
+  "port": "80",
+  "type": "device:generic",
+  "name": "IoT Generic Device",
+  "schemas": {
     "version": "2.0.0",
     "message": {
       "example-message-01": {
@@ -8,11 +14,14 @@
           "example-opt": {
             "type": "string"
           },
-          "another-example-opt":{
+          "another-example-opt": {
             "type": "string"
           }
         },
-        "required": ["example-opt", "another-example-opt"]
+        "required": [
+          "example-opt",
+          "another-example-opt"
+        ]
       },
       "example-message-02": {
         "type": "object",
@@ -20,11 +29,14 @@
           "some-opt": {
             "type": "string"
           },
-          "another-some-opt":{
+          "another-some-opt": {
             "type": "string"
           }
         },
-        "required": ["some-opt", "another-some-opt"]
+        "required": [
+          "some-opt",
+          "another-some-opt"
+        ]
       }
     }
   }
