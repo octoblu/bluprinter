@@ -38,7 +38,7 @@ class ImportBluprint extends React.Component {
     })
   }
 
-  createFlow = (flowData, callback) => {
+  createFlow = (callback) => {
     const {uuid, token} = getMeshbluConfig()
     superagent
       .post(`${OCTOBLU_URL}/api/flows`)
