@@ -13,11 +13,11 @@ export default class FlowService {
     this.getToolsSchema = this.getToolsSchema.bind(this)
     this.getFlowDevice = this.getFlowDevice.bind(this)
     this.getNodeSchemaMap = this.getNodeSchemaMap.bind(this)
-    
   }
 
   getToolsSchema() {
-    if(this.toolsSchema) return this.toolsSchema
+    if (this.toolsSchema) return this.toolsSchema
+
     return new Promise((resolve, reject) => {
       superagent
       .get(`${TOOLS_SCHEMA_REGISTRY_URL}`)

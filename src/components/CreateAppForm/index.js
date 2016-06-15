@@ -5,7 +5,7 @@ import BluprintConfigBuilder from 'zooid-ui-bluprint-config-builder'
 
 const propTypes = {
   flow: PropTypes.object,
-  nodeSchemaMap: PropTypes.object,
+  nodeSchemaMap: PropTypes.array,
   onCreate: PropTypes.func,
   onUpdate: PropTypes.func,
 }

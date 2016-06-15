@@ -50,7 +50,8 @@ class CreateBluprint extends React.Component {
       this.flowService
         .getNodeSchemaMap(flowDevice.flow)
         .then((nodeSchemaMap) => {
-          console.log("Node Schema Map", nodeSchemaMap)
+          console.log("Flow", JSON.stringify(flowDevice.flow, null, 2))
+          console.log("Node Schema Map", JSON.stringify(nodeSchemaMap, null, 2))
           this.setState({ nodeSchemaMap, loading: false })
         })
     })
@@ -189,7 +190,7 @@ class CreateBluprint extends React.Component {
 
     return (
       <main>
-        <Page width="small">a
+        <Page width="small">
           <CreateAppForm
             flow={flowDevice.flow}
             nodeSchemaMap={nodeSchemaMap}
