@@ -79,7 +79,7 @@ class CreateBluprint extends React.Component {
 
     _.each(mappings, function (mapping) {
       let property = config.properties[mapping.configureProperty]
-      property = property || { type: mapping.type }
+      property = property || { type: mapping.type, enum: mapping.enum }
       property['x-node-map'] = property['x-node-map'] || []
       property['x-node-map'].push({ id: mapping.nodeId, property: mapping.nodeProperty })
       config.properties[mapping.configureProperty] = property
