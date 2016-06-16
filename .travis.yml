@@ -8,7 +8,9 @@ deploy:
     secure: C1W6eUXnanykbV5pJvAoOuVB0JYkW6cIvRlwShwV9ZBQopRQVWblppU913KvTn7vqoMnhaGJ+CXASr+KiF5O4sEaoQNhtqU3uB4suYRMvWn0OvH+PNXvvvLPQfCW0yPuyLPjuG71v/jeINDFUAA6Y3jFshxD5h/8/d21eMf/tok4kTQLVTbZx7UHjkYy3a+e0qYVkpsqStZBlnIQIV3ZifVjt7p/tWuk50oDhfJNw2Tl7Eb5I09tuocrmjoIcsGRHUzmj6I5/LjhZYQaLCPbn4kIiHv9nLRHXEkPulQixPmUY1s4NvsRTEd6pFUxuxAjbdKs5MCtWwDlUyUe8gkmMnWBoHrvROi7TE8bpIOzt9lEyrMJ3nUHyJgWISHrhUAZGbV6VexwEUKFYK1KgH3sdbZmDB0uhlRF/8usitH+r+6f1n5UQmnvqw818npaRDzw5gGjS9hESTqYduFTXrPYCj+Hvaa8WuoszMf//6FtSWv8lOYlcFtetZH7iNbZbRN9tD9gymRs1Yupvm+UXZUEOKMCBCbeOq4DA4G/rS5oo8VWB1GOuNAQoWUzdL3DsMMDm9APT2F9d8BHZzRCbAoF8c7ZcfdscR1CJEMzwcmeDSRNW9gIZNlvatnA7lBnR/0ICFjB/dlJtgSJGCTyziQcunLyTMd9IwJ9vBaAvl/IGuY=
   bucket: bluprinter.octoblu.com
   local-dir: dist
-  acl: ''
+  detect_encoding: true
+  region: 'us-west-2'
+  skip_cleanup: true
   on:
     repo: octoblu/bluprinter
     tags: true
