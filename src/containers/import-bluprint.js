@@ -22,7 +22,7 @@ class ImportBluprint extends React.Component {
 
   importBluprint = ({formData}) => {
     const flowData = formData
-    this.createFlow(flowData, (error, flow) => {
+    this.createFlow((error, flow) => {
       console.log('createFlow', {error, flow})
       if(error) return
       const {flowId} = flow
