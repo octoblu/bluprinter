@@ -1,7 +1,9 @@
 language: node_js
 node_js:
 - '5'
-
+branches:
+  only:
+  - /^v[0-9]/
 before_deploy:
 - npm run build
 - cp index.html dist
