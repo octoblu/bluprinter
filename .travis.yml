@@ -5,7 +5,8 @@ node_js:
 before_deploy:
 - npm run build
 - cp index.html dist
-
+after_deploy:
+- ./deploy/invalidate-cloudfront.sh $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY $TRAVIS_BRANCH
 deploy:
   provider: s3
   access_key_id: AKIAJH2D5IPIRHYJT5IA
