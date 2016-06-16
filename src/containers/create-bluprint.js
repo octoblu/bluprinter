@@ -148,7 +148,7 @@ class CreateBluprint extends React.Component {
             version,
             schemas: {
               configure: {
-                bluprint: configSchema,
+                bluprint: configSchema || {},
               },
             },
           },
