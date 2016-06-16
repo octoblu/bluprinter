@@ -25,6 +25,12 @@ module.exports = {
       }
     })
   ],
+  resolve: {
+    extensions: ['', '.js', '.jsx', '.json'],
+    alias: {
+      config: path.join(__dirname, 'src', 'config', 'production')
+    }
+  },
   module: {
     loaders: [
       {
@@ -47,6 +53,10 @@ module.exports = {
       {
         test: /\.svg$/,
         loader: "file-loader"
+      },
+      {
+        test:   /\.json$/,
+        loader: "json-loader"
       }
     ]
   },
