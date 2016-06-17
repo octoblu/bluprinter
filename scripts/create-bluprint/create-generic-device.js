@@ -29,7 +29,9 @@ var meshbluHttp = new MeshbluHttp({
 
 var deviceParams = {
   owner: commander.owner,
+  online: "true",
   name: commander.name || 'Generated Device',
+  type: "device:generic",
   meshblu: {
     version: '2.0.0',
     whitelists: {
@@ -59,8 +61,7 @@ var deviceParams = {
         type: 'object',
         properties: {
           'example-opt': {
-            type: 'string',
-            enum: ['optionA', 'optionB', 'optionC'],
+            type: 'string'
           },
           'another-example-opt': {
             type: 'string',
@@ -92,6 +93,7 @@ meshbluHttp.register(deviceParams, function (error, registeredDevice) {
     server: meshbluServer,
   })
 
+  console.log("Registered Device creds:", registeredDevice.uuid, registeredDevice.token)
   meshbluHttp.device(registeredDevice.uuid, function (deviceError, updatedDevice) {
     console.log('Device is', deviceError, JSON.stringify(updatedDevice, null, 2))
     process.exit(0)
