@@ -24,10 +24,10 @@ class CreateBluprint extends React.Component {
     this.state = {
       name: '',
       loading: true,
-      errror: null,
+      error: null,
       flowDevice: null,
       nodeSchemaMap: null,
-      version: '1.0.0'
+      version: '1.0.0',
     }
 
     this.flowService = new FlowService()
@@ -50,8 +50,6 @@ class CreateBluprint extends React.Component {
       this.flowService
         .getNodeSchemaMap(flowDevice.draft)
         .then((nodeSchemaMap) => {
-          console.log("Flow", JSON.stringify(flowDevice.draft, null, 2))
-          console.log("Node Schema Map", JSON.stringify(nodeSchemaMap, null, 2))
           this.setState({ nodeSchemaMap, loading: false })
         })
     })
@@ -108,28 +106,24 @@ class CreateBluprint extends React.Component {
       .post(`${FLOW_DEPLOY_URL}/bluprint/${flowUuid}/${version}`)
       .auth(meshbluConfig.uuid, meshbluConfig.token)
       .end((error, response) => {
-        console.error(error)
-        console.log(response)
-
-
-      meshblu.register(bluprintConfig, (error, device) => {
-        if (error) {
-          this.setErrorState(error)
-          return
-        }
-
-        const { uuid } = device
-        const update = this.linksProperties({ uuid })
-
-        meshblu.update(uuid, update, (updateError) => {
-          if (updateError) {
-            this.setErrorState(updateError)
+        meshblu.register(bluprintConfig, (error, device) => {
+          if (error) {
+            this.setErrorState(error)
             return
           }
 
-          window.location = `${OCTOBLU_URL}/device/${device.uuid}`
+          const { uuid } = device
+          const update = this.linksProperties({ uuid })
+
+          meshblu.update(uuid, update, (updateError) => {
+            if (updateError) {
+              this.setErrorState(updateError)
+              return
+            }
+
+            window.location = `${OCTOBLU_URL}/device/${device.uuid}`
+          })
         })
-      })
     })
   }
 
