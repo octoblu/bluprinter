@@ -8,9 +8,9 @@ import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
 
 import CreateAppForm from '../components/CreateAppForm'
 
-
+import NodeService          from '../services/node-service'
 import { getMeshbluConfig } from '../services/auth-service'
-import FlowService from '../services/flow-service'
+import FlowService          from '../services/flow-service'
 
 
 const propTypes = {
@@ -28,12 +28,15 @@ class CreateBluprint extends React.Component {
       flowDevice: null,
       nodeSchemaMap: null,
       version: '1.0.0',
+      manifest: null
     }
 
     this.flowService = new FlowService()
 
     this.handleCreate = this.handleCreate.bind(this)
     this.handleUpdate = this.handleUpdate.bind(this)
+
+    this.nodeService = new NodeService()
   }
 
   componentWillMount() {
@@ -46,6 +49,10 @@ class CreateBluprint extends React.Component {
       }
 
       this.setState({ flowDevice })
+
+      this.nodeService.createManifest(flowDevice.draft.nodes).then((manifest) => {
+        this.setState({ manifest })
+      })
 
       this.flowService
         .getNodeSchemaMap(flowDevice.draft)
@@ -66,6 +73,7 @@ class CreateBluprint extends React.Component {
 
   handleUpdate(mappings) {
     this.configSchema = this.mappingToConfig({ mappings })
+    console.log('mappings', mappings)
   }
 
   mappingToConfig({ mappings }) {
@@ -96,11 +104,13 @@ class CreateBluprint extends React.Component {
     const meshbluConfig = getMeshbluConfig()
     const meshblu = new MeshbluHttp(meshbluConfig)
     const { flowDevice, version } = this.state
+
     const bluprintConfig = this.deviceDefaults({
       name: appName.value,
       version: version,
       flowId: flowUuid,
       configSchema: this.configSchema,
+      manifest: this.state.manifest
     })
 
     superagent
@@ -128,7 +138,7 @@ class CreateBluprint extends React.Component {
     })
   }
 
-  deviceDefaults({ flowId, name, configSchema, version }) {
+  deviceDefaults({ flowId, name, configSchema, version, manifest }) {
     const USER_UUID = getMeshbluConfig().uuid
     return {
       name,
@@ -138,6 +148,7 @@ class CreateBluprint extends React.Component {
       bluprint: {
         flowId,
         latest: version,
+        manifest,
         versions: [
           {
             version,
