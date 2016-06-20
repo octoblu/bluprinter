@@ -28,6 +28,7 @@ class CreateBluprint extends React.Component {
       flowDevice: null,
       nodeSchemaMap: null,
       version: '1.0.0',
+      manifest: null
     }
 
     this.flowService = new FlowService()
@@ -48,9 +49,9 @@ class CreateBluprint extends React.Component {
       }
 
       this.setState({ flowDevice })
-      
+
       this.nodeService.createManifest(flowDevice.draft.nodes).then((manifest) => {
-        console.log("manifest", manifest)
+        this.setState({ manifest })
       })
 
       this.flowService
@@ -82,12 +83,6 @@ class CreateBluprint extends React.Component {
       properties: {},
     }
 
-
-    // documentation
-    // match on id
-    //  -- type
-    //  -- name
-    //  -- documentation
     _.each(mappings, function (mapping) {
       let property = config.properties[mapping.configureProperty]
       property = property || { type: mapping.type, enum: mapping.enum }
@@ -108,11 +103,13 @@ class CreateBluprint extends React.Component {
     const meshbluConfig = getMeshbluConfig()
     const meshblu = new MeshbluHttp(meshbluConfig)
     const { flowDevice, version } = this.state
+
     const bluprintConfig = this.deviceDefaults({
       name: appName.value,
       version: version,
       flowId: flowUuid,
       configSchema: this.configSchema,
+      manifest: this.state.manifest
     })
 
     superagent
@@ -140,7 +137,7 @@ class CreateBluprint extends React.Component {
     })
   }
 
-  deviceDefaults({ flowId, name, configSchema, version }) {
+  deviceDefaults({ flowId, name, configSchema, version, manifest }) {
     const USER_UUID = getMeshbluConfig().uuid
     return {
       name,
@@ -150,7 +147,7 @@ class CreateBluprint extends React.Component {
       bluprint: {
         flowId,
         latest: version,
-        manifest: [],
+        manifest,
         versions: [
           {
             version,
