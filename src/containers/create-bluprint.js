@@ -53,7 +53,6 @@ class CreateBluprint extends React.Component {
           this.setState({ nodeSchemaMap, loading: false })
         })
     })
-
   }
 
   setErrorState(error) {
@@ -78,6 +77,8 @@ class CreateBluprint extends React.Component {
     _.each(mappings, function (mapping) {
       let property = config.properties[mapping.configureProperty]
       property = property || { type: mapping.type, enum: mapping.enum }
+      property.required = mapping.required
+      property.description = mapping.description
       property['x-node-map'] = property['x-node-map'] || []
       property['x-node-map'].push({ id: mapping.nodeId, property: mapping.nodeProperty })
       config.properties[mapping.configureProperty] = property
