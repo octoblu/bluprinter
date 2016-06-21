@@ -1,3 +1,5 @@
+import url from 'url'
+
 import React from 'react'
 import {Button, Page, FormField, FormInput} from 'zooid-ui'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
@@ -6,7 +8,6 @@ import {getMeshbluConfig} from '../services/auth-service'
 import {OCTOBLU_URL, FLOW_DEPLOY_URL} from 'config'
 import superagent from 'superagent'
 import Form from 'react-jsonschema-form'
-
 import * as deviceConfig from '../../test/data/bluprint-config.json'
 
 class ImportBluprint extends React.Component {
@@ -25,12 +26,13 @@ class ImportBluprint extends React.Component {
     this.createFlow((error, flow) => {
       console.log('createFlow', {error, flow})
       if(error) return
+
       const {flowId} = flow
       this.linkFlowToIoTApp({flowId, flowData}, (error, flow) => {
-        console.log('linkFlowToIoTApp', {error, flow})
         if(error) return
+
+
         this.deployFlow({flowId}, (error, flow) => {
-          console.log('deployFlow', {error, flow})
           if(error) return
           window.location = `${OCTOBLU_URL}/device/${flowId}`
         })
@@ -64,14 +66,23 @@ class ImportBluprint extends React.Component {
   }
 
   linkFlowToIoTApp = ({flowId, flowData}, callback) => {
-    this.meshblu.update(flowId, this.getDeviceData(flowData), callback)
+    this.meshblu.update(flowId, this.getDeviceData({flowId, flowData}), callback)
   }
 
-  getDeviceData = (flowData) => {
+  getDeviceData = ({flowId, flowData}) => {
     console.log("WARNING: USE UPDATE DANGEROUSLY!! This is only working because of an order-of-operations thing.")
     const {bluprint} = this.state
+    const {protocol, hostname, port} = window.location
+
     const deviceData = {
       name: bluprint.name,
+      type: 'iot-app',
+      octoblu: {
+        links: [{
+          title: 'Run App',
+          url: url.format({ protocol, hostname, port, pathname: `/app/${flowId}` }),
+        }]
+      },
       meshblu: {
         forwarders: {
           configure: {
@@ -100,9 +111,10 @@ class ImportBluprint extends React.Component {
         configure: {
           bluprint: this.getLatestSchema(bluprint)
         }
-      }
+      },
     }
-    return _.extend({}, deviceData, flowData)
+
+    return _.extend({}, flowData, deviceData)
   }
 
   getLatestSchema = (bluprint) => {
