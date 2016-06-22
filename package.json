@@ -47,7 +47,7 @@
     "zooid-heading": "^1.0.1",
     "zooid-meshblu-device-editor": "^9.0.0",
     "zooid-ui": "^6.0.0",
-    "zooid-ui-bluprint-config-builder": "^3.2.0"
+    "zooid-ui-bluprint-config-builder": "^3.2.2"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",

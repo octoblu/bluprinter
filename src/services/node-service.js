@@ -46,11 +46,11 @@ export default class NodeService {
 
   getDocUrl(node) {
     const { type, category } = node
-    if (category === 'operation') {
-      return _.find(this.types.operators, {type})
-    } else {
-      return _.find(this.types.nodeTypes, {type})
-    }
+    let nodeType = {}
+    if (category === 'operation') return _.find(this.types.operators, {type})
+    nodeType = _.find(this.types.nodeTypes, {type})
+    if (nodeType === undefined) return {documentation: ""}
+    return nodeType
   }
 
   createManifest(nodes) {
