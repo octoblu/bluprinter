@@ -68,19 +68,26 @@ export default class FlowService {
     const messageSchema = {
       type: 'object',
       properties: {
-        from: {
-          type: 'string',
-          title: 'Trigger',
-          required: true,
-          enum: _.map(triggers, 'id')
+        metadata: {
+          type: 'object',
+          properties: {
+            to: {
+              type: 'object',
+              properties: {
+                nodeId: {
+                  type: 'string',
+                  title: 'Trigger',
+                  required: true,
+                  enum: _.map(triggers, 'id')
+                }
+              }
+            }
+          }
         },
-        payload: {
-          title: 'payload',
+        data: {
+          title: 'data',
+          type: 'string',
           description: 'Use {{msg}} to send the entire message'
-        },
-        replacePayload: {
-          type: 'string',
-          default: 'payload'
         }
       }
     }
