@@ -9,6 +9,7 @@ import ImportBluprint from '../containers/import-bluprint'
 import RunIotApp from '../containers/run-iot-app'
 
 import NotFound from '../components/NotFound'
+import Logout from '../containers/Logout'
 
 import { storeAuthenticationAndRedirect } from '../services/auth-service'
 
@@ -20,6 +21,7 @@ export default (
       <Route path="flows/:flowUuid/new" component={CreateBluprint} />
       <Route path="bluprints/:uuid/import" component={ImportBluprint} />
       <Route path="app/:uuid" component={RunIotApp} />
+      <Route path="/logout" component={Logout} />
     </Route>
     <Route path="*" status={404} component={NotFound} />
   </Route>
