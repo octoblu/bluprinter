@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React, { PropTypes } from 'react'
-import { Page } from 'zooid-ui'
+import { Page, Spinner } from 'zooid-ui'
 import Heading from 'zooid-heading'
 import url from 'url'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
@@ -199,8 +199,8 @@ class CreateBluprint extends React.Component {
 
   render() {
     const { error, loading, flowDevice, nodeSchemaMap } = this.state
-    if (loading) return <div>Loading...</div>
-    if (error) return <div>Error: {error.message}</div>
+    if (loading) return <Page width="small"><Spinner size="large" /></Page>
+    if (error) return <Page width="small">Error: {error.message}</Page>
 
     if (!flowDevice || !nodeSchemaMap) return null
 
