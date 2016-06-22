@@ -1,7 +1,7 @@
 import React from 'react'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 import {getMeshbluConfig} from '../services/auth-service'
-
+import {Page} from 'zooid-ui'
 class RunIotApp extends React.Component {
 
   componentWillMount = () => {

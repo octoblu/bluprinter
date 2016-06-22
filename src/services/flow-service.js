@@ -72,7 +72,7 @@ export default class FlowService {
           type: 'string',
           title: 'Trigger',
           required: true,
-          enum: _.pluck(triggers, 'id')
+          enum: _.map(triggers, 'id')
         },
         payload: {
           title: 'payload',

@@ -74,7 +74,6 @@ class CreateBluprint extends React.Component {
 
   handleUpdate(mappings) {
     this.configSchema = this.mappingToConfig({ mappings })
-    console.log('mappings', mappings)
   }
 
   mappingToConfig({ mappings }) {
@@ -86,6 +85,7 @@ class CreateBluprint extends React.Component {
     _.each(mappings, function (mapping) {
       let property = config.properties[mapping.configureProperty]
       property = property || { type: mapping.type, enum: mapping.enum }
+
       property.required = mapping.required
       property.description = mapping.description
       property['x-node-map'] = property['x-node-map'] || []
@@ -111,7 +111,8 @@ class CreateBluprint extends React.Component {
       version: version,
       flowId: flowUuid,
       configSchema: this.configSchema,
-      manifest: this.state.manifest
+      messageSchema: this.flowService.getMessageSchema({nodes: flowDevice.draft.nodes}),
+      manifest: this.state.manifest,
     })
 
     superagent
@@ -139,7 +140,7 @@ class CreateBluprint extends React.Component {
     })
   }
 
-  deviceDefaults({ flowId, name, configSchema, version, manifest }) {
+  deviceDefaults({ flowId, name, configSchema, messageSchema, version, manifest }) {
     const USER_UUID = getMeshbluConfig().uuid
     return {
       name,
@@ -155,8 +156,11 @@ class CreateBluprint extends React.Component {
             version,
             schemas: {
               configure: {
-                bluprint: configSchema || {},
+                bluprint: configSchema,
               },
+              message: {
+                bluprint: messageSchema,
+              }
             },
           },
         ],
