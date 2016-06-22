@@ -4,16 +4,21 @@ import {getMeshbluConfig} from '../services/auth-service'
 import {Page} from 'zooid-ui'
 import {DeviceMessageSchemaContainer} from 'zooid-meshblu-device-editor';
 class RunIotApp extends React.Component {
+  state = {}
 
   componentWillMount = () => {
-    const appId = this.props.params.uuid
+    this.appId = this.props.params.uuid
     this.meshblu = new MeshbluHttp(getMeshbluConfig())
-    this.meshblu.device(appId, (error, device) => {
+    this.meshblu.device(this.appId, (error, device) => {
       this.setState({device})
     })
   }
 
-  state = {}
+  handleMessage = ({ message }) => {
+    const messageWithDevices = _.extend({devices: [this.appId]}, message)
+    this.meshblu.message(messageWithDevices, (error) => console.log(error))
+  }
+
   render = () => {
     const {device} = this.state
     if(!device) return <h1>Haaaaaaaaaaang onnnnnnnn</h1>
@@ -30,6 +35,7 @@ class RunIotApp extends React.Component {
       </main>
     )
   }
+
 }
 
 RunIotApp.propTypes = {}
