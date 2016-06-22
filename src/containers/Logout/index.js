@@ -1,5 +1,6 @@
 import React from 'react'
 import cookie from 'react-cookie'
+import { browserHistory } from 'react-router'
 import { Spinner } from 'zooid-ui'
 
 const propTypes = {}
@@ -14,7 +15,7 @@ class Logout extends React.Component {
 
   componentDidMount() {
     cookie.remove('meshbluBearerToken', { path: '/' })
-    window.location = '/'
+    browserHistory.push('/home')
   }
 
   render() {
