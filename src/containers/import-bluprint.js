@@ -113,7 +113,7 @@ class ImportBluprint extends React.Component {
           bluprint: this.getLatestConfigSchema(bluprint)
         },
         message: {
-          bluprint: "this.getLatestMessageSchema(bluprint)"
+          bluprint: this.getLatestMessageSchema(bluprint)
         }
       },
     }
