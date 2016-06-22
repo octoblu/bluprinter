@@ -77,6 +77,7 @@ class ImportBluprint extends React.Component {
     const deviceData = {
       name: bluprint.name,
       type: 'iot-app',
+      logo: 'https://s3-us-west-2.amazonaws.com/octoblu-icons/device/iot-app.svg',
       octoblu: {
         links: [{
           title: 'Run App',

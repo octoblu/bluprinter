@@ -148,6 +148,7 @@ class CreateBluprint extends React.Component {
       owner: USER_UUID,
       online: true,
       type: 'bluprint',
+      logo: 'https://s3-us-west-2.amazonaws.com/octoblu-icons/device/bluprint.svg',
       bluprint: {
         flowId,
         latest: version,
