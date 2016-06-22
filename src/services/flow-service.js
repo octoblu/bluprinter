@@ -49,6 +49,7 @@ export default class FlowService {
       if (node.category === 'device') {
         this.meshblu.device(node.uuid, (deviceError, device) => {
           let deviceSchema = {}
+
           if (device.schemas) { deviceSchema = device.schemas.message }
 
           if (deviceError) return reject(deviceError)
