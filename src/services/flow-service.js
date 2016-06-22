@@ -48,11 +48,14 @@ export default class FlowService {
     return new Promise((resolve, reject) => {
       if (node.category === 'device') {
         this.meshblu.device(node.uuid, (deviceError, device) => {
+          let deviceSchema = {}
+          if (device.schemas) { deviceSchema = device.schemas.message }
+
           if (deviceError) return reject(deviceError)
           return resolve({
             ...baseMap,
             schemas: {
-              message: device.schemas.message,
+              message: deviceSchema,
             },
           })
         })
