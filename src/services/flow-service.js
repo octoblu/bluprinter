@@ -61,4 +61,30 @@ export default class FlowService {
       }
     })
   }
+
+  getMessageSchema({nodes}) {
+    const triggers = _.filter(nodes, { 'class': 'trigger' })
+
+    const messageSchema = {
+      type: 'object',
+      properties: {
+        from: {
+          type: 'string',
+          title: 'Trigger',
+          required: true,
+          enum: _.pluck(triggers, 'id')
+        },
+        payload: {
+          title: 'payload',
+          description: 'Use {{msg}} to send the entire message'
+        },
+        replacePayload: {
+          type: 'string',
+          default: 'payload'
+        }
+      }
+    }
+
+    return messageSchema
+  }
 }

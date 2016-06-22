@@ -106,10 +106,14 @@ class ImportBluprint extends React.Component {
         flowId: bluprint.flowId,
         version: bluprint.latest
       },
+
       schemas: {
-        version: '1.0.0',
+        version: '2.0.0',
         configure: {
-          bluprint: this.getLatestSchema(bluprint)
+          bluprint: this.getLatestConfigSchema(bluprint)
+        },
+        message: {
+          bluprint: "this.getLatestMessageSchema(bluprint)"
         }
       },
     }
@@ -117,14 +121,18 @@ class ImportBluprint extends React.Component {
     return _.extend({}, flowData, deviceData)
   }
 
-  getLatestSchema = (bluprint) => {
+  getLatestConfigSchema = (bluprint) => {
     return _.find(bluprint.versions, {version: bluprint.latest}).schemas.configure.bluprint
+  }
+
+  getLatestMessageSchema = (bluprint) => {
+    return _.find(bluprint.versions, {version: bluprint.latest}).schemas.message.bluprint
   }
 
   render = () => {
     const {bluprint} = this.state
     if(!bluprint) return <div>Hang On...</div>
-    const latestSchema = this.getLatestSchema(bluprint)
+    const latestSchema = this.getLatestConfigSchema(bluprint)
     return (
       <main>
         <Page>
