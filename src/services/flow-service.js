@@ -54,9 +54,9 @@ export default class FlowService {
           if (deviceError) return reject(deviceError)
           return resolve({
             ...baseMap,
-            schemas: {
-              message: deviceSchema,
-            },
+            schemas:  {
+              message: deviceSchema
+            }
           })
         })
       } else {

@@ -58,6 +58,7 @@ class CreateBluprint extends React.Component {
       this.flowService
         .getNodeSchemaMap(flowDevice.draft)
         .then((nodeSchemaMap) => {
+          console.log(nodeSchemaMap)
           this.setState({ nodeSchemaMap, loading: false })
         })
     })
@@ -140,6 +141,10 @@ class CreateBluprint extends React.Component {
     })
   }
 
+  handleSharedDevice(event) {
+    console.log('share device', event)
+  }
+
   deviceDefaults({ flowId, name, configSchema, messageSchema, version, manifest }) {
     const USER_UUID = getMeshbluConfig().uuid
     return {
@@ -208,6 +213,7 @@ class CreateBluprint extends React.Component {
             nodeSchemaMap={nodeSchemaMap}
             onCreate={this.handleCreate}
             onUpdate={this.handleUpdate}
+            onShareDevice={this.handleSharedDevice}
           />
         </Page>
       </main>
