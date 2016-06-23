@@ -1,15 +1,13 @@
 import React from 'react'
-import { Route, IndexRoute } from 'react-router'
+import { Route } from 'react-router'
 
-import App from '../containers/app'
-import Home from '../containers/home'
-
-import CreateBluprint from '../containers/create-bluprint'
-import ImportBluprint from '../containers/import-bluprint'
-import RunIotApp from '../containers/run-iot-app'
-
-import NotFound from '../components/NotFound'
+import App from '../containers/App'
+import CreateBluprint from '../containers/CreateBluprint'
+import Home from '../containers/Home'
+import ImportBluprint from '../containers/ImportBluprint'
 import Logout from '../containers/Logout'
+import NotFound from '../containers/NotFound'
+import RunIotApp from '../containers/RunIotApp'
 
 import { storeAuthenticationAndRedirect } from '../services/auth-service'
 

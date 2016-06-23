@@ -13,7 +13,6 @@ import NodeService          from '../services/node-service'
 import { getMeshbluConfig } from '../services/auth-service'
 import FlowService          from '../services/flow-service'
 
-
 const propTypes = {
   routeParams: PropTypes.object,
 }
@@ -23,13 +22,13 @@ class CreateBluprint extends React.Component {
     super(props)
 
     this.state = {
-      name: '',
-      loading: true,
       error: null,
       flowDevice: null,
+      loading: true,
+      manifest: null,
       nodeSchemaMap: null,
+      name: '',
       version: '1.0.0',
-      manifest: null
     }
 
     this.flowService = new FlowService()
@@ -109,7 +108,7 @@ class CreateBluprint extends React.Component {
 
     const bluprintConfig = this.deviceDefaults({
       name: appName.value,
-      version: version,
+      version,
       flowId: flowUuid,
       configSchema: this.configSchema,
       messageSchema: this.flowService.getMessageSchema({nodes: flowDevice.draft.nodes}),
