@@ -4,7 +4,6 @@ node_js:
 branches:
   only:
   - /^v[0-9]/
-
 env:
   global:
   - AWS_ACCESS_KEY=AKIAJH2D5IPIRHYJT5IA
