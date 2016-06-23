@@ -1,6 +1,7 @@
 import noop from 'lodash.noop'
 import React, { PropTypes } from 'react'
-import { Button, FormField, FormInput } from 'zooid-ui'
+import Button from 'zooid-button'
+import Input from 'zooid-input'
 import BluprintConfigBuilder from 'zooid-ui-bluprint-config-builder'
 
 const propTypes = {
@@ -13,23 +14,25 @@ const propTypes = {
 const defaultProps = {
   onCreate: noop,
   onUpdate: noop,
-  onShareDevice: noop,
   flow: null,
   nodeSchemaMap: null,
 }
 
-const CreateAppForm = ({ flow, nodeSchemaMap, onCreate, onUpdate, onShareDevice }) => {
+const CreateAppForm = ({ flow, nodeSchemaMap, onCreate, onUpdate }) => {
   return (
     <form onSubmit={onCreate}>
-      <FormField label="IoT App Name" name="appName">
-        <FormInput name="appName" placeholder="App Name" autofocus />
-      </FormField>
+      <Input
+        name="appName"
+        label="IoT App Name"
+        placeholder="App Name"
+        autofocus
+        required
+      />
 
       <BluprintConfigBuilder
         flow={flow}
         nodeSchemaMap={nodeSchemaMap}
         onUpdate={onUpdate}
-        onShareDevice={onShareDevice}
       />
 
       <Button type="submit" kind="primary">Create IoT App</Button>
