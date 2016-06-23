@@ -1,6 +1,6 @@
 {
   "name": "bluprinter",
-  "version": "1.2.13",
+  "version": "1.2.14",
   "description": "bluprinter",
   "main": "index.js",
   "scripts": {
@@ -47,7 +47,7 @@
     "zooid-heading": "^1.0.1",
     "zooid-meshblu-device-editor": "^9.0.0",
     "zooid-ui": "^6.0.0",
-    "zooid-ui-bluprint-config-builder": "^3.3.2"
+    "zooid-ui-bluprint-config-builder": "^3.3.3"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
