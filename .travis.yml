@@ -24,6 +24,5 @@ deploy:
   region: us-west-2
   skip_cleanup: true
   detect_encoding: true
-  local-dir: dist
   on:
     tags: true
