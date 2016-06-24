@@ -55,9 +55,15 @@ class CreateBluprint extends React.Component {
       })
 
       this.flowService
-        .getNodeSchemaMap(flowDevice.draft)
-        .then((nodeSchemaMap) => {
-          this.setState({ nodeSchemaMap, loading: false })
+        .getOperationSchemas()
+        .then((operationSchemas) => {
+          this.setState({ operationSchemas, loading: false})
+        })
+
+      this.flowService
+        .getDeviceSchemas(flowDevice.draft.nodes)
+        .then((deviceSchemas) => {
+          this.setState({ deviceSchemas, loading: false})
         })
     })
   }
@@ -118,7 +124,7 @@ class CreateBluprint extends React.Component {
     superagent
       .post(`${FLOW_DEPLOY_URL}/bluprint/${flowUuid}/${version}`)
       .auth(meshbluConfig.uuid, meshbluConfig.token)
-      .end((error, response) => {
+      .end((error) => {
         meshblu.register(bluprintConfig, (error, device) => {
           if (error) {
             this.setErrorState(error)
@@ -194,19 +200,20 @@ class CreateBluprint extends React.Component {
   }
 
   render() {
-    const { error, loading, flowDevice, nodeSchemaMap } = this.state
+    const { error, loading, flowDevice, operationSchemas, deviceSchemas } = this.state
     if (loading) return <Page width="small"><Spinner size="large" /></Page>
     if (error) return <Page width="small">Error: {error.message}</Page>
 
-    if (!flowDevice || !nodeSchemaMap) return null
+    if (!flowDevice || !operationSchemas || !deviceSchemas) return null
 
     return (
       <main>
         <Page width="small">
           <Heading level={4}>Create IoT App</Heading>
           <CreateAppForm
-            flow={flowDevice.draft}
-            nodeSchemaMap={nodeSchemaMap}
+            nodes={flowDevice.draft.nodes}
+            operationSchemas={operationSchemas}
+            deviceSchemas={deviceSchemas}
             onCreate={this.handleCreate}
             onUpdate={this.handleUpdate}
           />

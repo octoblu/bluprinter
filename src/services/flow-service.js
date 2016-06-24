@@ -4,18 +4,17 @@ import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 import { TOOLS_SCHEMA_REGISTRY_URL } from 'config'
 import { getMeshbluConfig } from './auth-service'
 import Promise, { using } from 'bluebird'
-
+import $RefParser from 'json-schema-ref-parser'
 
 export default class FlowService {
   constructor(meshbluConfig = getMeshbluConfig()) {
     this.meshblu = new MeshbluHttp(meshbluConfig)
 
-    this.getToolsSchema = this.getToolsSchema.bind(this)
+    this.getOperationSchemas = this.getOperationSchemas.bind(this)
     this.getFlowDevice = this.getFlowDevice.bind(this)
-    this.getNodeSchemaMap = this.getNodeSchemaMap.bind(this)
   }
 
-  getToolsSchema() {
+  getOperationSchemas = () => {
     if (this.toolsSchema) return this.toolsSchema
 
     return new Promise((resolve, reject) => {
@@ -29,45 +28,40 @@ export default class FlowService {
     })
   }
 
-  getFlowDevice(flowUuid, callback) {
-    this.meshblu.device(flowUuid, callback)
-  }
+  getDeviceSchemas = (nodes) => {
+    const deviceUuids = _(nodes)
+      .filter({category: 'device'})
+      .uniqBy('type')
+      .map('uuid')
+      .value()
 
-  getNodeSchemaMap(flow) {
-    return this.getToolsSchema().then((toolsSchema) => {
-      return Promise.map(flow.nodes, (node) => {
-        return this.getSchemaForNode(node, toolsSchema)
+    return new Promise((resolve, reject) => {
+      const search = {query: {uuid: {$in: deviceUuids}}, projection: {type: true, 'schemas.message': true}}
+
+      this.meshblu.search(search, (error, devices) => {
+        if(error) return reject(error)
+
+        $RefParser.dereference(devices, (error, resolvedSchemas) => {
+          const schemaRegistry = _.reduce(resolvedSchemas, this._reduceSchemas, {})
+          resolve(schemaRegistry)
+        })
+
       })
     })
   }
 
-  getSchemaForNode(node, toolsSchema) {
-    const { category, uuid } = node
-    const baseMap = { uuid, category }
-
-    return new Promise((resolve, reject) => {
-      if (node.category === 'device') {
-        this.meshblu.device(node.uuid, (deviceError, device) => {
-          let deviceSchema = {}
-
-          if (device.schemas) { deviceSchema = device.schemas.message }
-
-          if (deviceError) return reject(deviceError)
-          return resolve({
-            ...baseMap,
-            schemas:  {
-              message: deviceSchema
-            }
-          })
-        })
-      } else {
-        return resolve({ ...baseMap, schema: toolsSchema[node.class] })
-      }
-    })
+  _reduceSchemas = (result, value) => {
+    const type = _.last(value.type.split(':'))
+    result[type] = value.schemas.message
+    return result
   }
 
-  getMessageSchema({nodes}) {
-    const triggers = _.filter(nodes, { 'class': 'trigger' })
+  getFlowDevice = (flowUuid, callback) => {
+    this.meshblu.device(flowUuid, callback)
+  }
+
+  getMessageSchema = ({nodes}) => {
+    const triggers = _.filter(nodes, { class: 'trigger' })
 
     const messageSchema = {
       type: 'object',

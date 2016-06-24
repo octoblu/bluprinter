@@ -5,8 +5,9 @@ import Input from 'zooid-input'
 import BluprintConfigBuilder from 'zooid-ui-bluprint-config-builder'
 
 const propTypes = {
-  flow: PropTypes.object,
-  nodeSchemaMap: PropTypes.array,
+  nodes: PropTypes.array,
+  operationSchemas: PropTypes.object,
+  deviceSchemas: PropTypes.object,
   onCreate: PropTypes.func,
   onUpdate: PropTypes.func,
 }
@@ -14,11 +15,12 @@ const propTypes = {
 const defaultProps = {
   onCreate: noop,
   onUpdate: noop,
-  flow: null,
-  nodeSchemaMap: null,
+  nodes: null,
+  operationSchemas: null,
+  deviceSchemas: null
 }
 
-const CreateAppForm = ({ flow, nodeSchemaMap, onCreate, onUpdate }) => {
+const CreateAppForm = ({ nodes, operationSchemas, deviceSchemas, onCreate, onUpdate }) => {
   return (
     <form onSubmit={onCreate}>
       <Input
@@ -30,8 +32,9 @@ const CreateAppForm = ({ flow, nodeSchemaMap, onCreate, onUpdate }) => {
       />
 
       <BluprintConfigBuilder
-        flow={flow}
-        nodeSchemaMap={nodeSchemaMap}
+        nodes={nodes}
+        operationSchemas={operationSchemas}
+        deviceSchemas={deviceSchemas}
         onUpdate={onUpdate}
       />
 
