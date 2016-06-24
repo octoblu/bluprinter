@@ -185,10 +185,16 @@ class CreateBluprint extends React.Component {
 
     return {
       octoblu: {
-        links: [{
-          title: 'Import Bluprint',
-          url: url.format({ protocol, hostname, port, pathname: `/bluprints/${uuid}/import` }),
-        }],
+        links: [
+          {
+            title: 'Bluprint Detail',
+            url: url.format({ protocol, hostname, port, pathname: `/bluprints/${uuid}` }),
+          },
+          {
+            title: 'Import Bluprint',
+            url: url.format({ protocol, hostname, port, pathname: `/bluprints/${uuid}/import` }),
+          },
+        ],
       },
     }
   }
