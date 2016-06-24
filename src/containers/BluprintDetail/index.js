@@ -6,8 +6,10 @@ import Heading from 'zooid-heading'
 import { Page, PageHeader, PageTitle, PageActions } from 'zooid-ui'
 
 import { getMeshbluConfig } from '../../services/auth-service'
+import { getLatestConfigSchema } from '../../services/bluprint-service'
 
 import BluprintManifestList from '../../components/BluprintManifestList/'
+import BluprintConfigureForm from '../../components/BluprintConfigureForm/'
 
 const propTypes = {
   routeParams: PropTypes.object,
@@ -59,17 +61,20 @@ class BluprintDetail extends React.Component {
 
     const { bluprint, name } = device
 
+    const latestConfigSchema = getLatestConfigSchema(bluprint)
+
     return (
       <Page width="small">
         <PageHeader>
           <PageTitle>{name}</PageTitle>
-          
+
           <PageActions>
             <Button>Update Version</Button>
             <Button>Import</Button>
           </PageActions>
         </PageHeader>
 
+        <BluprintConfigureForm schema={latestConfigSchema} />
         <BluprintManifestList manifest={bluprint.manifest} />
       </Page>
     )

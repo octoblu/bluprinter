@@ -1,10 +1,15 @@
 import React, { PropTypes } from 'react'
+import Form from 'react-jsonschema-form'
 
-const propTypes = {}
+const propTypes = {
+  schema: PropTypes.object
+}
+
 const defaultProps = {}
 
-const BluprintConfigureForm = () => {
-  return <div>BluprintConfigureForm</div>
+const BluprintConfigureForm = ({ schema }) => {
+  if (!schema) return null
+  return (<Form schema={schema} />)
 }
 
 BluprintConfigureForm.propTypes    = propTypes
