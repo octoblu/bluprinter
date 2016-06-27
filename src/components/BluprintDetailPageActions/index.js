@@ -3,18 +3,28 @@ import Button from 'zooid-button'
 import { PageActions } from 'zooid-ui'
 
 const propTypes = {
-  onUpdateVersion: PropTypes.func.isRequired
+  onUpdateVersion: PropTypes.func.isRequired,
+  updating: PropTypes.bool,
 }
-const defaultProps = {}
 
-const BluprintDetailPageActions = ({ onUpdateVersion }) => {
+const defaultProps = {
+  updating: false,
+}
+
+const BluprintDetailPageActions = ({ onUpdateVersion, updating }) => {
+  let buttonText = 'Update Version'
+  if (updating) buttonText = 'Updating...'
+
   return (
     <PageActions>
       <Button
         onClick={onUpdateVersion}
+        kind="hollow-neutral"
+        size="small"
+        disabled={updating}
         id="updateVersionBtn"
       >
-        Update Version
+        {buttonText}
       </Button>
     </PageActions>
   )

@@ -29,6 +29,7 @@ class BluprintDetail extends React.Component {
       loading: false,
       error: null,
       toastMessage: null,
+      updatingVersion: false,
     }
   }
 
@@ -59,7 +60,7 @@ class BluprintDetail extends React.Component {
   }
 
   handleUpdateVersion = () => {
-    this.setState({ loading: true })
+    this.setState({ updatingVersion: true })
 
     const { uuid, token } = getMeshbluConfig()
     const { flowId, latest } = this.state.device.bluprint
@@ -71,20 +72,20 @@ class BluprintDetail extends React.Component {
         if (error) {
           this.setState({
             error,
-            loading: false,
+            updatingVersion: false,
           })
           return
         }
 
         this.setState({
-          loading: false,
+          updatingVersion: false,
           toastMessage: 'Bluprint Version Updated',
         })
       })
   }
 
   render() {
-    const { device, error, loading, toastMessage } = this.state
+    const { device, error, loading, toastMessage, updatingVersion } = this.state
 
     if (loading) return <Spinner size="large" />
     if (error)   return <div>Error: {error.message}</div>
@@ -97,7 +98,10 @@ class BluprintDetail extends React.Component {
       <Page width="small">
         <PageHeader>
           <PageTitle>{name}</PageTitle>
-          <BluprintDetailPageActions onUpdateVersion={this.handleUpdateVersion} />
+          <BluprintDetailPageActions
+            onUpdateVersion={this.handleUpdateVersion}
+            updating={updatingVersion}
+          />
         </PageHeader>
 
         <BluprintConfigureForm schema={latestConfigSchema} />
