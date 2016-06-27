@@ -28,7 +28,7 @@ class CreateBluprint extends React.Component {
       manifest: null,
       nodeSchemaMap: null,
       name: '',
-      version: '1.0.0',
+      version: '1',
     }
 
     this.flowService = new FlowService()
@@ -78,7 +78,6 @@ class CreateBluprint extends React.Component {
   }
 
   handleUpdate(mappings) {
-    console.log('mappings', mappings)
     this.configSchema = this.mappingToConfig({ mappings })
   }
 
