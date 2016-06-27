@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import { Page, Spinner } from 'zooid-ui'
 import Heading from 'zooid-heading'
@@ -77,29 +76,9 @@ class CreateBluprint extends React.Component {
     })
   }
 
-  handleUpdate(mappings) {
-    console.log('mappings', mappings)
-    this.configSchema = this.mappingToConfig({ mappings })
-  }
-
-  mappingToConfig({ mappings }) {
-    const config = {
-      type: 'object',
-      properties: {},
-    }
-
-    _.each(mappings, function (mapping) {
-      let property = config.properties[mapping.configureProperty]
-      property = property || { type: mapping.type, enum: mapping.enum }
-
-      property.required = mapping.required
-      property.description = mapping.description
-      property['x-node-map'] = property['x-node-map'] || []
-      property['x-node-map'].push({ id: mapping.nodeId, property: mapping.nodeProperty })
-      config.properties[mapping.configureProperty] = property
-    })
-
-    return config
+  handleUpdate(configSchema) {
+    console.log('configSchema', configSchema)
+    this.configSchema = configSchema
   }
 
   handleCreate(event) {
