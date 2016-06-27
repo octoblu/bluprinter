@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai'
 import chaiEnzyme from 'chai-enzyme'
 import React from 'react'
-import { mount } from 'enzyme'
+import { mount, shallow } from 'enzyme'
 import Button from 'zooid-button'
 
 import BluprintDetail from './'
@@ -51,14 +51,6 @@ describe('<BluprintDetail />', () => {
         expect(sut).to.not.contain.text('Loading...')
         expect(sut).to.not.contain.text('Error: Bang! Bang!')
         expect(sut).to.contain.text('Device name')
-      })
-
-      it('should render the update version link', () => {
-        expect(sut).to.contain(<Button>Update Version</Button>)
-      })
-
-      it('should render the import link', () => {
-        expect(sut).to.contain(<Button>Import</Button>)
       })
     })
   })
