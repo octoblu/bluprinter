@@ -29,5 +29,6 @@ main(){
   install_awscli
   configure_awscli "$aws_access_key_id" "$aws_secret_access_key"
   create_invalidation "$git_tag"
+  echo $aws_access_key_id
 }
 main $@
