@@ -24,6 +24,7 @@ deploy:
   local_dir: dist
   region: us-west-2
   skip_cleanup: true
+  endpoint: bluprinter.octoblu.com.s3-website-us-west-2.amazonaws.com
   detect_encoding: true
   on:
     tags: true
