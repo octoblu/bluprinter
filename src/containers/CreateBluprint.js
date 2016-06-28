@@ -1,10 +1,12 @@
 import _ from 'lodash'
 import React, { PropTypes } from 'react'
-import { Page, Spinner } from 'zooid-ui'
-import Heading from 'zooid-heading'
 import url from 'url'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 import superagent from 'superagent'
+import Toast from 'zooid-toast'
+import { Page, Spinner } from 'zooid-ui'
+import Heading from 'zooid-heading'
+
 import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
 
 import CreateAppForm from '../components/CreateAppForm'
@@ -28,8 +30,11 @@ class CreateBluprint extends React.Component {
       loading: true,
       manifest: null,
       nodeSchemaMap: null,
+      configSchema: null,
+      sharedDevices: null,
       name: '',
       version: '1.0.0',
+      toastMessage: null,
     }
 
     this.flowService = new FlowService()
@@ -81,14 +86,25 @@ class CreateBluprint extends React.Component {
   }
 
   handleUpdate({configSchema, sharedDevices}) {
-    console.log('HANDLING UPDATE SO WELL', {configSchema, sharedDevices})
-    this.configSchema = configSchema
-    this.setState({sharedDevices})
+    console.log('Receiving configSchema and sharedDevices', configSchema, sharedDevices)
+    // this.setState({configSchema, sharedDevices})
   }
 
   handleShareDevices({shareExistingDevices, sharedDevices}) {
-
-    console.log('HANDLING IT')
+    if (shareExistingDevices) {
+      this
+      .flowService
+      .addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
+        console.log('Added Global Message Receive Permission', error, deviceResult)
+      })
+    } else {
+      this
+      .flowService
+      .removeGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
+        console.log('Removed Global Message Receive Permission', error, deviceResult)
+      })
+    }
+    this.setState({toastMessage: 'Device permissions updated'})
   }
 
   mappingToConfig({ mappings }) {
@@ -117,10 +133,7 @@ class CreateBluprint extends React.Component {
 
     this.setState({ loading: true })
 
-    const {configSchema, devicesNeedingPermissions} = this.state
-    if (updateDevicePermissions) {
-      this.flowService.updateDevicePermissions(devicesNeedingPermissions)
-    }
+    const { configSchema } = this.state
 
     const { appName } = event.target
     const { flowUuid } = this.props.routeParams
@@ -222,27 +235,40 @@ class CreateBluprint extends React.Component {
   }
 
   render() {
-    const { error, loading, flowDevice, operationSchemas, deviceSchemas, sharedDevices } = this.state
+    const {
+      deviceSchemas,
+      error,
+      flowDevice,
+      loading,
+      operationSchemas,
+      toastMessage,
+      configSchema,
+      sharedDevices
+    } = this.state
+
+
+
     if (loading) return <Page width="small"><Spinner size="large" /></Page>
     if (error) return <Page width="small">Error: {error.message}</Page>
 
     if (!flowDevice || !operationSchemas || !deviceSchemas) return null
 
     return (
-      <main>
-        <Page width="small">
-          <Heading level={4}>Create IoT App</Heading>
-          <CreateAppForm
-            nodes={flowDevice.draft.nodes}
-            operationSchemas={operationSchemas}
-            deviceSchemas={deviceSchemas}
-            sharedDevices={sharedDevices}
-            onCreate={this.handleCreate}
-            onUpdate={this.handleUpdate}
-            onShareDevices={this.handleShareDevices}
-          />
-        </Page>
-      </main>
+      <Page width="small">
+        <Toast message={toastMessage} />
+
+        <Heading level={4}>Create IoT App</Heading>
+
+        <CreateAppForm
+          nodes={flowDevice.draft.nodes}
+          operationSchemas={operationSchemas}
+          deviceSchemas={deviceSchemas}
+          sharedDevices={sharedDevices}
+          onCreate={this.handleCreate}
+          onUpdate={this.handleUpdate}
+          onShareDevices={this.handleShareDevices}
+        />
+      </Page>
     )
   }
 }

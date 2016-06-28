@@ -61,13 +61,26 @@ export default class FlowService {
     this.meshblu.device(flowUuid, callback)
   }
 
-  updateDevicePermissions = (sharedDevices, callback) => {
-    async.each(sharedDevices, this._updateDevicePermission,callback)
+  addGlobalMessageReceivePermissions = (sharedDevices, callback) => {
+    async.each(sharedDevices, this._addGlobalMessageReceivePermission,callback)
   }
 
-  _updateDevicePermission = (deviceUuid, callback) => {
+  _addGlobalMessageReceivePermission = (deviceUuid, callback) => {
     const updateMessageFromQuery = {
       $addToSet: {
+        'meshblu.whitelists.message.from': [{uuid: '*'}]
+      }
+    }
+    return this.meshblu.updateDangerously(deviceUuid, updateMessageFromQuery, callback)
+  }
+
+  removeGlobalMessageReceivePermissions = (sharedDevices, callback) => {
+    async.each(sharedDevices, this._addGlobalMessageReceivePermission,callback)
+  }
+
+  _removeGlobalMessageReceivePermission = (deviceUuid, callback) => {
+    const updateMessageFromQuery = {
+      $pull: {
         'meshblu.whitelists.message.from': [{uuid: '*'}]
       }
     }

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import _ from 'lodash'
+import styles from './styles.css'
 
 const propTypes = {
   sharedDevices: PropTypes.array,
@@ -23,7 +24,18 @@ const ShareDevices = ({ sharedDevices, onShareDevices }) => {
     })
   }
 
-  return <input type="checkbox" onClick={handleClick} />
+  return (
+    <div>
+      <label htmlFor="allowPublicMessagingForSharedDevices">
+        Allow shared devices to receive global messages
+      </label>
+      <input
+        name="allowPublicMessagingForSharedDevices"
+        type="checkbox"
+        onClick={handleClick}
+      />
+    </div>
+    )
 }
 
 ShareDevices.propTypes    = propTypes

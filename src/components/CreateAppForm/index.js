@@ -10,7 +10,7 @@ const propTypes = {
   deviceSchemas: PropTypes.object,
   operationSchemas: PropTypes.object,
   nodes: PropTypes.array,
-  sharedDevices: PropTypes.object,
+  sharedDevices: PropTypes.array,
   onShareDevices: PropTypes.func,
   onCreate: PropTypes.func,
   onUpdate: PropTypes.func,
@@ -45,7 +45,6 @@ const CreateAppForm = ({ nodes, operationSchemas, deviceSchemas, sharedDevices, 
       />
 
       <ShareDevices sharedDevices={sharedDevices} onShareDevices={onShareDevices} />
-      <label for="updateDevicePermissions">Update device message permissions</label>
       <Button type="submit" kind="primary">Create IoT App</Button>
     </form>
   )
