@@ -76,8 +76,8 @@ class CreateBluprint extends React.Component {
     })
   }
 
-  handleUpdate(configSchema) {
-    console.log('configSchema', configSchema)
+  handleUpdate({configSchema, sharedDevices}) {
+    console.log({configSchema, sharedDevices})
     this.configSchema = configSchema
   }
 
