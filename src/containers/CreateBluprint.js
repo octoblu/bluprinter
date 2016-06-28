@@ -13,6 +13,7 @@ import NodeService          from '../services/node-service'
 import { getMeshbluConfig } from '../services/auth-service'
 import FlowService          from '../services/flow-service'
 
+
 const propTypes = {
   routeParams: PropTypes.object,
 }
@@ -28,7 +29,7 @@ class CreateBluprint extends React.Component {
       manifest: null,
       nodeSchemaMap: null,
       name: '',
-      version: '1',
+      version: '1.0.0',
     }
 
     this.flowService = new FlowService()
@@ -74,11 +75,14 @@ class CreateBluprint extends React.Component {
       loading: false,
       flowDevice: null,
       nodeSchemaMap: null,
+      configSchema: null,
+      devicesNeedingPermissions: null,
     })
   }
-
-  handleUpdate(mappings) {
-    this.configSchema = this.mappingToConfig({ mappings })
+  
+  handleUpdate({configSchema, sharedDevices}) {
+    console.log({configSchema, sharedDevices})
+    this.configSchema = configSchema
   }
 
   mappingToConfig({ mappings }) {
@@ -102,8 +106,15 @@ class CreateBluprint extends React.Component {
   }
 
   handleCreate(event) {
-    event.preventDefault()
+    // console.log(event)
+    const updateDevicePermissions = event.target.updateDevicePermissions.checked
+
     this.setState({ loading: true })
+
+    const {configSchema, devicesNeedingPermissions} = this.state
+    if(updateDevicePermissions){
+      this.flowService.updateDevicePermissions(devicesNeedingPermissions)
+    }
 
     const { appName } = event.target
     const { flowUuid } = this.props.routeParams
@@ -142,7 +153,7 @@ class CreateBluprint extends React.Component {
             window.location = `${OCTOBLU_URL}/device/${device.uuid}`
           })
         })
-    })
+      })
   }
 
   deviceDefaults({ flowId, name, configSchema, messageSchema, version, manifest }) {

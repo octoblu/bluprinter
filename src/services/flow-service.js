@@ -5,6 +5,7 @@ import { TOOLS_SCHEMA_REGISTRY_URL } from 'config'
 import { getMeshbluConfig } from './auth-service'
 import Promise, { using } from 'bluebird'
 import $RefParser from 'json-schema-ref-parser'
+import async from 'async'
 
 export default class FlowService {
   constructor(meshbluConfig = getMeshbluConfig()) {
@@ -58,6 +59,19 @@ export default class FlowService {
 
   getFlowDevice = (flowUuid, callback) => {
     this.meshblu.device(flowUuid, callback)
+  }
+
+  updateDevicePermissions = (sharedDevices, callback) => {
+    async.each(sharedDevices, this._updateDevicePermission,callback)
+  }
+
+  _updateDevicePermission = (deviceUuid, callback) => {
+    const updateMessageFromQuery = {
+      $addToSet: {
+        'meshblu.whitelists.message.from': [{uuid: '*'}]
+      }
+    }
+    return this.meshblu.updateDangerously(deviceUuid, updateMessageFromQuery, callback)
   }
 
   getMessageSchema = ({nodes}) => {
