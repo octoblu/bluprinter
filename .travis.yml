@@ -8,13 +8,13 @@ branches:
 env:
   global:
   - AWS_ACCESS_KEY=AKIAJH2D5IPIRHYJT5IA
-  - secure: "bHURxnyslyywLrdCs+xK4U/9A3x69e+M6Lpdv4joCutGGmq7uHaRMKLMcudB9mJ6yeJt7/c3U/qogqMZKtNtCM7xBTwPFQXLRedE4vyIYtqziSm17gOj43mAvPTpHGTI2vhtkZ8RNgRkJgve9yqbIUGLhHjIRsnuaVorzhs7Klq2h+q+PvHD6c5PBdOiLUhYPLOTkWp0deb8ZXuG1hFGq0aC8z1Y+zurC/Blc8rDzfLi6XZHMlTYkFHB0jZ5EW+hkPX9RcUMZ8SeAKXxmE4IBv25hxje84oDF8i+4Mi83t+GRZq58W+L5Nhq2I9lodagAcdPlMZ4tK8hNZh7B3YJ0JdoLl6TIp1xRKqpr3IVJPVlP2g/vv6PxqyHIsz3y1i5DU2ezbfJqw1nBHOjJjDAi1V4LzzdZNUfV9pvw0t56Yj+vVE2k/kxj7HGThBP514C+kLOw7XGPhxCip7UewNY+CiI0k9bEdglwtUwaL2euSDjb8vLhfkkW80A0VXk62p2pPC0EXlbqwQ9pflMyRCJPDZuv/h/BH4O4MsQMz3vfBjozsy/WtGiEf97dZJq4DiMR7Abp/OrDbvBcfz6CG3QWvM077XOiKYZFd+aflcGkQFeE2xUVOuOrvSFYwlPvttHrweLt+SUgq3cv77PHCmezL/SPrcasQUUQEpRKDulaVc="
+  - secure: UCTLuA0kuf8kg1WBuQdiZQCWcGqt4iQ6/cG7TNv/PXVVtWysWukRj6j2NtDZ8g+aDIUNlry+0Gg49/F0hDJDMb72KrHWF96Me0IcSqpwgEs0Vv7k0fyvvn1Zfbkn2Svd7ZOG3o/cYdqq9OxkOtDQBbpd7mmhiyxUP/Fp7ojAki5PiGQhCPhXPhrsgchVTZ1sXdFNmOPALn1l3DrhbYHB3cmBj67pgzgl3SIVAE5Y8WDmxESZiWJQP01xJC0pgEdrJSJdswBGSMIRcYLcclUVA/Gy4YF/hGl2qzRE7M/uR627vrbSrhvFn6ixle4V1i2t23QOt9BOlxD0QRfFXlemGwpqFcIcUFCsoFxc5Xy7BC4Pmvz62/40/f8Y5dWghwPv0CccnKsnv/h/6GVWLSh2iaf/1gAmH26Iim0OiodJ+nU1kighRt+amgSSU1XHE9DYwRXDkH2EPLiWYouNdTsZKI/iMLkmjOydZABobrz+uRjQVhN0mlmo8lrzVVw75hIpousc0d4vd/RmP/Iulg6+FGiOZuIW0jesYigFQR73ooGG7FSaGuLJlxBwrdxBFyAV98rI0V3Xoh1Nf1/CKHb//KnakeCfpAGGWg3olibpcEk8WUdb7cQ1j2dzdETUOlyyT56FQef9Ib3TcfR/0vIW1liVJjyTZ3WoS1OUSkc1H8U=
 before_deploy:
 - npm run build
 - cp index.html dist
 - for file in `find dist -type f`; do gzip --best $file && mv $file.gz $file; done
 after_deploy:
-- "./deploy/invalidate-cloudfront.sh $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY $TRAVIS_BRANCH"
+- ./deploy/invalidate-cloudfront.sh $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY $TRAVIS_BRANCH
 deploy:
 - provider: s3
   access_key_id: AKIAJH2D5IPIRHYJT5IA
