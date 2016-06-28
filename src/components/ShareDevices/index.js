@@ -25,7 +25,7 @@ const ShareDevices = ({ sharedDevices, onShareDevices }) => {
   }
 
   return (
-    <div>
+    <div className={styles.root}>
       <label htmlFor="allowPublicMessagingForSharedDevices">
         Allow shared devices to receive global messages
       </label>

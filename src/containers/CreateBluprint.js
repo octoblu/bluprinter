@@ -38,10 +38,6 @@ class CreateBluprint extends React.Component {
     }
 
     this.flowService = new FlowService()
-
-    this.handleCreate = this.handleCreate.bind(this)
-    this.handleUpdate = this.handleUpdate.bind(this)
-
     this.nodeService = new NodeService()
   }
 
@@ -85,15 +81,14 @@ class CreateBluprint extends React.Component {
     })
   }
 
-  handleUpdate({configSchema, sharedDevices}) {
+  handleUpdate = ({configSchema, sharedDevices}) =>  {
     console.log('Receiving configSchema and sharedDevices', configSchema, sharedDevices)
-    // this.setState({configSchema, sharedDevices})
+    this.setState({configSchema, sharedDevices})
   }
 
-  handleShareDevices({shareExistingDevices, sharedDevices}) {
+  handleShareDevices = ({shareExistingDevices, sharedDevices}) => {
     if (shareExistingDevices) {
-      this
-      .flowService
+      this.flowService
       .addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
         console.log('Added Global Message Receive Permission', error, deviceResult)
       })
@@ -127,10 +122,17 @@ class CreateBluprint extends React.Component {
     return config
   }
 
+<<<<<<< Updated upstream
   handleCreate(event) {
     event.preventDefault()
 
     this.setState({ loading: true })
+=======
+  handleCreate = (event) => {
+    // console.log(eventdd)
+    debugger
+    // this.setState({ loading: true })
+>>>>>>> Stashed changes
 
     const { configSchema } = this.state
 
@@ -153,6 +155,7 @@ class CreateBluprint extends React.Component {
       .post(`${FLOW_DEPLOY_URL}/bluprint/${flowUuid}/${version}`)
       .auth(meshbluConfig.uuid, meshbluConfig.token)
       .end(() => {
+        console.log('Registering a new device')
         meshblu.register(bluprintConfig, (error, device) => {
           if (error) {
             this.setErrorState(error)
@@ -162,12 +165,13 @@ class CreateBluprint extends React.Component {
           const { uuid } = device
           const update = this.linksProperties({ uuid })
 
+          console.log('Updating new IoT App')
           meshblu.update(uuid, update, (updateError) => {
             if (updateError) {
               this.setErrorState(updateError)
               return
             }
-
+            console.log('Redirecting to octoblu')
             window.location = `${OCTOBLU_URL}/device/${device.uuid}`
           })
         })
