@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import { Page, Spinner } from 'zooid-ui'
 import Heading from 'zooid-heading'
@@ -11,6 +12,7 @@ import CreateAppForm from '../components/CreateAppForm'
 import NodeService          from '../services/node-service'
 import { getMeshbluConfig } from '../services/auth-service'
 import FlowService          from '../services/flow-service'
+
 
 const propTypes = {
   routeParams: PropTypes.object,
@@ -27,7 +29,7 @@ class CreateBluprint extends React.Component {
       manifest: null,
       nodeSchemaMap: null,
       name: '',
-      version: '1',
+      version: '1.0.0',
     }
 
     this.flowService = new FlowService()
@@ -73,17 +75,46 @@ class CreateBluprint extends React.Component {
       loading: false,
       flowDevice: null,
       nodeSchemaMap: null,
+      configSchema: null,
+      devicesNeedingPermissions: null,
     })
   }
-
+  
   handleUpdate({configSchema, sharedDevices}) {
     console.log({configSchema, sharedDevices})
     this.configSchema = configSchema
   }
 
+  mappingToConfig({ mappings }) {
+    const config = {
+      type: 'object',
+      properties: {},
+    }
+
+    _.each(mappings, function (mapping) {
+      let property = config.properties[mapping.configureProperty]
+      property = property || { type: mapping.type, enum: mapping.enum }
+
+      property.required = mapping.required
+      property.description = mapping.description
+      property['x-node-map'] = property['x-node-map'] || []
+      property['x-node-map'].push({ id: mapping.nodeId, property: mapping.nodeProperty })
+      config.properties[mapping.configureProperty] = property
+    })
+
+    return config
+  }
+
   handleCreate(event) {
-    event.preventDefault()
+    // console.log(event)
+    const updateDevicePermissions = event.target.updateDevicePermissions.checked
+
     this.setState({ loading: true })
+
+    const {configSchema, devicesNeedingPermissions} = this.state
+    if(updateDevicePermissions){
+      this.flowService.updateDevicePermissions(devicesNeedingPermissions)
+    }
 
     const { appName } = event.target
     const { flowUuid } = this.props.routeParams
@@ -122,7 +153,7 @@ class CreateBluprint extends React.Component {
             window.location = `${OCTOBLU_URL}/device/${device.uuid}`
           })
         })
-    })
+      })
   }
 
   deviceDefaults({ flowId, name, configSchema, messageSchema, version, manifest }) {

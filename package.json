@@ -88,6 +88,8 @@
     "precss": "^1.4.0",
     "react-addons-test-utils": "^15.0.1",
     "rimraf": "^2.5.2",
+    "server-destroy": "^1.0.1",
+    "shmock": "^0.8.1",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "style-loader": "^0.13.1",

@@ -15,6 +15,8 @@ describe('<BluprintDetail />', () => {
       device: null,
       error: null,
       loading: true,
+      toastMessage: null,
+      updatingVersion: false
     })
   })
 
@@ -52,20 +54,6 @@ describe('<BluprintDetail />', () => {
         expect(sut).to.not.contain.text('Error: Bang! Bang!')
         expect(sut).to.contain.text('Device name')
       })
-    })
-  })
-
-
-  describe('when loading state is truthy', () => {
-    it('should render the error message', () => {
-      const sut = mount(<BluprintDetail routeParams={{ uuid: 'fancy' }} />)
-      sut.setState({
-        loading: true,
-        error: new Error('Bang! Bang!'),
-      })
-
-      expect(sut).to.contain.text('Loading...')
-      expect(sut).to.not.contain.text('Error: Bang! Bang!')
     })
   })
 })

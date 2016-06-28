@@ -37,7 +37,8 @@ const CreateAppForm = ({ nodes, operationSchemas, deviceSchemas, onCreate, onUpd
         deviceSchemas={deviceSchemas}
         onUpdate={onUpdate}
       />
-
+      <input type="checkbox" name="updateDevicePermissions" label="Update permissions for devices" />
+      <label for="updateDevicePermissions">Update device message permissions</label>
       <Button type="submit" kind="primary">Create IoT App</Button>
     </form>
   )
