@@ -128,8 +128,7 @@ class CreateBluprint extends React.Component {
   }
 
   handleCreate(event) {
-    // console.log(event)
-    const updateDevicePermissions = event.target.updateDevicePermissions.checked
+    event.preventDefault()
 
     this.setState({ loading: true })
 
