@@ -2,9 +2,9 @@ import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 import superagent from 'superagent'
+import Toast from 'zooid-toast'
 import Button from 'zooid-button'
 import Heading from 'zooid-heading'
-import Toast from 'zooid-toast'
 import { Page, PageHeader, PageTitle, PageActions, Spinner } from 'zooid-ui'
 
 import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
@@ -28,7 +28,7 @@ class BluprintDetail extends React.Component {
       device: null,
       loading: false,
       error: null,
-      toastMessage: null,
+      alertMessage: null,
       updatingVersion: false,
     }
   }
@@ -79,13 +79,13 @@ class BluprintDetail extends React.Component {
 
         this.setState({
           updatingVersion: false,
-          toastMessage: 'Bluprint Version Updated',
+          alertMessage: 'Bluprint Version Updated',
         })
       })
   }
 
   render() {
-    const { device, error, loading, toastMessage, updatingVersion } = this.state
+    const { device, error, loading, alertMessage, updatingVersion } = this.state
 
     if (loading) return <Spinner size="large" />
     if (error)   return <div>Error: {error.message}</div>
@@ -106,9 +106,7 @@ class BluprintDetail extends React.Component {
 
         <BluprintConfigureForm schema={latestConfigSchema} />
         <BluprintManifestList manifest={bluprint.manifest} />
-
-        <Toast message={toastMessage} />
-
+        <Toast message={alertMessage} />
       </Page>
     )
   }
