@@ -4,23 +4,29 @@ import Button from 'zooid-button'
 import Input from 'zooid-input'
 import BluprintConfigBuilder from 'zooid-ui-bluprint-config-builder'
 
+import ShareDevices from '../ShareDevices/'
+
 const propTypes = {
-  nodes: PropTypes.array,
-  operationSchemas: PropTypes.object,
   deviceSchemas: PropTypes.object,
+  operationSchemas: PropTypes.object,
+  nodes: PropTypes.array,
+  sharedDevices: PropTypes.object,
+  onShareDevices: PropTypes.func,
   onCreate: PropTypes.func,
   onUpdate: PropTypes.func,
 }
 
 const defaultProps = {
-  onCreate: noop,
-  onUpdate: noop,
+  deviceSchemas: null,
   nodes: null,
   operationSchemas: null,
-  deviceSchemas: null
+  sharedDevices: null,
+  onCreate: noop,
+  onUpdate: noop,
+  onShareDevices: noop,
 }
 
-const CreateAppForm = ({ nodes, operationSchemas, deviceSchemas, onCreate, onUpdate }) => {
+const CreateAppForm = ({ nodes, operationSchemas, deviceSchemas, sharedDevices, onCreate, onUpdate, onShareDevices }) => {
   return (
     <form onSubmit={onCreate}>
       <Input
@@ -37,7 +43,8 @@ const CreateAppForm = ({ nodes, operationSchemas, deviceSchemas, onCreate, onUpd
         deviceSchemas={deviceSchemas}
         onUpdate={onUpdate}
       />
-      <input type="checkbox" name="updateDevicePermissions" label="Update permissions for devices" />
+
+      <ShareDevices sharedDevices={sharedDevices} onShareDevices={onShareDevices} />
       <label for="updateDevicePermissions">Update device message permissions</label>
       <Button type="submit" kind="primary">Create IoT App</Button>
     </form>

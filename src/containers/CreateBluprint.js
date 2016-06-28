@@ -79,10 +79,16 @@ class CreateBluprint extends React.Component {
       devicesNeedingPermissions: null,
     })
   }
-  
+
   handleUpdate({configSchema, sharedDevices}) {
-    console.log({configSchema, sharedDevices})
+    console.log('HANDLING UPDATE SO WELL', {configSchema, sharedDevices})
     this.configSchema = configSchema
+    this.setState({sharedDevices})
+  }
+
+  handleShareDevices({shareExistingDevices, sharedDevices}) {
+
+    console.log('HANDLING IT')
   }
 
   mappingToConfig({ mappings }) {
@@ -112,7 +118,7 @@ class CreateBluprint extends React.Component {
     this.setState({ loading: true })
 
     const {configSchema, devicesNeedingPermissions} = this.state
-    if(updateDevicePermissions){
+    if (updateDevicePermissions) {
       this.flowService.updateDevicePermissions(devicesNeedingPermissions)
     }
 
@@ -134,7 +140,7 @@ class CreateBluprint extends React.Component {
     superagent
       .post(`${FLOW_DEPLOY_URL}/bluprint/${flowUuid}/${version}`)
       .auth(meshbluConfig.uuid, meshbluConfig.token)
-      .end((error) => {
+      .end(() => {
         meshblu.register(bluprintConfig, (error, device) => {
           if (error) {
             this.setErrorState(error)
@@ -216,7 +222,7 @@ class CreateBluprint extends React.Component {
   }
 
   render() {
-    const { error, loading, flowDevice, operationSchemas, deviceSchemas } = this.state
+    const { error, loading, flowDevice, operationSchemas, deviceSchemas, sharedDevices } = this.state
     if (loading) return <Page width="small"><Spinner size="large" /></Page>
     if (error) return <Page width="small">Error: {error.message}</Page>
 
@@ -230,8 +236,10 @@ class CreateBluprint extends React.Component {
             nodes={flowDevice.draft.nodes}
             operationSchemas={operationSchemas}
             deviceSchemas={deviceSchemas}
+            sharedDevices={sharedDevices}
             onCreate={this.handleCreate}
             onUpdate={this.handleUpdate}
+            onShareDevices={this.handleShareDevices}
           />
         </Page>
       </main>
