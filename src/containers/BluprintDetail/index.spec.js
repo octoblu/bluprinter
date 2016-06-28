@@ -15,7 +15,7 @@ describe('<BluprintDetail />', () => {
       device: null,
       error: null,
       loading: true,
-      toastMessage: null,
+      alertMessage: null,
       updatingVersion: false
     })
   })
