@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
 import { AppBar, AppBarPrimary, AppBarSecondary } from 'zooid-ui'
-import 'zooid-ui/dist/style.css'
 import Authenticated from './authenticated'
+
+import 'zooid-ui/dist/style.css'
 
 const propTypes = {
   children: PropTypes.element.isRequired,

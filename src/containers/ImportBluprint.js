@@ -1,7 +1,8 @@
 import url from 'url'
 
 import React from 'react'
-import {Button, Page, FormField, FormInput, Spinner} from 'zooid-ui'
+import { Page, FormField, FormInput } from 'zooid-ui'
+import Spinner from 'zooid-spinner'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 
 import {getMeshbluConfig} from '../services/auth-service'
@@ -132,6 +133,7 @@ class ImportBluprint extends React.Component {
 
   render = () => {
     const {bluprint} = this.state
+
     if(!bluprint) return <Page width="small"><Spinner>Hang On...</Spinner></Page>
     const latestSchema = this.getLatestConfigSchema(bluprint)
     return (

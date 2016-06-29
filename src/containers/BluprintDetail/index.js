@@ -5,8 +5,8 @@ import superagent from 'superagent'
 import Toast from 'zooid-toast'
 import Button from 'zooid-button'
 import Heading from 'zooid-heading'
-import { Page, PageHeader, PageTitle, PageActions, Spinner } from 'zooid-ui'
-
+import Spinner from 'zooid-spinner'
+import Page from '../../components/Page'
 import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
 
 import { getMeshbluConfig } from '../../services/auth-service'
@@ -42,18 +42,11 @@ class BluprintDetail extends React.Component {
 
     meshblu.device(uuid, (error, device) => {
       if (error) {
-        this.setState({
-          error,
-          loading: false,
-        })
-
+        this.setState({ error, loading: false })
         return
       }
 
-      this.setState({
-        device,
-        loading: false,
-      }, () => {
+      this.setState({ device, loading: false }, () => {
         console.log(this.state.device)
       })
     })
@@ -87,26 +80,21 @@ class BluprintDetail extends React.Component {
   render() {
     const { device, error, loading, alertMessage, updatingVersion } = this.state
 
-    if (loading) return <Spinner size="large" />
-    if (error)   return <div>Error: {error.message}</div>
-    if (_.isEmpty(device)) return <div>Device not found.</div>
+    if (loading) return <Page loading={loading} />
+    if (error)   return <Page error={error} />
+    if (_.isEmpty(device)) return <Page><div>Device not found.</div></Page>
 
     const { bluprint, name } = device
     const latestConfigSchema = getLatestConfigSchema(bluprint)
 
     return (
-      <Page width="small">
-        <PageHeader>
-          <PageTitle>{name}</PageTitle>
-          <BluprintDetailPageActions
-            onUpdateVersion={this.handleUpdateVersion}
-            updating={updatingVersion}
-          />
-        </PageHeader>
-
+      <Page title={name}>
+        <BluprintDetailPageActions
+          onUpdateVersion={this.handleUpdateVersion}
+          updating={updatingVersion}
+        />
         <BluprintConfigureForm schema={latestConfigSchema} />
         <BluprintManifestList manifest={bluprint.manifest} />
-        <Toast message={alertMessage} />
       </Page>
     )
   }
