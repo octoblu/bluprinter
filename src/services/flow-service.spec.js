@@ -7,10 +7,10 @@ import enableDestroy from 'server-destroy'
 
 chai.use(chaiSubset)
 
-describe('FlowService', () => {
+describe('FlowService', function() {
   let flowService
   let meshbluMock
-  beforeEach(() => {
+  beforeEach(function() {
     meshbluMock = shmock(0xDEAD)
     enableDestroy(meshbluMock)
 
@@ -21,16 +21,16 @@ describe('FlowService', () => {
       port: 0xDEAD,
     })
   })
-  afterEach((done) => {
+  afterEach( function(done) {
     meshbluMock.destroy(done)
   })
 
-  describe('->addGlobalMessageReceivePermissions', () => {
-    describe('when given a list of device uuids', () => {
+  describe('->addGlobalMessageReceivePermissions', function() {
+    describe('when given a list of device uuids', function() {
       let firstDeviceHandler
       let secondDeviceHandler
       let sharedDevices
-      beforeEach((done) => {
+      beforeEach( function(done) {
         const  userAuth = new Buffer('my-meshblu-uuid:my-meshblu-token').toString('base64')
         sharedDevices = ['device-1-uuid', 'device-2-uuid']
         firstDeviceHandler = meshbluMock.put('/v2/devices/device-1-uuid', {
@@ -49,19 +49,19 @@ describe('FlowService', () => {
         flowService.addGlobalMessageReceivePermissions(sharedDevices, done)
       })
 
-      it('should actually try to update both devices dangerously', () => {
+      it('should actually try to update both devices dangerously', function() {
         expect(firstDeviceHandler.done())
         expect(secondDeviceHandler.done())
       })
     })
   })
 
-  describe('->removeGlobalMessageReceivePermissions', () => {
-    describe('when given a list of device uuids', () => {
+  describe('->removeGlobalMessageReceivePermissions', function() {
+    describe('when given a list of device uuids', function() {
       let firstDeviceHandler
       let secondDeviceHandler
       let sharedDevices
-      beforeEach((done) => {
+      beforeEach( function(done) {
         const  userAuth = new Buffer('my-meshblu-uuid:my-meshblu-token').toString('base64')
         sharedDevices = ['device-1-uuid', 'device-2-uuid']
         firstDeviceHandler = meshbluMock.put('/v2/devices/device-1-uuid', {
@@ -80,10 +80,47 @@ describe('FlowService', () => {
         flowService.addGlobalMessageReceivePermissions(sharedDevices, done)
       })
 
-      it('should actually try to update both devices dangerously', () => {
+      it('should actually try to update both devices dangerously', function() {
         expect(firstDeviceHandler.done())
         expect(secondDeviceHandler.done())
       })
+    })
+  })
+
+  describe('->updatePermissions', function() {
+    describe('when called', function() {
+      beforeEach( function(done) {
+        const schema = {
+          type: 'object',
+          properties: {
+            erik: {
+              type: 'string',
+              format: 'meshblu-device'
+            }
+          }
+        }
+
+        const appData = {
+          erik: 'n00b'
+        }
+
+        const update = {
+          $addToSet: { sendWhitelist: ['n00b'] }
+        }
+
+        this.updateDeviceHandler =
+          meshbluMock.put('/v2/devices/the-uuid').send(update).reply(200)
+        flowService.updatePermissions({uuid: 'the-uuid', appData, schema}, done)
+      })
+
+      it('should update the IoT device\'s sendWhitelist', function() {
+        this.updateDeviceHandler.done()
+      })
+
+      it('should update the n00b device\'s receiveWhitelist', function() {
+
+      })
+
     })
   })
 

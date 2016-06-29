@@ -119,4 +119,23 @@ export default class FlowService {
 
     return messageSchema
   }
+
+  getMeshbluDevices = (schema) => {
+    let result = []
+    _.forEach(schema.properties, (value, key) => {
+      if (value.format == 'meshblu-device') {
+        result.push(key)
+      }
+    })
+    return result
+  }
+
+  updatePermissions = ({uuid, appData, schema}, callback) => {
+    let addToSendWhitelist = _.map(this.getMeshbluDevices(schema), (value) => {
+      return appData[value]
+    })
+    this.meshblu.updateDangerously(uuid, {
+      $addToSet: { sendWhitelist: addToSendWhitelist }
+    }, callback)
+  }
 }
