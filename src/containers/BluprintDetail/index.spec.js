@@ -34,7 +34,7 @@ describe('<BluprintDetail />', () => {
           error: new Error('Bang! Bang!'),
         })
 
-        expect(sut).to.contain.text('Error: Bang! Bang!')
+        expect(sut).to.contain.text('Bang! Bang!')
       })
     })
 

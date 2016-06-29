@@ -142,11 +142,13 @@ class ImportBluprint extends React.Component {
     if(!bluprint) return <Page width="small"><Spinner>Hang On...</Spinner></Page>
     const latestSchema = this.getLatestConfigSchema(bluprint)
     return (
-      <main>
-        <Page>
-          <SchemaContainer schema={latestSchema} selectableDevices={selectableDevices} onSubmit={this.importBluprint}></SchemaContainer>
-        </Page>
-      </main>
+      <Page>
+        <SchemaContainer
+          schema={latestSchema}
+          selectableDevices={selectableDevices}
+          onSubmit={this.importBluprint}
+        />
+      </Page>
     )
   }
 }

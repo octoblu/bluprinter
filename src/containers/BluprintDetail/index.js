@@ -46,9 +46,7 @@ class BluprintDetail extends React.Component {
         return
       }
 
-      this.setState({ device, loading: false }, () => {
-        console.log(this.state.device)
-      })
+      this.setState({ device, loading: false })
     })
   }
 
