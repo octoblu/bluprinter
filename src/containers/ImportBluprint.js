@@ -15,10 +15,17 @@ class ImportBluprint extends React.Component {
 
   componentWillMount = () => {
     this.bluprintId = this.props.params.uuid
-    this.meshblu = new MeshbluHttp(getMeshbluConfig())
+    const meshbluConfig = getMeshbluConfig()
+    this.meshblu = new MeshbluHttp(meshbluConfig)
+
     this.meshblu.device(this.bluprintId, (error, device) => {
       this.setState({bluprint: device.bluprint})
     })
+
+    this.meshblu.search({query: {owner: meshbluConfig.uuid} , projection: {name: true, type: true, uuid: true}}, (error, selectableDevices) =>{
+      this.setState({selectableDevices})
+    })
+
   }
 
   importBluprint = (flowData) => {
@@ -130,13 +137,13 @@ class ImportBluprint extends React.Component {
   }
 
   render = () => {
-    const {bluprint} = this.state
+    const {bluprint, selectableDevices} = this.state
     if(!bluprint) return <Page width="small"><Spinner>Hang On...</Spinner></Page>
     const latestSchema = this.getLatestConfigSchema(bluprint)
     return (
       <main>
         <Page>
-          <SchemaContainer schema={latestSchema} onSubmit={this.importBluprint}></SchemaContainer>
+          <SchemaContainer schema={latestSchema} selectableDevices={selectableDevices} onSubmit={this.importBluprint}></SchemaContainer>
         </Page>
       </main>
     )
