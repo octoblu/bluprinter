@@ -30,6 +30,7 @@ class BluprintDetail extends React.Component {
       error: null,
       alertMessage: null,
       updatingVersion: false,
+      selectableDevices: []
     }
   }
 
@@ -47,6 +48,10 @@ class BluprintDetail extends React.Component {
       }
 
       this.setState({ device, loading: false })
+    })
+
+    meshblu.search({query: {owner: meshbluConfig.uuid} , projection: {name: true, type: true, uuid: true}}, (error, selectableDevices) =>{
+      this.setState({selectableDevices})
     })
   }
 
@@ -76,7 +81,7 @@ class BluprintDetail extends React.Component {
   }
 
   render() {
-    const { device, error, loading, alertMessage, updatingVersion } = this.state
+    const { device, error, loading, alertMessage, updatingVersion, selectableDevices } = this.state
 
     if (loading) return <Page loading={loading} />
     if (error)   return <Page error={error} />
@@ -91,7 +96,7 @@ class BluprintDetail extends React.Component {
           onUpdateVersion={this.handleUpdateVersion}
           updating={updatingVersion}
         />
-        <BluprintConfigureForm schema={latestConfigSchema} />
+        <BluprintConfigureForm schema={latestConfigSchema} selectableDevices={selectableDevices} />
         <BluprintManifestList manifest={bluprint.manifest} />
       </Page>
     )

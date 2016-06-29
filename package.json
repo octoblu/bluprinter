@@ -46,6 +46,7 @@
     "superagent": "^2.0.0",
     "url": "^0.11.0",
     "zooid-button": "^1.0.8",
+    "zooid-device-icon": "^1.0.1",
     "zooid-heading": "^1.0.1",
     "zooid-meshblu-device-editor": "^9.1.1",
     "zooid-spinner": "^1.0.1",

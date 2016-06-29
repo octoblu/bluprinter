@@ -1,0 +1,8 @@
+.DeviceName {
+  padding: 1px;
+}
+
+.ListItem {
+  display: flex;
+  align-items: center;
+}

@@ -9,6 +9,7 @@ import {getMeshbluConfig} from '../services/auth-service'
 import {OCTOBLU_URL, FLOW_DEPLOY_URL} from 'config'
 import superagent from 'superagent'
 import {SchemaContainer} from 'zooid-meshblu-device-editor'
+import BluprintManifestList from '../components/BluprintManifestList/'
 import * as deviceConfig from '../../test/data/bluprint-config.json'
 
 class ImportBluprint extends React.Component {
@@ -139,10 +140,16 @@ class ImportBluprint extends React.Component {
 
   render = () => {
     const {bluprint, selectableDevices} = this.state
+
     if(!bluprint) return <Page width="small"><Spinner>Hang On...</Spinner></Page>
     const latestSchema = this.getLatestConfigSchema(bluprint)
     return (
       <Page>
+        <h3>Things Manifest</h3>
+        <BluprintManifestList manifest={bluprint.manifest} />
+
+        <h2>Configure App {bluprint.name}</h2>
+
         <SchemaContainer
           schema={latestSchema}
           selectableDevices={selectableDevices}

@@ -1,15 +1,18 @@
 import React, { PropTypes } from 'react'
-import Form from 'react-jsonschema-form'
+import {SchemaContainer} from 'zooid-meshblu-device-editor'
 
 const propTypes = {
-  schema: PropTypes.object
+  schema: PropTypes.object,
+  selectableDevices: PropTypes.array
 }
 
-const defaultProps = {}
+const defaultProps = {
+  selectableDevices: []
+}
 
-const BluprintConfigureForm = ({ schema }) => {
+const BluprintConfigureForm = ({ schema, selectableDevices }) => {
   if (!schema) return null
-  return (<Form schema={schema} />)
+  return (<SchemaContainer schema={schema} selectableDevices={selectableDevices} />)
 }
 
 BluprintConfigureForm.propTypes    = propTypes
