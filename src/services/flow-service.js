@@ -120,7 +120,7 @@ export default class FlowService {
     return messageSchema
   }
 
-  getMeshbluDevices = (schema) => {
+  _getMeshbluDevices = (schema) => {
     let result = []
     _.forEach(schema.properties, (value, key) => {
       if (value.format == 'meshblu-device') {
@@ -130,12 +130,49 @@ export default class FlowService {
     return result
   }
 
+  _updatePermissionsV1 = ({uuid, v1devices}, callback) => {
+    async.each(v1devices, (item, cb) => {
+      const deviceUpdate = {$addToSet: { receiveWhitelist: uuid, sendWhitelist: uuid }}
+      this.meshblu.updateDangerously(item, deviceUpdate, cb)
+    }, callback)
+  }
+
+  _updatePermissionsV2 = ({uuid, v2devices}, callback) => {
+    async.each(v2devices, (item, cb) => {
+      const deviceUpdate = {
+        $addToSet: {
+          'meshblu.whitelists.message.from': uuid,
+          'meshblu.whitelists.broadcast.sent': uuid
+        }
+      }
+      this.meshblu.updateDangerously(item, deviceUpdate, cb)
+    }, callback)
+  }
+
   updatePermissions = ({uuid, appData, schema}, callback) => {
-    let addToSendWhitelist = _.map(this.getMeshbluDevices(schema), (value) => {
+    const addToWhitelist = _.map(this._getMeshbluDevices(schema), (value) => {
       return appData[value]
     })
-    this.meshblu.updateDangerously(uuid, {
-      $addToSet: { sendWhitelist: addToSendWhitelist }
-    }, callback)
+
+    const update = {$addToSet: { sendWhitelist: { $each: addToWhitelist } }}
+    this.meshblu.updateDangerously(uuid, update, (error) => {
+
+      const search = {query: {uuid: {$in: addToWhitelist, 'meshblu.version': '2.0.0'}}}
+      this.meshblu.search(search, (error, result) => {
+        if (error) {
+          return callback(error)
+        }
+
+        const v2devices = _.map(result, 'uuid')
+        const v1devices = _.difference(addToWhitelist, v2devices)
+
+        this._updatePermissionsV1({uuid, v1devices}, (error) => {
+          if (error) {
+            return callback(error)
+          }
+          this._updatePermissionsV2({uuid, v2devices}, callback)
+        })
+      })
+    })
   }
 }

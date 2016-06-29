@@ -104,12 +104,21 @@ describe('FlowService', function() {
           erik: 'n00b'
         }
 
-        const update = {
-          $addToSet: { sendWhitelist: ['n00b'] }
-        }
+        this.v2SearchHandler =
+          meshbluMock.post('/search/devices')
+            .send({uuid: {$in: ['noob'], 'meshblu.version': '2.0.0'}})
+            .reply(200, [])
 
         this.updateDeviceHandler =
-          meshbluMock.put('/v2/devices/the-uuid').send(update).reply(200)
+          meshbluMock.put('/v2/devices/the-uuid')
+            .send({ $addToSet: { sendWhitelist: { $each: ["n00b"] } } })
+            .reply(200)
+
+        this.updateN00bHandler =
+          meshbluMock.put('/v2/devices/n00b')
+            .send({ $addToSet: { receiveWhitelist: 'the-uuid', sendWhitelist: 'the-uuid' }})
+            .reply(200)
+
         flowService.updatePermissions({uuid: 'the-uuid', appData, schema}, done)
       })
 
@@ -118,10 +127,64 @@ describe('FlowService', function() {
       })
 
       it('should update the n00b device\'s receiveWhitelist', function() {
-
+        this.updateN00bHandler.done()
       })
 
     })
+  })
+
+  describe.only('when called and the app is configured with a v2 device', function() {
+    beforeEach( function(done) {
+      const schema = {
+        type: 'object',
+        properties: {
+          erik: {
+            type: 'string',
+            format: 'meshblu-device'
+          },
+          kire: {
+            type: 'string',
+            format: 'meshblu-device'
+          }
+        }
+      }
+
+      const appData = {
+        erik: 'n00b',
+        kire: '1337'
+      }
+
+      this.v2SearchHandler =
+        meshbluMock.post('/search/devices')
+          .send({uuid: {$in: ['n00b', '1337'], 'meshblu.version': '2.0.0'}})
+          .reply(200, [{uuid: '1337'}])
+
+      this.updateDeviceHandler =
+        meshbluMock.put('/v2/devices/the-uuid')
+        .send({ $addToSet: { sendWhitelist: { $each: ["n00b", "1337"] } } })
+        .reply(200)
+
+      this.updateN00bHandler =
+        meshbluMock.put('/v2/devices/n00b')
+          .send({ $addToSet: { receiveWhitelist: 'the-uuid', sendWhitelist: 'the-uuid' }})
+          .reply(200)
+
+      this.update1337Handler =
+        meshbluMock.put('/v2/devices/1337')
+          .send({ $addToSet: { 'meshblu.whitelists.message.from': 'the-uuid', 'meshblu.whitelists.broadcast.sent': 'the-uuid' }})
+          .reply(200)
+
+      flowService.updatePermissions({uuid: 'the-uuid', appData, schema}, done)
+    })
+
+    it('should update the n00b device\'s whitelists', function() {
+      this.updateN00bHandler.done()
+    })
+
+    it('should update the 1337 device\'s v2 whitelists', function() {
+      this.update1337Handler.done()
+    })
+
   })
 
 })
