@@ -87,19 +87,19 @@ class CreateBluprint extends React.Component {
   }
 
   handleShareDevices = ({shareExistingDevices, sharedDevices}) => {
-    // if (shareExistingDevices) {
-    //   this.flowService
-    //   .addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
-    //     console.log('Added Global Message Receive Permission', error, deviceResult)
-    //   })
-    // } else {
-    //   this
-    //   .flowService
-    //   .removeGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
-    //     console.log('Removed Global Message Receive Permission', error, deviceResult)
-    //   })
-    // }
-    // this.setState({toastMessage: 'Device permissions updated'})
+    if (shareExistingDevices) {
+      this.flowService
+      .addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
+        console.log('Added Global Message Receive Permission', error, deviceResult)
+      })
+    } else {
+      this
+      .flowService
+      .removeGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
+        console.log('Removed Global Message Receive Permission', error, deviceResult)
+      })
+    }
+    this.setState({toastMessage: 'Device permissions updated'})
   }
 
   handleCreate = (event) => {
