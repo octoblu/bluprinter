@@ -7,7 +7,7 @@ import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 import {getMeshbluConfig} from '../services/auth-service'
 import {OCTOBLU_URL, FLOW_DEPLOY_URL} from 'config'
 import superagent from 'superagent'
-import Form from 'react-jsonschema-form'
+import {SchemaContainer} from 'zooid-meshblu-device-editor'
 import * as deviceConfig from '../../test/data/bluprint-config.json'
 
 class ImportBluprint extends React.Component {
@@ -21,8 +21,7 @@ class ImportBluprint extends React.Component {
     })
   }
 
-  importBluprint = ({formData}) => {
-    const flowData = formData
+  importBluprint = (flowData) => {
     this.createFlow((error, flow) => {
       console.log('createFlow', {error, flow})
       if(error) return
@@ -137,7 +136,7 @@ class ImportBluprint extends React.Component {
     return (
       <main>
         <Page>
-          <Form schema={latestSchema} onSubmit={this.importBluprint}></Form>
+          <SchemaContainer schema={latestSchema} onSubmit={this.importBluprint}></SchemaContainer>
         </Page>
       </main>
     )
