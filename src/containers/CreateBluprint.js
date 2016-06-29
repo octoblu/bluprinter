@@ -102,7 +102,7 @@ class CreateBluprint extends React.Component {
     // this.setState({toastMessage: 'Device permissions updated'})
   }
 
-  handleCreate(event) {
+  handleCreate = (event) => {
     event.preventDefault()
 
     this.setState({ loading: true })
