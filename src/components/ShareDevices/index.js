@@ -17,7 +17,8 @@ const ShareDevices = ({ sharedDevices, onShareDevices }) => {
     return null
   }
 
-  const handleClick = ({target}) => {
+  const handleClick = ({target }) => {
+    console.log(target)
     return onShareDevices({
       shareExistingDevices: target.checked,
       sharedDevices

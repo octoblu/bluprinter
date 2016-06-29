@@ -81,58 +81,31 @@ class CreateBluprint extends React.Component {
     })
   }
 
-  handleUpdate = ({configSchema, sharedDevices}) =>  {
+  handleUpdate = ({ configSchema, sharedDevices }) =>  {
     console.log('Receiving configSchema and sharedDevices', configSchema, sharedDevices)
-    this.setState({configSchema, sharedDevices})
+    this.setState({configSchema, sharedDevices, toastMessage: null })
   }
 
   handleShareDevices = ({shareExistingDevices, sharedDevices}) => {
-    if (shareExistingDevices) {
-      this.flowService
-      .addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
-        console.log('Added Global Message Receive Permission', error, deviceResult)
-      })
-    } else {
-      this
-      .flowService
-      .removeGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
-        console.log('Removed Global Message Receive Permission', error, deviceResult)
-      })
-    }
-    this.setState({toastMessage: 'Device permissions updated'})
+    // if (shareExistingDevices) {
+    //   this.flowService
+    //   .addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
+    //     console.log('Added Global Message Receive Permission', error, deviceResult)
+    //   })
+    // } else {
+    //   this
+    //   .flowService
+    //   .removeGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
+    //     console.log('Removed Global Message Receive Permission', error, deviceResult)
+    //   })
+    // }
+    // this.setState({toastMessage: 'Device permissions updated'})
   }
 
-  mappingToConfig({ mappings }) {
-    const config = {
-      type: 'object',
-      properties: {},
-    }
-
-    _.each(mappings, function (mapping) {
-      let property = config.properties[mapping.configureProperty]
-      property = property || { type: mapping.type, enum: mapping.enum }
-
-      property.required = mapping.required
-      property.description = mapping.description
-      property['x-node-map'] = property['x-node-map'] || []
-      property['x-node-map'].push({ id: mapping.nodeId, property: mapping.nodeProperty })
-      config.properties[mapping.configureProperty] = property
-    })
-
-    return config
-  }
-
-<<<<<<< Updated upstream
   handleCreate(event) {
     event.preventDefault()
 
     this.setState({ loading: true })
-=======
-  handleCreate = (event) => {
-    // console.log(eventdd)
-    debugger
-    // this.setState({ loading: true })
->>>>>>> Stashed changes
 
     const { configSchema } = this.state
 
@@ -146,7 +119,7 @@ class CreateBluprint extends React.Component {
       name: appName.value,
       version,
       flowId: flowUuid,
-      configSchema: this.configSchema,
+      configSchema,
       messageSchema: this.flowService.getMessageSchema({nodes: flowDevice.draft.nodes}),
       manifest: this.state.manifest,
     })
