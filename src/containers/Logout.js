@@ -1,7 +1,7 @@
 import React from 'react'
 import cookie from 'react-cookie'
 import { browserHistory } from 'react-router'
-import { Spinner } from 'zooid-ui'
+import Spinner from 'zooid-spinner'
 
 class Logout extends React.Component {
   componentDidMount() {

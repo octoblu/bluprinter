@@ -3,9 +3,10 @@ import React, { PropTypes } from 'react'
 import url from 'url'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 import superagent from 'superagent'
-import Toast from 'zooid-toast'
-import { Page, Spinner } from 'zooid-ui'
 import Heading from 'zooid-heading'
+import { Page } from 'zooid-ui'
+import Spinner from 'zooid-spinner'
+import Toast from 'zooid-toast'
 
 import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
 
