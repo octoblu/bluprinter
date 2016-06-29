@@ -17,7 +17,8 @@ const ShareDevices = ({ sharedDevices, onShareDevices }) => {
     return null
   }
 
-  const handleClick = ({target}) => {
+  const handleClick = ({target }) => {
+    console.log(target)
     return onShareDevices({
       shareExistingDevices: target.checked,
       sharedDevices
@@ -25,7 +26,7 @@ const ShareDevices = ({ sharedDevices, onShareDevices }) => {
   }
 
   return (
-    <div>
+    <div className={styles.root}>
       <label htmlFor="allowPublicMessagingForSharedDevices">
         Allow shared devices to receive global messages
       </label>

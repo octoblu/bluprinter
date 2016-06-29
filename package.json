@@ -1,6 +1,6 @@
 {
   "name": "bluprinter",
-  "version": "1.4.14",
+  "version": "1.4.15",
   "description": "bluprinter",
   "main": "index.js",
   "scripts": {
@@ -51,7 +51,7 @@
     "zooid-spinner": "^1.0.0",
     "zooid-toast": "^2.0.1",
     "zooid-ui": "^6.0.0",
-    "zooid-ui-bluprint-config-builder": "^6.1.0"
+    "zooid-ui-bluprint-config-builder": "^6.1.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",

@@ -39,10 +39,6 @@ class CreateBluprint extends React.Component {
     }
 
     this.flowService = new FlowService()
-
-    this.handleCreate = this.handleCreate.bind(this)
-    this.handleUpdate = this.handleUpdate.bind(this)
-
     this.nodeService = new NodeService()
   }
 
@@ -86,15 +82,14 @@ class CreateBluprint extends React.Component {
     })
   }
 
-  handleUpdate({configSchema, sharedDevices}) {
+  handleUpdate = ({ configSchema, sharedDevices }) =>  {
     console.log('Receiving configSchema and sharedDevices', configSchema, sharedDevices)
-    // this.setState({configSchema, sharedDevices})
+    this.setState({configSchema, sharedDevices, toastMessage: null })
   }
 
-  handleShareDevices({shareExistingDevices, sharedDevices}) {
+  handleShareDevices = ({shareExistingDevices, sharedDevices}) => {
     if (shareExistingDevices) {
-      this
-      .flowService
+      this.flowService
       .addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
         console.log('Added Global Message Receive Permission', error, deviceResult)
       })
@@ -108,29 +103,8 @@ class CreateBluprint extends React.Component {
     this.setState({toastMessage: 'Device permissions updated'})
   }
 
-  mappingToConfig({ mappings }) {
-    const config = {
-      type: 'object',
-      properties: {},
-    }
-
-    _.each(mappings, function (mapping) {
-      let property = config.properties[mapping.configureProperty]
-      property = property || { type: mapping.type, enum: mapping.enum }
-
-      property.required = mapping.required
-      property.description = mapping.description
-      property['x-node-map'] = property['x-node-map'] || []
-      property['x-node-map'].push({ id: mapping.nodeId, property: mapping.nodeProperty })
-      config.properties[mapping.configureProperty] = property
-    })
-
-    return config
-  }
-
-  handleCreate(event) {
-    // console.log(event)
-    const updateDevicePermissions = event.target.updateDevicePermissions.checked
+  handleCreate = (event) => {
+    event.preventDefault()
 
     this.setState({ loading: true })
 
@@ -146,7 +120,7 @@ class CreateBluprint extends React.Component {
       name: appName.value,
       version,
       flowId: flowUuid,
-      configSchema: this.configSchema,
+      configSchema,
       messageSchema: this.flowService.getMessageSchema({nodes: flowDevice.draft.nodes}),
       manifest: this.state.manifest,
     })
@@ -155,6 +129,7 @@ class CreateBluprint extends React.Component {
       .post(`${FLOW_DEPLOY_URL}/bluprint/${flowUuid}/${version}`)
       .auth(meshbluConfig.uuid, meshbluConfig.token)
       .end(() => {
+        console.log('Registering a new device')
         meshblu.register(bluprintConfig, (error, device) => {
           if (error) {
             this.setErrorState(error)
@@ -164,12 +139,13 @@ class CreateBluprint extends React.Component {
           const { uuid } = device
           const update = this.linksProperties({ uuid })
 
+          console.log('Updating new IoT App')
           meshblu.update(uuid, update, (updateError) => {
             if (updateError) {
               this.setErrorState(updateError)
               return
             }
-
+            console.log('Redirecting to octoblu')
             window.location = `${OCTOBLU_URL}/device/${device.uuid}`
           })
         })
