@@ -17,8 +17,7 @@ const ShareDevices = ({ sharedDevices, onShareDevices }) => {
     return null
   }
 
-  const handleClick = ({target }) => {
-    console.log(target)
+  const handleClick = ({ target }) => {
     return onShareDevices({
       shareExistingDevices: target.checked,
       sharedDevices
@@ -36,7 +35,7 @@ const ShareDevices = ({ sharedDevices, onShareDevices }) => {
         onClick={handleClick}
       />
     </div>
-    )
+  )
 }
 
 ShareDevices.propTypes    = propTypes

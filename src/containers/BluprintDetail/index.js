@@ -46,9 +46,7 @@ class BluprintDetail extends React.Component {
         return
       }
 
-      this.setState({ device, loading: false }, () => {
-        console.log(this.state.device)
-      })
+      this.setState({ device, loading: false })
     })
   }
 
@@ -59,7 +57,7 @@ class BluprintDetail extends React.Component {
     const { flowId, latest } = this.state.device.bluprint
 
     superagent
-      .put(`${FLOW_DEPLOY_URL}/bluprint/${flowId}/${latest}`)
+      .post(`${FLOW_DEPLOY_URL}/bluprint/${flowId}/${latest}`)
       .auth(uuid, token)
       .end((error) => {
         if (error) {
