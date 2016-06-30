@@ -2,7 +2,7 @@ import React from 'react'
 import { Route } from 'react-router'
 
 import App from '../containers/App'
-import BluprintDetail from '../containers/BluprintDetail/'
+import BluprintDetail from '../containers/BluprintDetail'
 import CreateBluprint from '../containers/CreateBluprint'
 import Home from '../containers/Home'
 import ImportBluprint from '../containers/ImportBluprint'

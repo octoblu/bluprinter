@@ -87,7 +87,7 @@ describe('FlowService', function () {
     })
   })
 
-  xdescribe('->updatePermissions', function () {
+  describe('->updatePermissions', function () {
     describe('when called', function () {
       beforeEach(function (done) {
         const schema = {
@@ -106,7 +106,12 @@ describe('FlowService', function () {
 
         this.v2SearchHandler =
           meshbluMock.post('/search/devices')
-            .send({uuid: {$in: ['noob'], 'meshblu.version': '2.0.0'}})
+            .send({
+              uuid: {
+                $in: ['n00b']
+              },
+              'meshblu.version': '2.0.0'
+            })
             .reply(200, [])
 
         this.updateDeviceHandler =
