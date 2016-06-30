@@ -81,7 +81,8 @@ export default class FlowService {
                   type: 'string',
                   title: 'Trigger',
                   required: true,
-                  enum: _.map(triggers, 'id')
+                  enum: _.map(triggers, 'id'),
+                  enumNames: _.map(triggers, (trigger) => trigger.name || trigger.id)
                 }
               }
             }

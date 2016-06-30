@@ -41,9 +41,11 @@ class ImportBluprint extends React.Component {
   }
 
   getMessageFromDevices = (bluprint) => {
-    return _(bluprint.manifest)
+    const {manifest, sharedDevices} = this.getLatestVersion(bluprint)
+    return _(manifest)
       .map('deviceId')
       .compact()
+      .union(sharedDevices)
       .uniq()
       .value()
   }
@@ -151,12 +153,16 @@ class ImportBluprint extends React.Component {
     return _.extend({}, flowData, deviceData)
   }
 
+  getLatestVersion = (bluprint) => {
+    return _.find(bluprint.versions, {version: bluprint.latest})
+  }
+
   getLatestConfigSchema = (bluprint) => {
-    return _.find(bluprint.versions, {version: bluprint.latest}).schemas.configure.bluprint
+    return this.getLatestVersion(bluprint).schemas.configure.bluprint
   }
 
   getLatestMessageSchema = (bluprint) => {
-    return _.find(bluprint.versions, {version: bluprint.latest}).schemas.message.bluprint
+    return this.getLatestVersion(bluprint).schemas.message.bluprint
   }
 
   updateDeviceName = (event) => {
@@ -167,11 +173,13 @@ class ImportBluprint extends React.Component {
     const {bluprint, name, selectableDevices} = this.state
 
     if(!bluprint || loading) return <Page width="small"><Spinner>Hang On...</Spinner></Page>
-    const latestSchema = this.getLatestConfigSchema(bluprint)
+    const latestSchema  = this.getLatestConfigSchema(bluprint)
+    const {manifest}    = this.getLatestVersion(bluprint)
+
     return (
       <Page>
         <h3>Things Manifest</h3>
-        <BluprintManifestList manifest={bluprint.manifest} />
+        <BluprintManifestList manifest={manifest} />
 
         <h2>Configure App {name}</h2>
 
