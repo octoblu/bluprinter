@@ -107,11 +107,12 @@ class CreateBluprint extends React.Component {
     }
     const bluprintConfig = this.deviceDefaults({
       name: appName.value,
-      version,
       flowId: flowUuid,
-      configSchema,
       messageSchema: this.flowService.getMessageSchema({nodes: flowDevice.draft.nodes}),
       manifest: this.state.manifest,
+      configSchema,
+      version,
+      sharedDevices
     })
 
     superagent
@@ -141,7 +142,7 @@ class CreateBluprint extends React.Component {
       })
   }
 
-  deviceDefaults({ flowId, name, configSchema, messageSchema, version, manifest }) {
+  deviceDefaults({ flowId, name, configSchema, messageSchema, version, manifest, sharedDevices }) {
     const USER_UUID = getMeshbluConfig().uuid
     return {
       name,
@@ -150,12 +151,14 @@ class CreateBluprint extends React.Component {
       type: 'bluprint',
       logo: 'https://s3-us-west-2.amazonaws.com/octoblu-icons/device/bluprint.svg',
       bluprint: {
+        version: '1.0.0',
         flowId,
         latest: version,
-        manifest,
         versions: [
           {
+            manifest,
             version,
+            sharedDevices,
             schemas: {
               configure: {
                 bluprint: configSchema,
