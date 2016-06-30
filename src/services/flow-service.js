@@ -150,26 +150,26 @@ export default class FlowService {
   }
 
   updatePermissions = ({uuid, appData, schema}, callback) => {
-    const addToWhitelist = _.map(this._getMeshbluDevices(schema), (value) => {
-      return appData[value]
-    })
-
+    const addToWhitelist = _.map(this._getMeshbluDevices(schema), (value) => appData[value])
     const update = {$addToSet: { sendWhitelist: { $each: addToWhitelist } }}
-    this.meshblu.updateDangerously(uuid, update, (error) => {
 
-      const search = {query: {uuid: {$in: addToWhitelist}, 'meshblu.version': '2.0.0'}, projection: {uuid: true}}
+    this.meshblu.updateDangerously(uuid, update, (error) => {
+      if (error) return callback(error)
+
+      const search = {
+        query: {uuid: {$in: addToWhitelist}, 'meshblu.version': '2.0.0'},
+        projection: {uuid: true}
+      }
+
       this.meshblu.search(search, (error, result) => {
-        if (error) {
-          return callback(error)
-        }
+        if (error) return callback(error)
 
         const v2devices = _.map(result, 'uuid')
         const v1devices = _.difference(addToWhitelist, v2devices)
 
         this._updatePermissionsV1({uuid, v1devices}, (error) => {
-          if (error) {
-            return callback(error)
-          }
+          if (error) return callback(error)
+
           this._updatePermissionsV2({uuid, v2devices}, callback)
         })
       })

@@ -156,7 +156,12 @@ describe('FlowService', function() {
 
       this.v2SearchHandler =
         meshbluMock.post('/search/devices')
-          .send({uuid: {$in: ['n00b', '1337'], 'meshblu.version': '2.0.0'}})
+          .send({
+            uuid: {
+              $in: ['n00b', '1337']
+            },
+            'meshblu.version': '2.0.0'
+          })
           .reply(200, [{uuid: '1337'}])
 
       this.updateDeviceHandler =
