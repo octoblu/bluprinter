@@ -3,6 +3,7 @@ import url from 'url'
 import React from 'react'
 import { Page, FormField, FormInput } from 'zooid-ui'
 import Spinner from 'zooid-spinner'
+import Input from 'zooid-input'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 
 import FlowService from '../services/flow-service'
@@ -16,7 +17,9 @@ import BluprintManifestList from '../components/BluprintManifestList/'
 import * as deviceConfig from '../../test/data/bluprint-config.json'
 
 class ImportBluprint extends React.Component {
-  state = {}
+  state = {
+    loading: false
+  }
 
   componentWillMount = () => {
 
@@ -26,7 +29,7 @@ class ImportBluprint extends React.Component {
     this.flowService    = new FlowService(meshbluConfig)
 
     this.meshblu.device(this.bluprintId, (error, device) => {
-      this.setState({bluprint: device.bluprint})
+      this.setState({bluprint: device.bluprint, name: device.name})
     })
 
     const ownedDevices = {
@@ -51,6 +54,7 @@ class ImportBluprint extends React.Component {
 
   importBluprint = (flowData) => {
     console.log('importBluprint')
+    this.setState({loading: true})
     this.createFlow((error, flow) => {
       if(error) return
 
@@ -81,7 +85,7 @@ class ImportBluprint extends React.Component {
       .post(`${OCTOBLU_URL}/api/flows`)
       .redirects(0)
       .auth(uuid, token)
-      .send({})
+      .send({name: this.state.appName, type: 'iot-app'})
       .end((error, response) => {
         if(error) return callback(error)
         return callback(null, response.body)
@@ -106,11 +110,11 @@ class ImportBluprint extends React.Component {
 
   getDeviceData = ({flowId, flowData}) => {
     console.log("WARNING: USE UPDATE DANGEROUSLY!! This is only working because of an order-of-operations thing.")
-    const {bluprint} = this.state
+    const {bluprint, appName} = this.state
     const {protocol, hostname, port} = window.location
 
     const deviceData = {
-      name: bluprint.name,
+      name: appName,
       type: 'iot-app',
       logo: 'https://s3-us-west-2.amazonaws.com/octoblu-icons/device/iot-app.svg',
       octoblu: {
@@ -127,12 +131,6 @@ class ImportBluprint extends React.Component {
                 url: `${FLOW_DEPLOY_URL}/bluprint/${bluprint.flowId}/${bluprint.latest}/link`,
                 method: "POST",
                 generateAndForwardMeshbluCredentials: true
-              },
-              {
-                  type: "webhook",
-                  url: 'http://requestb.in/1bji3ej1',
-                  method: "POST",
-                  generateAndForwardMeshbluCredentials: true
               }
             ]
           }
@@ -169,19 +167,33 @@ class ImportBluprint extends React.Component {
     return this.getLatestVersion(bluprint).schemas.message.bluprint
   }
 
-  render = () => {
-    const {bluprint, selectableDevices} = this.state
-    if(!bluprint) return <Page width="small"><Spinner>Hang On...</Spinner></Page>
+  updateDeviceName = (event) => {
+    this.setState({appName: event.target.value})
+  }
 
+  render = () => {
+    const {bluprint, name, selectableDevices, loading} = this.state
+
+    if(!bluprint || loading) return <Page width="small"><Spinner>Hang On...</Spinner></Page>
     const latestSchema  = this.getLatestConfigSchema(bluprint)
     const {manifest}    = this.getLatestVersion(bluprint)
-    
+
     return (
       <Page>
         <h3>Things Manifest</h3>
         <BluprintManifestList manifest={manifest} />
 
-        <h2>Configure App {bluprint.name}</h2>
+        <h2>Configure App {name}</h2>
+
+        <form onChange={this.updateDeviceName}>
+          <Input
+            name="appName"
+            label="IoT App Name"
+            placeholder="App Name"
+            autofocus
+            required
+          />
+        </form>
 
         <SchemaContainer
           schema={latestSchema}
