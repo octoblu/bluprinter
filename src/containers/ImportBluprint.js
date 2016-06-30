@@ -39,22 +39,33 @@ class ImportBluprint extends React.Component {
     })
   }
 
+  getMessageFromDevices = (bluprint) => {
+    return _(bluprint.manifest)
+      .map('deviceId')
+      .compact()
+      .uniq()
+      .value()
+  }
+
   importBluprint = (flowData) => {
+    console.log('importBluprint')
     this.createFlow((error, flow) => {
       if(error) return
-      
-      const {flowId} = flow
-      const schema = this.getLatestConfigSchema(this.state.bluprint)
-      const options = {uuid: flowId, appData: flowData, schema: schema}
 
+      const {bluprint}         = this.state
+      const {flowId}           = flow
+      const schema             = this.getLatestConfigSchema(bluprint)
+      const messageFromDevices = this.getMessageFromDevices(bluprint)
+      
+      const options = {uuid: flowId, appData: flowData, schema: schema, messageFromDevices: messageFromDevices}
       this.flowService.updatePermissions(options, (error) => {
-        if(error) return
+        if(error) return console.log('updatePermissions', error)
 
         this.linkFlowToIoTApp({flowId, flowData}, (error) => {
-          if(error) return
+          if(error) return console.log('linkFlowToIoTApp', error)
 
           this.deployFlow({flowId}, (error) => {
-            if(error) return
+            if(error) return console.log('deployFlow', error)
             window.location = `${OCTOBLU_URL}/device/${flowId}`
           })
         })

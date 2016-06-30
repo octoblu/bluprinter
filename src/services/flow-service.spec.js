@@ -135,6 +135,7 @@ describe('FlowService', function() {
 
   describe('when called and the app is configured with a v2 device', function() {
     beforeEach( function(done) {
+      const messageFromDevices = ['the-interval-service']
       const schema = {
         type: 'object',
         properties: {
@@ -166,7 +167,7 @@ describe('FlowService', function() {
 
       this.updateDeviceHandler =
         meshbluMock.put('/v2/devices/the-uuid')
-        .send({ $addToSet: { sendWhitelist: { $each: ["n00b", "1337"] } } })
+        .send({ $addToSet: { sendWhitelist: { $each: ["n00b", "1337", "the-interval-service"] } } })
         .reply(200)
 
       this.updateN00bHandler =
@@ -179,7 +180,7 @@ describe('FlowService', function() {
           .send({ $addToSet: { 'meshblu.whitelists.message.from': {uuid: 'the-uuid'}, 'meshblu.whitelists.broadcast.sent': {uuid: 'the-uuid'} }})
           .reply(200)
 
-      flowService.updatePermissions({uuid: 'the-uuid', appData, schema}, done)
+      flowService.updatePermissions({uuid: 'the-uuid', appData, schema, messageFromDevices}, done)
     })
 
     it('should update the n00b device\'s whitelists', function() {
