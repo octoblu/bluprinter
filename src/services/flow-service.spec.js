@@ -171,7 +171,7 @@ describe('FlowService', function() {
 
       this.update1337Handler =
         meshbluMock.put('/v2/devices/1337')
-          .send({ $addToSet: { 'meshblu.whitelists.message.from': 'the-uuid', 'meshblu.whitelists.broadcast.sent': 'the-uuid' }})
+          .send({ $addToSet: { 'meshblu.whitelists.message.from': {uuid: 'the-uuid'}, 'meshblu.whitelists.broadcast.sent': {uuid: 'the-uuid'} }})
           .reply(200)
 
       flowService.updatePermissions({uuid: 'the-uuid', appData, schema}, done)

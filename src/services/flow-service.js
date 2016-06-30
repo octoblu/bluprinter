@@ -141,8 +141,8 @@ export default class FlowService {
     async.each(v2devices, (item, cb) => {
       const deviceUpdate = {
         $addToSet: {
-          'meshblu.whitelists.message.from': uuid,
-          'meshblu.whitelists.broadcast.sent': uuid
+          'meshblu.whitelists.message.from': {uuid},
+          'meshblu.whitelists.broadcast.sent': {uuid}
         }
       }
       this.meshblu.updateDangerously(item, deviceUpdate, cb)
@@ -157,7 +157,7 @@ export default class FlowService {
     const update = {$addToSet: { sendWhitelist: { $each: addToWhitelist } }}
     this.meshblu.updateDangerously(uuid, update, (error) => {
 
-      const search = {query: {uuid: {$in: addToWhitelist, 'meshblu.version': '2.0.0'}}}
+      const search = {query: {uuid: {$in: addToWhitelist}, 'meshblu.version': '2.0.0'}, projection: {uuid: true}}
       this.meshblu.search(search, (error, result) => {
         if (error) {
           return callback(error)

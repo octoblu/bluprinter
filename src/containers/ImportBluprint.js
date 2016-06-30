@@ -5,11 +5,12 @@ import { Page, FormField, FormInput } from 'zooid-ui'
 import Spinner from 'zooid-spinner'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 
+import FlowService from '../services/flow-service'
 import {getMeshbluConfig} from '../services/auth-service'
+
 import {OCTOBLU_URL, FLOW_DEPLOY_URL} from 'config'
 import superagent from 'superagent'
 import {SchemaContainer} from 'zooid-meshblu-device-editor'
-import * as deviceConfig from '../../test/data/bluprint-config.json'
 
 class ImportBluprint extends React.Component {
   state = {}
@@ -18,6 +19,7 @@ class ImportBluprint extends React.Component {
     this.bluprintId = this.props.params.uuid
     const meshbluConfig = getMeshbluConfig()
     this.meshblu = new MeshbluHttp(meshbluConfig)
+    this.flowService = new FlowService(meshbluConfig)
 
     this.meshblu.device(this.bluprintId, (error, device) => {
       this.setState({bluprint: device.bluprint})
@@ -30,18 +32,25 @@ class ImportBluprint extends React.Component {
   }
 
   importBluprint = (flowData) => {
-    this.createFlow((error, flow) => {
-      console.log('createFlow', {error, flow})
-      if(error) return
+    console.log('importBluprint', {flowData})
 
+    this.createFlow((error, flow) => {
+      if(error) return
       const {flowId} = flow
-      this.linkFlowToIoTApp({flowId, flowData}, (error, flow) => {
+      const schema = this.getLatestConfigSchema(this.state.bluprint)
+      const options = {uuid: flowId, appData: flowData, schema: schema}
+      console.log('updatePermissions', options)
+      this.flowService.updatePermissions(options, (error) =>{
         if(error) return
 
-
-        this.deployFlow({flowId}, (error, flow) => {
+        this.linkFlowToIoTApp({flowId, flowData}, (error, flow) => {
           if(error) return
-          window.location = `${OCTOBLU_URL}/device/${flowId}`
+
+          this.deployFlow({flowId}, (error, flow) => {
+            if(error) return
+            window.location = `${OCTOBLU_URL}/device/${flowId}`
+          })
+          
         })
       })
     })
