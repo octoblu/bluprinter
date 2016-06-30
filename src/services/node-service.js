@@ -61,7 +61,7 @@ export default class NodeService {
             const {name, id, type} = node
             const nodeType = this.getDocUrl(node)
             const {documentation} = nodeType
-            return {name, id, type, documentation}
+            return {name, id, type, documentation, deviceId}
         })
         resolve(manifest)
       })

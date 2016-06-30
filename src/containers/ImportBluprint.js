@@ -19,26 +19,30 @@ class ImportBluprint extends React.Component {
   state = {}
 
   componentWillMount = () => {
-    this.bluprintId = this.props.params.uuid
+
     const meshbluConfig = getMeshbluConfig()
-    this.meshblu = new MeshbluHttp(meshbluConfig)
-    this.flowService = new FlowService(meshbluConfig)
+    this.bluprintId     = this.props.params.uuid
+    this.meshblu        = new MeshbluHttp(meshbluConfig)
+    this.flowService    = new FlowService(meshbluConfig)
 
     this.meshblu.device(this.bluprintId, (error, device) => {
       this.setState({bluprint: device.bluprint})
     })
 
-    this.meshblu.search({query: {owner: meshbluConfig.uuid} , projection: {name: true, type: true, uuid: true}}, (error, selectableDevices) =>{
+    const ownedDevices = {
+      query: {owner: meshbluConfig.uuid},
+      projection: {name: true, type: true, uuid: true}
+    }
+
+    this.meshblu.search(ownedDevices, (error, selectableDevices) =>{
       this.setState({selectableDevices})
     })
-
   }
 
   importBluprint = (flowData) => {
-    console.log('importBluprint', {flowData})
-
     this.createFlow((error, flow) => {
       if(error) return
+      
       const {flowId} = flow
       const schema = this.getLatestConfigSchema(this.state.bluprint)
       const options = {uuid: flowId, appData: flowData, schema: schema}
@@ -46,10 +50,10 @@ class ImportBluprint extends React.Component {
       this.flowService.updatePermissions(options, (error) => {
         if(error) return
 
-        this.linkFlowToIoTApp({flowId, flowData}, (error, flow) => {
+        this.linkFlowToIoTApp({flowId, flowData}, (error) => {
           if(error) return
 
-          this.deployFlow({flowId}, (error, flow) => {
+          this.deployFlow({flowId}, (error) => {
             if(error) return
             window.location = `${OCTOBLU_URL}/device/${flowId}`
           })

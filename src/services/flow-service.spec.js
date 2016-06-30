@@ -133,7 +133,7 @@ describe('FlowService', function() {
     })
   })
 
-  describe.only('when called and the app is configured with a v2 device', function() {
+  describe('when called and the app is configured with a v2 device', function() {
     beforeEach( function(done) {
       const schema = {
         type: 'object',
