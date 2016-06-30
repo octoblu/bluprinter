@@ -62,29 +62,7 @@ export default class FlowService {
   }
 
   addGlobalMessageReceivePermissions = (sharedDevices, callback) => {
-    async.each(sharedDevices, this._addGlobalMessageReceivePermission,callback)
-  }
-
-  _addGlobalMessageReceivePermission = (deviceUuid, callback) => {
-    const updateMessageFromQuery = {
-      $addToSet: {
-        'meshblu.whitelists.message.from': [{uuid: '*'}]
-      }
-    }
-    return this.meshblu.updateDangerously(deviceUuid, updateMessageFromQuery, callback)
-  }
-
-  removeGlobalMessageReceivePermissions = (sharedDevices, callback) => {
-    async.each(sharedDevices, this._addGlobalMessageReceivePermission,callback)
-  }
-
-  _removeGlobalMessageReceivePermission = (deviceUuid, callback) => {
-    const updateMessageFromQuery = {
-      $pull: {
-        'meshblu.whitelists.message.from': [{uuid: '*'}]
-      }
-    }
-    return this.meshblu.updateDangerously(deviceUuid, updateMessageFromQuery, callback)
+    this._allowSendAndSubscribeToBroadcast({uuid: '*', devices: sharedDevices}, callback)
   }
 
   getMessageSchema = ({nodes}) => {
@@ -149,30 +127,33 @@ export default class FlowService {
     }, callback)
   }
 
+  _allowSendAndSubscribeToBroadcast = ({uuid, devices}, callback) => {
+      const search = {
+        query: {uuid: {$in: devices}, 'meshblu.version': '2.0.0'},
+        projection: {uuid: true}
+      }
+
+    this.meshblu.search(search, (error, result) => {
+      if (error) return callback(error)
+
+      const v2devices = _.map(result, 'uuid')
+      const v1devices = _.difference(devices, v2devices)
+
+      this._updatePermissionsV1({uuid, v1devices}, (error) => {
+        if (error) return callback(error)
+
+        this._updatePermissionsV2({uuid, v2devices}, callback)
+      })
+    })
+  }
+
   updatePermissions = ({uuid, appData, schema, messageFromDevices}, callback) => {
     const devicesInFlow = _.map(this._getMeshbluDevices(schema), (value) => appData[value])
     const update = {$addToSet: { sendWhitelist: { $each: _.union(devicesInFlow, messageFromDevices) } }}
 
     this.meshblu.updateDangerously(uuid, update, (error) => {
       if (error) return callback(error)
-
-      const search = {
-        query: {uuid: {$in: devicesInFlow}, 'meshblu.version': '2.0.0'},
-        projection: {uuid: true}
-      }
-
-      this.meshblu.search(search, (error, result) => {
-        if (error) return callback(error)
-
-        const v2devices = _.map(result, 'uuid')
-        const v1devices = _.difference(devicesInFlow, v2devices)
-
-        this._updatePermissionsV1({uuid, v1devices}, (error) => {
-          if (error) return callback(error)
-
-          this._updatePermissionsV2({uuid, v2devices}, callback)
-        })
-      })
+      this._allowSendAndSubscribeToBroadcast({uuid, devices:devicesInFlow}, callback)
     })
   }
 }

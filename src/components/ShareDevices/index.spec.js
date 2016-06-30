@@ -4,6 +4,7 @@ import React from 'react'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import { shallow } from 'enzyme'
+import Alert from 'zooid-alert'
 
 import ShareDevices from './'
 
@@ -20,37 +21,9 @@ describe('<ShareDevices />', () => {
   describe('when sharedDevices prop is an array', () => {
     const sharedDevices = ['first-uuid', 'second-uuid', 'third-uuid']
 
-    it('should render a checkbox', () => {
+  it('should render an alert', () => {
       const sut = shallow(<ShareDevices sharedDevices={sharedDevices} />)
-      expect(sut.find('input[type="checkbox"]').length).to.equal(1)
-    })
-    it('should call the onShareDevices when the checkbox is clicked', () => {
-      const onShareDeviceHandler = sinon.stub()
-      const sut = shallow(
-        <ShareDevices
-          sharedDevices={sharedDevices}
-          onShareDevices={onShareDeviceHandler}
-        />
-      )
-      const checkbox = sut.find('input[type="checkbox"]')
-      checkbox.simulate('click', {
-        target: {
-          checked: true
-        }
-      })
-      expect(onShareDeviceHandler).to.have.been.calledWith({
-        shareExistingDevices: true,
-        sharedDevices,
-      })
-      checkbox.simulate('click', {
-        target: {
-          checked: false
-        }
-      })
-      expect(onShareDeviceHandler).to.have.been.calledWith({
-        shareExistingDevices: false,
-        sharedDevices,
-      })
-    })
+      expect(sut.containsMatchingElement(Alert)).to.equal(true)
   })
+})
 })

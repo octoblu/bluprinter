@@ -28,61 +28,46 @@ describe('FlowService', function () {
   describe('->addGlobalMessageReceivePermissions', function () {
     describe('when given a list of device uuids', function () {
       let firstDeviceHandler
-      let secondDeviceHandler
-      let sharedDevices
+      let secondDeviceHandler      
       beforeEach(function (done) {
-        const  userAuth = new Buffer('my-meshblu-uuid:my-meshblu-token').toString('base64')
-        sharedDevices = ['device-1-uuid', 'device-2-uuid']
-        firstDeviceHandler = meshbluMock.put('/v2/devices/device-1-uuid', {
-          $addToSet: {
-            'meshblu.whitelists.message.from': [{uuid: '*'}]
-          }
-        }).set('Authorization', `Basic ${userAuth}`)
-        .reply(200, deviceWithSchema)
+        const userAuth = new Buffer('my-meshblu-uuid:my-meshblu-token').toString('base64')
+        const sharedDevices = ['device-1-uuid', 'device-2-uuid']
+        meshbluMock.post('/search/devices')
+          .send({
+            uuid: {
+              $in: ['device-1-uuid', 'device-2-uuid']
+            },
+            'meshblu.version': '2.0.0'
+          })
+          .reply(200, [{uuid: 'device-1-uuid'}])
 
-        secondDeviceHandler = meshbluMock.put('/v2/devices/device-2-uuid', {
-          $addToSet: {
-            'meshblu.whitelists.message.from': [{uuid: '*'}]
-          }
-        }).set('Authorization', `Basic ${userAuth}`)
-        .reply(200, deviceWithSchema)
+
+        firstDeviceHandler = meshbluMock.put('/v2/devices/device-1-uuid')
+          .send({
+            $addToSet: {
+              'meshblu.whitelists.message.from': {uuid: '*'},
+              'meshblu.whitelists.broadcast.sent': {uuid: '*'}
+            }
+          })
+          .set('Authorization', `Basic ${userAuth}`)
+          .reply(200, deviceWithSchema)
+
+        secondDeviceHandler = meshbluMock.put('/v2/devices/device-2-uuid')
+          .send({
+            $addToSet: {
+              sendWhitelist: '*',
+              receiveWhitelist: '*'
+            }
+          })
+          .set('Authorization', `Basic ${userAuth}`)
+          .reply(200, deviceWithSchema)
+
         flowService.addGlobalMessageReceivePermissions(sharedDevices, done)
       })
 
       it('should actually try to update both devices dangerously', function () {
-        expect(firstDeviceHandler.done())
-        expect(secondDeviceHandler.done())
-      })
-    })
-  })
-
-  describe('->removeGlobalMessageReceivePermissions', function () {
-    describe('when given a list of device uuids', function () {
-      let firstDeviceHandler
-      let secondDeviceHandler
-      let sharedDevices
-      beforeEach(function (done) {
-        const  userAuth = new Buffer('my-meshblu-uuid:my-meshblu-token').toString('base64')
-        sharedDevices = ['device-1-uuid', 'device-2-uuid']
-        firstDeviceHandler = meshbluMock.put('/v2/devices/device-1-uuid', {
-          $addToSet: {
-            'meshblu.whitelists.message.from': [{uuid: '*'}]
-          }
-        }).set('Authorization', `Basic ${userAuth}`)
-        .reply(200, deviceWithSchema)
-
-        secondDeviceHandler = meshbluMock.put('/v2/devices/device-2-uuid', {
-          $pull: {
-            'meshblu.whitelists.message.from': [{uuid: '*'}]
-          }
-        }).set('Authorization', `Basic ${userAuth}`)
-        .reply(200, deviceWithSchema)
-        flowService.addGlobalMessageReceivePermissions(sharedDevices, done)
-      })
-
-      it('should actually try to update both devices dangerously', function () {
-        expect(firstDeviceHandler.done())
-        expect(secondDeviceHandler.done())
+        firstDeviceHandler.done()
+        secondDeviceHandler.done()
       })
     })
   })

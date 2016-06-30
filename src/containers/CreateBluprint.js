@@ -87,35 +87,23 @@ class CreateBluprint extends React.Component {
     this.setState({configSchema, sharedDevices, toastMessage: null })
   }
 
-  handleShareDevices = ({shareExistingDevices, sharedDevices}) => {
-    if (shareExistingDevices) {
-      this.flowService
-      .addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
-        console.log('Added Global Message Receive Permission', error, deviceResult)
-      })
-    } else {
-      this
-      .flowService
-      .removeGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
-        console.log('Removed Global Message Receive Permission', error, deviceResult)
-      })
-    }
-    this.setState({toastMessage: 'Device permissions updated'})
-  }
-
   handleCreate = (event) => {
     event.preventDefault()
 
     this.setState({ loading: true })
 
-    const { configSchema } = this.state
+    const { configSchema, sharedDevices } = this.state
 
     const { appName } = event.target
     const { flowUuid } = this.props.routeParams
     const meshbluConfig = getMeshbluConfig()
     const meshblu = new MeshbluHttp(meshbluConfig)
     const { flowDevice, version } = this.state
-
+    if (!_.isEmpty(sharedDevices)) {
+      this.flowService.addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
+        console.log('Added Global Message Receive Permission', error, deviceResult)
+      })
+    }
     const bluprintConfig = this.deviceDefaults({
       name: appName.value,
       version,
