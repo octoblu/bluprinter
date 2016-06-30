@@ -6,15 +6,15 @@ import Toast from 'zooid-toast'
 import Button from 'zooid-button'
 import Heading from 'zooid-heading'
 import Spinner from 'zooid-spinner'
-import Page from '../../components/Page'
+import Page from '../components/Page'
 import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
 
-import { getMeshbluConfig } from '../../services/auth-service'
-import { getLatestConfigSchema } from '../../services/bluprint-service'
+import { getMeshbluConfig } from '../services/auth-service'
+import { getLatestConfigSchema } from '../services/bluprint-service'
 
-import BluprintManifestList from '../../components/BluprintManifestList/'
-import BluprintConfigureForm from '../../components/BluprintConfigureForm/'
-import BluprintDetailPageActions from '../../components/BluprintDetailPageActions/'
+import BluprintManifestList from '../components/BluprintManifestList/'
+import BluprintConfigureForm from '../components/BluprintConfigureForm/'
+import BluprintDetailPageActions from '../components/BluprintDetailPageActions/'
 
 const propTypes = {
   routeParams: PropTypes.object,
@@ -34,8 +34,10 @@ class BluprintDetail extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    console.log(this.props)
     const { uuid } = this.props.routeParams
+    console.log("uuid", uuid)
     const meshbluConfig = getMeshbluConfig()
     const meshblu = new MeshbluHttp(meshbluConfig)
 
@@ -50,12 +52,7 @@ class BluprintDetail extends React.Component {
       this.setState({ device, loading: false })
     })
 
-    const search = {
-      query: {owner: meshbluConfig.uuid},
-      projection: {name: true, type: true, uuid: true}
-    }
-
-    meshblu.search(search, (error, selectableDevices) =>{
+    meshblu.search({query: {owner: meshbluConfig.uuid} , projection: {name: true, type: true, uuid: true}}, (error, selectableDevices) =>{
       this.setState({selectableDevices})
     })
   }
