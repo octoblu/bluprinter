@@ -3,10 +3,11 @@ import React, { PropTypes } from 'react'
 import url from 'url'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 import superagent from 'superagent'
+import Card from 'zooid-card'
 import Heading from 'zooid-heading'
-import { Page } from 'zooid-ui'
 import Spinner from 'zooid-spinner'
 import Toast from 'zooid-toast'
+import { Page } from 'zooid-ui'
 
 import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
 
@@ -224,15 +225,17 @@ class CreateBluprint extends React.Component {
 
         <Heading level={4}>Create IoT App</Heading>
 
-        <CreateAppForm
-          nodes={flowDevice.draft.nodes}
-          operationSchemas={operationSchemas}
-          deviceSchemas={deviceSchemas}
-          sharedDevices={sharedDevices}
-          onCreate={this.handleCreate}
-          onUpdate={this.handleUpdate}
-          onShareDevices={this.handleShareDevices}
-        />
+        <Card>
+          <CreateAppForm
+            nodes={flowDevice.draft.nodes}
+            operationSchemas={operationSchemas}
+            deviceSchemas={deviceSchemas}
+            sharedDevices={sharedDevices}
+            onCreate={this.handleCreate}
+            onUpdate={this.handleUpdate}
+            onShareDevices={this.handleShareDevices}
+            />
+        </Card>
       </Page>
     )
   }
