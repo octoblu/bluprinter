@@ -6,7 +6,7 @@ import Toast from 'zooid-toast'
 import Button from 'zooid-button'
 import Heading from 'zooid-heading'
 import Spinner from 'zooid-spinner'
-import Page from '../components/Page'
+import Page from 'zooid-page'
 import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
 
 import { getMeshbluConfig } from '../services/auth-service'

@@ -1,6 +1,6 @@
 {
   "name": "bluprinter",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "bluprinter",
   "main": "index.js",
   "scripts": {
@@ -51,6 +51,7 @@
     "zooid-device-icon": "^1.0.1",
     "zooid-heading": "^1.0.1",
     "zooid-meshblu-device-editor": "^9.1.1",
+    "zooid-page": "^1.0.2",
     "zooid-spinner": "^1.0.1",
     "zooid-toast": "^2.0.1",
     "zooid-ui": "^6.0.0",
