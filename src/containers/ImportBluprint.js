@@ -17,7 +17,9 @@ import BluprintManifestList from '../components/BluprintManifestList/'
 import * as deviceConfig from '../../test/data/bluprint-config.json'
 
 class ImportBluprint extends React.Component {
-  state = {}
+  state = {
+    loading: false
+  }
 
   componentWillMount = () => {
 
@@ -83,7 +85,7 @@ class ImportBluprint extends React.Component {
       .post(`${OCTOBLU_URL}/api/flows`)
       .redirects(0)
       .auth(uuid, token)
-      .send({"name": this.state.appName})
+      .send({name: this.state.appName, type: 'iot-app'})
       .end((error, response) => {
         if(error) return callback(error)
         return callback(null, response.body)
@@ -170,7 +172,7 @@ class ImportBluprint extends React.Component {
   }
 
   render = () => {
-    const {bluprint, name, selectableDevices} = this.state
+    const {bluprint, name, selectableDevices, loading} = this.state
 
     if(!bluprint || loading) return <Page width="small"><Spinner>Hang On...</Spinner></Page>
     const latestSchema  = this.getLatestConfigSchema(bluprint)
