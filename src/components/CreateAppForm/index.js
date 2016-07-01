@@ -26,7 +26,17 @@ const defaultProps = {
   onShareDevices: noop,
 }
 
-const CreateAppForm = ({ nodes, operationSchemas, deviceSchemas, sharedDevices, onCreate, onUpdate, onShareDevices }) => {
+const CreateAppForm = (props) => {
+  const {
+    nodes,
+    operationSchemas,
+    deviceSchemas,
+    sharedDevices,
+    onCreate,
+    onUpdate,
+    onShareDevices,
+  } = props
+
   return (
     <form onSubmit={onCreate}>
       <Input

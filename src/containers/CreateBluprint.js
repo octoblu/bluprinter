@@ -3,10 +3,10 @@ import React, { PropTypes } from 'react'
 import url from 'url'
 import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 import superagent from 'superagent'
+import Card from 'zooid-card'
 import Heading from 'zooid-heading'
-import { Page } from 'zooid-ui'
-import Spinner from 'zooid-spinner'
 import Toast from 'zooid-toast'
+import Page from 'zooid-page'
 
 import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
 
@@ -213,28 +213,23 @@ class CreateBluprint extends React.Component {
       sharedDevices
     } = this.state
 
-
-
-    if (loading) return <Page width="small"><Spinner size="large" /></Page>
-    if (error) return <Page width="small">Error: {error.message}</Page>
-
+    if (loading) return <Page loading />
+    if (error) return <Page error={error.message} />
     if (!flowDevice || !operationSchemas || !deviceSchemas) return null
 
     return (
-      <Page width="small">
-        <Toast message={toastMessage} />
-
-        <Heading level={4}>Create IoT App</Heading>
-
-        <CreateAppForm
-          nodes={flowDevice.draft.nodes}
-          operationSchemas={operationSchemas}
-          deviceSchemas={deviceSchemas}
-          sharedDevices={sharedDevices}
-          onCreate={this.handleCreate}
-          onUpdate={this.handleUpdate}
-          onShareDevices={this.handleShareDevices}
-        />
+      <Page title="Create IoT App">
+        <Card>
+          <CreateAppForm
+            nodes={flowDevice.draft.nodes}
+            operationSchemas={operationSchemas}
+            deviceSchemas={deviceSchemas}
+            sharedDevices={sharedDevices}
+            onCreate={this.handleCreate}
+            onUpdate={this.handleUpdate}
+            onShareDevices={this.handleShareDevices}
+            />
+        </Card>
       </Page>
     )
   }

@@ -1,6 +1,6 @@
 {
   "name": "bluprinter",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "bluprinter",
   "main": "index.js",
   "scripts": {
@@ -46,14 +46,16 @@
     "superagent": "^2.0.0",
     "url": "^0.11.0",
     "zooid-alert": "^1.0.1",
-    "zooid-button": "^1.0.8",
+    "zooid-button": "^1.0.9",
+    "zooid-card": "^1.0.0",
     "zooid-device-icon": "^1.0.1",
     "zooid-heading": "^1.0.1",
     "zooid-meshblu-device-editor": "^9.1.1",
+    "zooid-page": "^1.0.2",
     "zooid-spinner": "^1.0.1",
     "zooid-toast": "^2.0.1",
     "zooid-ui": "^6.0.0",
-    "zooid-ui-bluprint-config-builder": "^6.1.5"
+    "zooid-ui-bluprint-config-builder": "^6.1.7"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
@@ -75,7 +77,7 @@
     "eslint": "^2.13.1",
     "eslint-config-airbnb": "^9.0.1",
     "eslint-plugin-babel": "^3.3.0",
-    "eslint-plugin-import": "^1.9.2",
+    "eslint-plugin-import": "^1.10.0",
     "eslint-plugin-jsx-a11y": "^1.5.3",
     "eslint-plugin-react": "^5.2.2",
     "eventsource-polyfill": "^0.9.6",
@@ -99,6 +101,6 @@
     "style-loader": "^0.13.1",
     "webpack": "^1.13.0",
     "webpack-dev-middleware": "^1.6.1",
-    "webpack-hot-middleware": "^2.11.0"
+    "webpack-hot-middleware": "^2.12.0"
   }
 }
