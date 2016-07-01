@@ -37,7 +37,7 @@ export default class FlowService {
       .value()
 
     return new Promise((resolve, reject) => {
-      const search = {query: {uuid: {$in: deviceUuids}}, projection: {type: true, 'schemas.message': true}}
+      const search = {query: {uuid: {$in: deviceUuids}}, projection: {type: true, 'schemas.message': true, messageSchema: true}}
 
       this.meshblu.search(search, (error, devices) => {
         if(error) return reject(error)
@@ -53,7 +53,12 @@ export default class FlowService {
 
   _reduceSchemas = (result, value) => {
     const type = _.last(value.type.split(':'))
-    result[type] = value.schemas.message
+    if(value.schemas) {
+      result[type] = value.schemas.message
+    } else {
+      result[type] = value.messageSchema
+    }
+
     return result
   }
 

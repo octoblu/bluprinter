@@ -83,7 +83,6 @@ class CreateBluprint extends React.Component {
   }
 
   handleUpdate = ({ configSchema, sharedDevices }) =>  {
-    console.log('Receiving configSchema and sharedDevices', configSchema, sharedDevices)
     this.setState({configSchema, sharedDevices, toastMessage: null })
   }
 
