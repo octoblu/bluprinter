@@ -112,33 +112,41 @@ class CreateBluprint extends React.Component {
       version,
       sharedDevices
     })
+    console.log('Registering a new device')
+    meshblu.register(bluprintConfig, (error, device) => {
+      if (error) {
+        this.setErrorState(error)
+        return
+      }
 
-    superagent
-      .post(`${FLOW_DEPLOY_URL}/bluprint/${flowUuid}/${version}`)
-      .auth(meshbluConfig.uuid, meshbluConfig.token)
-      .end(() => {
-        console.log('Registering a new device')
-        meshblu.register(bluprintConfig, (error, device) => {
-          if (error) {
-            this.setErrorState(error)
-            return
-          }
+      meshblu.updateDangerously(flowUuid, {
+          $addToSet: {
+            discoverWhitelist: device.uuid
+        }
+      },
+      (error, result) => {
+        superagent
+          .post(`${FLOW_DEPLOY_URL}/bluprint/${device.uuid}/${version}`)
+          .auth(meshbluConfig.uuid, meshbluConfig.token)
+          .send({flowId: flowUuid})
+          .end(() => {
+            const { uuid } = device
+            const update = this.linksProperties({ uuid })
 
-          const { uuid } = device
-          const update = this.linksProperties({ uuid })
-
-          console.log('Updating new IoT App')
-          meshblu.update(uuid, update, (updateError) => {
-            if (updateError) {
-              this.setErrorState(updateError)
-              return
-            }
-            console.log('Redirecting to octoblu')
-            window.location = `${OCTOBLU_URL}/device/${device.uuid}`
+            console.log('Updating new IoT App')
+            meshblu.update(uuid, update, (updateError) => {
+              if (updateError) {
+                this.setErrorState(updateError)
+                return
+              }
+              console.log('Redirecting to octoblu')
+              window.location = `${OCTOBLU_URL}/device/${device.uuid}`
+            })
           })
         })
       })
-  }
+}
+
 
   deviceDefaults({ flowId, name, configSchema, messageSchema, version, manifest, sharedDevices }) {
     const USER_UUID = getMeshbluConfig().uuid

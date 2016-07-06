@@ -1,10 +1,21 @@
 import chai, { expect } from 'chai'
 import chaiSubset from 'chai-subset'
 import { getLatestConfigSchema } from './'
+import shmock from 'shmock'
+import enableDestroy from 'server-destroy'
 
 chai.use(chaiSubset)
 
-describe('BluprintService', () => {
+describe.only('BluprintService', () => {
+  let meshbluMock
+  beforeEach(function () {
+    meshbluMock = shmock(0xDEAD)
+    enableDestroy(meshbluMock)
+  })
+  afterEach(function (done) {
+    meshbluMock.destroy(done)
+  })
+
   describe('->getLatestConfigSchema', () => {
     it('should return null if bluprint has no latest property', () => {
       const bluprint = {}

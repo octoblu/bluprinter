@@ -3,7 +3,6 @@ import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
 import {getMeshbluConfig} from '../services/auth-service'
 import {Page} from 'zooid-ui'
 import {DeviceMessageSchemaContainer} from 'zooid-meshblu-device-editor';
-import DeployButton from '../components/DeployButton'
 
 class RunIotApp extends React.Component {
   state = {}
@@ -33,12 +32,6 @@ class RunIotApp extends React.Component {
       <main>
         <Page>
           <h1> Omg, you are totally running your IoT App </h1>
-
-          <DeployButton
-            flowId={device.draft.flowId}
-            status={device.online}
-            meshbluConfig={this.meshbluConfig}
-          />
 
           <DeviceMessageSchemaContainer
             device={device}
