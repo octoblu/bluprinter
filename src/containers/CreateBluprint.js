@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import url from 'url'
-import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
+import MeshbluHttp from 'browser-meshblu-http'
 import superagent from 'superagent'
 import Card from 'zooid-card'
 import Heading from 'zooid-heading'
@@ -135,19 +135,17 @@ class CreateBluprint extends React.Component {
             const { uuid } = device
             const update = this.linksProperties({ uuid })
 
-            console.log('Updating new IoT App')
             meshblu.update(uuid, update, (updateError) => {
               if (updateError) {
                 this.setErrorState(updateError)
                 return
               }
-              console.log('Redirecting to octoblu')
               window.location = `${OCTOBLU_URL}/device/${device.uuid}`
             })
           })
         })
       })
-}
+  }
 
 
   deviceDefaults({ flowId, name, configSchema, messageSchema, version, manifest, sharedDevices }) {
@@ -158,10 +156,30 @@ class CreateBluprint extends React.Component {
       online: true,
       type: 'bluprint',
       logo: 'https://s3-us-west-2.amazonaws.com/octoblu-icons/device/bluprint.svg',
+      schemas: {
+        version: '2.0.0',
+        configure: {
+          type: 'object',
+          properties: {
+            description: {
+              type: 'string'
+            },
+          },
+        },
+      },
       bluprint: {
         version: '1.0.0',
         flowId,
         latest: version,
+        schemas: {
+          version: '2.0.0',
+          configure: {
+            bluprint: configSchema,
+          },
+          message: {
+            bluprint: messageSchema,
+          }
+        },
         versions: [
           {
             manifest,
@@ -240,7 +258,7 @@ class CreateBluprint extends React.Component {
             onCreate={this.handleCreate}
             onUpdate={this.handleUpdate}
             onShareDevices={this.handleShareDevices}
-            />
+          />
         </Card>
       </Page>
     )

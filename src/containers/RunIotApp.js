@@ -1,8 +1,9 @@
 import React from 'react'
-import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
+import MeshbluHttp from 'browser-meshblu-http'
 import {getMeshbluConfig} from '../services/auth-service'
 import {Page} from 'zooid-ui'
 import {DeviceMessageSchemaContainer} from 'zooid-meshblu-device-editor';
+import MeshbluJsonSchemaResolver from 'meshblu-json-schema-resolver'
 
 class RunIotApp extends React.Component {
   state = {}
@@ -11,6 +12,7 @@ class RunIotApp extends React.Component {
     this.appId = this.props.params.uuid
     this.meshbluConfig = getMeshbluConfig()
     this.meshblu = new MeshbluHttp(this.meshbluConfig)
+    this.meshbluJsonSchemaResolver = new MeshbluJsonSchemaResolver({meshbluConfig: this.meshbluConfig})
     this.fetchDevice()
   }
 
@@ -21,7 +23,10 @@ class RunIotApp extends React.Component {
 
   fetchDevice = () => {
     this.meshblu.device(this.appId, (error, device) => {
-      this.setState({device})
+      this.meshbluJsonSchemaResolver.resolve(device, (error, resolvedDevice) => {
+          this.setState({device: resolvedDevice})
+      })
+
     })
   }
 

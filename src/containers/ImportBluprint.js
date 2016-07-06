@@ -4,7 +4,7 @@ import React from 'react'
 import { Page, FormField, FormInput } from 'zooid-ui'
 import Spinner from 'zooid-spinner'
 import Input from 'zooid-input'
-import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
+import MeshbluHttp from 'browser-meshblu-http'
 
 import FlowService from '../services/flow-service'
 import {getMeshbluConfig} from '../services/auth-service'
@@ -145,10 +145,14 @@ class ImportBluprint extends React.Component {
       schemas: {
         version: '2.0.0',
         configure: {
-          bluprint: this.getLatestConfigSchema(bluprint)
+          bluprint: {
+            $ref: `meshbludevice://${this.bluprintId}/#/bluprint/schemas/configure/bluprint`
+          }
         },
         message: {
-          bluprint: this.getLatestMessageSchema(bluprint)
+          bluprint: {
+            $ref: `meshbludevice://${this.bluprintId}/#/bluprint/schemas/message/bluprint`
+          }
         }
       },
     }
