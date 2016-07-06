@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import url from 'url'
-import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
+import MeshbluHttp from 'browser-meshblu-http'
 import superagent from 'superagent'
 import Card from 'zooid-card'
 import Heading from 'zooid-heading'
@@ -133,13 +133,11 @@ class CreateBluprint extends React.Component {
             const { uuid } = device
             const update = this.linksProperties({ uuid })
 
-            console.log('Updating new IoT App')
             meshblu.update(uuid, update, (updateError) => {
               if (updateError) {
                 this.setErrorState(updateError)
                 return
               }
-              console.log('Redirecting to octoblu')
               window.location = `${OCTOBLU_URL}/device/${device.uuid}`
             })
           })
@@ -160,6 +158,15 @@ class CreateBluprint extends React.Component {
         version: '1.0.0',
         flowId,
         latest: version,
+        schemas: {
+          version: '2.0.0',
+          configure: {
+            bluprint: configSchema,
+          },
+          message: {
+            bluprint: messageSchema,
+          }
+        },
         versions: [
           {
             manifest,
