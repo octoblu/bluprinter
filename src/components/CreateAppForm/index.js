@@ -55,6 +55,7 @@ const CreateAppForm = (props) => {
       />
 
       <ShareDevices sharedDevices={sharedDevices} onShareDevices={onShareDevices} />
+
       <Button type="submit" kind="primary">Create IoT App</Button>
     </form>
   )

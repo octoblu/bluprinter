@@ -145,7 +145,7 @@ class CreateBluprint extends React.Component {
           })
         })
       })
-}
+  }
 
 
   deviceDefaults({ flowId, name, configSchema, messageSchema, version, manifest, sharedDevices }) {
@@ -156,6 +156,17 @@ class CreateBluprint extends React.Component {
       online: true,
       type: 'bluprint',
       logo: 'https://s3-us-west-2.amazonaws.com/octoblu-icons/device/bluprint.svg',
+      schemas: {
+        version: '2.0.0',
+        configure: {
+          type: 'object',
+          properties: {
+            description: {
+              type: 'string'
+            },
+          },
+        },
+      },
       bluprint: {
         version: '1.0.0',
         flowId,
@@ -236,7 +247,7 @@ class CreateBluprint extends React.Component {
             onCreate={this.handleCreate}
             onUpdate={this.handleUpdate}
             onShareDevices={this.handleShareDevices}
-            />
+          />
         </Card>
       </Page>
     )
