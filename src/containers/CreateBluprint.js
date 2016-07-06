@@ -114,6 +114,8 @@ class CreateBluprint extends React.Component {
     })
     console.log('Registering a new device')
     meshblu.register(bluprintConfig, (error, device) => {
+      console.log("Bluprint Device Registered", device)
+      debugger
       if (error) {
         this.setErrorState(error)
         return
@@ -220,7 +222,9 @@ class CreateBluprint extends React.Component {
       configSchema,
       sharedDevices
     } = this.state
-
+    console.log("Flow Device", flowDevice)
+    console.log("Operation Schemas", operationSchemas)
+    console.log("Device Schemas", deviceSchemas)
     if (loading) return <Page loading />
     if (error) return <Page error={error.message} />
     if (!flowDevice || !operationSchemas || !deviceSchemas) return null

@@ -29,6 +29,7 @@ class ImportBluprint extends React.Component {
     this.flowService    = new FlowService(meshbluConfig)
 
     this.meshblu.device(this.bluprintId, (error, device) => {
+      console.log("Bluprint Device", device)
       this.setState({bluprint: device.bluprint, name: device.name})
     })
 
