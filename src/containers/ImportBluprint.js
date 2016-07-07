@@ -30,7 +30,7 @@ class ImportBluprint extends React.Component {
 
     this.meshblu.device(this.bluprintId, (error, device) => {
       console.log("Bluprint Device", device)
-      this.setState({bluprint: device.bluprint, name: device.name})
+      this.setState({bluprint: device.bluprint, name: device.name, appId: this.bluprintId})
     })
 
     const ownedDevices = {
@@ -73,6 +73,9 @@ class ImportBluprint extends React.Component {
 
           this.deployFlow({flowId}, (error) => {
             if(error) return console.log('deployFlow', error)
+          })
+          this.updateLinks({flowId}, (error) => {
+            if(error) return console.log('deployFlow', error)
             window.location = `${OCTOBLU_URL}/device/${flowId}`
           })
         })
@@ -92,7 +95,19 @@ class ImportBluprint extends React.Component {
         return callback(null, response.body)
       })
   }
-
+  updateLinks = ({flowId}, callback) => {
+    const updateQuery = {
+      $set: {
+        octoblu: {
+          links: [{
+            title: 'Run App',
+            url: url.format({ protocol, hostname, port, pathname: `/app/${flowId}` })
+          }]
+        }
+      }
+    }
+    this.meshblu.updateDangerously(flowId, callback)
+  }
   deployFlow = ({flowId}, callback) => {
     const {uuid, token} = getMeshbluConfig()
     superagent
@@ -129,7 +144,7 @@ class ImportBluprint extends React.Component {
           configure: {
             sent: [ {
                 type: "webhook",
-                url: `${FLOW_DEPLOY_URL}/bluprint/${bluprint.flowId}/${bluprint.latest}/link`,
+                url: `${FLOW_DEPLOY_URL}/bluprint/${this.bluprintId}/${bluprint.latest}/link`,
                 method: "POST",
                 generateAndForwardMeshbluCredentials: true
               }
@@ -138,7 +153,7 @@ class ImportBluprint extends React.Component {
         }
       },
       bluprint: {
-        flowId: bluprint.flowId,
+        bluprintId: this.bluprintId,
         version: bluprint.latest
       },
 
