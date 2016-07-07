@@ -112,10 +112,10 @@ class CreateBluprint extends React.Component {
       version,
       sharedDevices
     })
+    
     console.log('Registering a new device')
     meshblu.register(bluprintConfig, (error, device) => {
       console.log("Bluprint Device Registered", device)
-      debugger
       if (error) {
         this.setErrorState(error)
         return

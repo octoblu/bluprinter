@@ -16,6 +16,8 @@ import {SchemaContainer} from 'zooid-meshblu-device-editor'
 import BluprintManifestList from '../components/BluprintManifestList/'
 import * as deviceConfig from '../../test/data/bluprint-config.json'
 
+import async from 'async'
+
 class ImportBluprint extends React.Component {
   state = {
     loading: false
@@ -65,20 +67,14 @@ class ImportBluprint extends React.Component {
       const messageFromDevices = this.getMessageFromDevices(bluprint)
 
       const options = {uuid: flowId, appData: flowData, schema: schema, messageFromDevices: messageFromDevices}
-      this.flowService.updatePermissions(options, (error) => {
-        if(error) return console.log('updatePermissions', error)
-
-        this.linkFlowToIoTApp({flowId, flowData}, (error) => {
-          if(error) return console.log('linkFlowToIoTApp', error)
-
-          this.deployFlow({flowId}, (error) => {
-            if(error) return console.log('deployFlow', error)
-          })
-          this.updateLinks({flowId}, (error) => {
-            if(error) return console.log('deployFlow', error)
-            window.location = `${OCTOBLU_URL}/device/${flowId}`
-          })
-        })
+      async.series([
+        async.apply(this.flowService.updatePermissions, options),
+        async.apply(this.linkFlowToIoTApp, {flowId, flowData}),
+        async.apply(this.deployFlow, {flowId}),
+        async.apply(this.updateLinks, {flowId})
+      ], (error) => {
+        if(error) return console.log('updateLinks', error)
+        window.location = `${OCTOBLU_URL}/device/${flowId}`
       })
     })
   }
@@ -95,8 +91,11 @@ class ImportBluprint extends React.Component {
         return callback(null, response.body)
       })
   }
+
   updateLinks = ({flowId}, callback) => {
-    const updateQuery = {
+    const { protocol, hostname, port } = window.location
+
+    const update = {
       $set: {
         octoblu: {
           links: [{
@@ -106,8 +105,10 @@ class ImportBluprint extends React.Component {
         }
       }
     }
-    this.meshblu.updateDangerously(flowId, callback)
+
+    this.meshblu.updateDangerously(flowId, update, callback)
   }
+
   deployFlow = ({flowId}, callback) => {
     const {uuid, token} = getMeshbluConfig()
     superagent
