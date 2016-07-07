@@ -159,10 +159,12 @@ class CreateBluprint extends React.Component {
       schemas: {
         version: '2.0.0',
         configure: {
-          type: 'object',
-          properties: {
-            description: {
-              type: 'string'
+          default: {
+            type: 'object',
+            properties: {
+              description: {
+                type: 'string'
+              },
             },
           },
         },
