@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import superagent from 'superagent'
-import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
+import MeshbluHttp from 'browser-meshblu-http'
 import { TOOLS_SCHEMA_REGISTRY_URL } from 'config'
 import { getMeshbluConfig } from './auth-service'
 import Promise, { using } from 'bluebird'

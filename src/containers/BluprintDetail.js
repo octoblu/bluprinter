@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React, { PropTypes } from 'react'
-import MeshbluHttp from 'browser-meshblu-http/dist/meshblu-http.js'
+import MeshbluHttp from 'browser-meshblu-http'
 import superagent from 'superagent'
 import Toast from 'zooid-toast'
 import Button from 'zooid-button'
