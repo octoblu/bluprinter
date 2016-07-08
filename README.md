@@ -1,9 +1,16 @@
 # bluprinter
 You can have any color you like, as long as it's blu
 
+# bluprinter detail Page
+- [ ] actions (delete, import)
+- [ ] name
+- [ ] versions
+- [ ] discoverablity (public, private)
+- [ ] save & cancel
+
 ## To Do
-- [ ] Get the manifest of nodes for the created IoT app (CreateBluprint)
-- [ ] Designate required fields for IoT App (zooid-ui-bluprint-config-builder)
+- [x] Get the manifest of nodes for the created IoT app (CreateBluprint)
+- [x] Designate required fields for IoT App (zooid-ui-bluprint-config-builder)
 - [ ] Add User generated help text for fields. (zooid-ui-bluprint-config-builder)
 - [ ] Add Device/Node types to generated IoT App config in (zooid-ui-bluprint-config-builder)
 - [ ] Add Device selection to nodes with devices in them (Select existing vs. create new device)
