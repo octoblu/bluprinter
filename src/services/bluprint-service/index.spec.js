@@ -6,12 +6,14 @@ import enableDestroy from 'server-destroy'
 
 chai.use(chaiSubset)
 
-describe.only('BluprintService', () => {
+describe('BluprintService', () => {
   let meshbluMock
+  
   beforeEach(function () {
     meshbluMock = shmock(0xDEAD)
     enableDestroy(meshbluMock)
   })
+
   afterEach(function (done) {
     meshbluMock.destroy(done)
   })

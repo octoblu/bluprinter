@@ -5,6 +5,7 @@ import superagent from 'superagent'
 import Toast from 'zooid-toast'
 import Button from 'zooid-button'
 import Heading from 'zooid-heading'
+import Input from 'zooid-input'
 import Spinner from 'zooid-spinner'
 import Page from 'zooid-page'
 import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
@@ -25,19 +26,18 @@ class BluprintDetail extends React.Component {
     super(props)
 
     this.state = {
-      device: null,
-      loading: false,
-      error: null,
       alertMessage: null,
+      device: null,
+      error: null,
+      loading: false,
+      selectableDevices: [],
       updatingVersion: false,
-      selectableDevices: []
+      deletingBluprint: false,
     }
   }
 
   componentDidMount() {
-    console.log(this.props)
     const { uuid } = this.props.routeParams
-    console.log("uuid", uuid)
     const meshbluConfig = getMeshbluConfig()
     const meshblu = new MeshbluHttp(meshbluConfig)
 
@@ -52,7 +52,7 @@ class BluprintDetail extends React.Component {
       this.setState({ device, loading: false })
     })
 
-    meshblu.search({query: {owner: meshbluConfig.uuid} , projection: {name: true, type: true, uuid: true}}, (error, selectableDevices) =>{
+    meshblu.search({ query: { owner: meshbluConfig.uuid } , projection: {name: true, type: true, uuid: true}}, (error, selectableDevices) =>{
       this.setState({selectableDevices})
     })
   }
@@ -76,14 +76,26 @@ class BluprintDetail extends React.Component {
         }
 
         this.setState({
-          updatingVersion: false,
           alertMessage: 'Bluprint Version Updated',
+          updatingVersion: false,
         })
       })
   }
 
+  handleDeleteBluprint = () => {
+    console.log('Delete Bluprint');
+  }
+
   render() {
-    const { device, error, loading, alertMessage, updatingVersion, selectableDevices } = this.state
+    const {
+      alertMessage,
+      device,
+      error,
+      loading,
+      selectableDevices,
+      updatingVersion,
+      deletingBluprint,
+    } = this.state
 
     if (loading) return <Page loading={loading} />
     if (error)   return <Page error={error} />
@@ -95,10 +107,14 @@ class BluprintDetail extends React.Component {
     return (
       <Page title={name}>
         <BluprintDetailPageActions
+          onDeleteBluprint={this.handleDeleteBluprint}
+          deleting={deletingBluprint}
           onUpdateVersion={this.handleUpdateVersion}
           updating={updatingVersion}
         />
-        <BluprintConfigureForm schema={latestConfigSchema} selectableDevices={selectableDevices} />
+
+        <Input label="Name" name="bluprintName" value={name} />
+
         <BluprintManifestList manifest={bluprint.manifest} />
       </Page>
     )
