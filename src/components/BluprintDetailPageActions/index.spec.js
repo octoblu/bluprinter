@@ -11,7 +11,7 @@ import BluprintDetailPageActions from './'
 chai.use(chaiEnzyme())
 chai.use(sinonChai)
 
-describe.only('<BluprintDetailPageActions />', () => {
+describe('<BluprintDetailPageActions />', () => {
   describe('when component renders', () => {
     let sut
 

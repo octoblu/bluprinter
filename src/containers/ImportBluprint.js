@@ -2,6 +2,7 @@ import url from 'url'
 
 import React from 'react'
 import { Page, FormField, FormInput } from 'zooid-ui'
+import Heading from 'zooid-heading'
 import Spinner from 'zooid-spinner'
 import Input from 'zooid-input'
 import MeshbluHttp from 'browser-meshblu-http'
@@ -23,26 +24,36 @@ class ImportBluprint extends React.Component {
     loading: false
   }
 
-  componentWillMount = () => {
+  componentWillMount() {
 
-    const meshbluConfig = getMeshbluConfig()
+    this.meshbluConfig = getMeshbluConfig()
+
     this.bluprintId     = this.props.params.uuid
-    this.meshblu        = new MeshbluHttp(meshbluConfig)
-    this.flowService    = new FlowService(meshbluConfig)
+    this.meshblu        = new MeshbluHttp(this.meshbluConfig)
+    this.flowService    = new FlowService(this.meshbluConfig)
+  }
+
+  componentDidMount() {
 
     this.meshblu.device(this.bluprintId, (error, device) => {
       console.log("Bluprint Device", device)
-      this.setState({bluprint: device.bluprint, name: device.name, appId: this.bluprintId})
+
+      const latestSchema  = this.getLatestConfigSchema(device.bluprint)
+      const {manifest}    = this.getLatestVersion(device.bluprint)
+
+      this.setState({bluprint: device.bluprint, name: device.name, appId: this.bluprintId, manifest, latestSchema})
     })
 
     const ownedDevices = {
-      query: {owner: meshbluConfig.uuid},
+      query: {owner: this.meshbluConfig.uuid},
       projection: {name: true, type: true, uuid: true}
     }
 
     this.meshblu.search(ownedDevices, (error, selectableDevices) =>{
       this.setState({selectableDevices})
     })
+
+    console.log('didmount')
   }
 
   getMessageFromDevices = (bluprint) => {
@@ -57,6 +68,7 @@ class ImportBluprint extends React.Component {
 
   importBluprint = (flowData) => {
     console.log('importBluprint')
+
     this.setState({loading: true})
     this.createFlow((error, flow) => {
       if(error) return
@@ -85,7 +97,7 @@ class ImportBluprint extends React.Component {
       .post(`${OCTOBLU_URL}/api/flows`)
       .redirects(0)
       .auth(uuid, token)
-      .send({name: this.state.appName, type: 'iot-app'})
+      .send({name: this.appName, type: 'iot-app'})
       .end((error, response) => {
         if(error) return callback(error)
         return callback(null, response.body)
@@ -127,11 +139,11 @@ class ImportBluprint extends React.Component {
 
   getDeviceData = ({flowId, flowData}) => {
     console.log("WARNING: USE UPDATE DANGEROUSLY!! This is only working because of an order-of-operations thing.")
-    const {bluprint, appName} = this.state
+    const {bluprint} = this.state
     const {protocol, hostname, port} = window.location
 
     const deviceData = {
-      name: appName,
+      name: this.appName,
       type: 'iot-app',
       logo: 'https://s3-us-west-2.amazonaws.com/octoblu-icons/device/iot-app.svg',
       octoblu: {
@@ -188,33 +200,33 @@ class ImportBluprint extends React.Component {
     return this.getLatestVersion(bluprint).schemas.message.bluprint
   }
 
-  updateDeviceName = (event) => {
-    this.setState({appName: event.target.value})
+  updateDeviceName = ({target}) => {
+    this.appName = target.value
   }
 
   render = () => {
-    const {bluprint, name, selectableDevices, loading} = this.state
+    const {bluprint, name, selectableDevices, loading, manifest, latestSchema} = this.state
 
     if(!bluprint || loading) return <Page width="small"><Spinner>Hang On...</Spinner></Page>
-    const latestSchema  = this.getLatestConfigSchema(bluprint)
-    const {manifest}    = this.getLatestVersion(bluprint)
 
     return (
-      <Page>
-        <h3>Things Manifest</h3>
+      <Page width="small">
+        <Heading level={4}>Import {name}</Heading>
+
+        <Heading level={5}>Things  Manifest ????</Heading>
+
         <BluprintManifestList manifest={manifest} />
 
-        <h2>Configure App {name}</h2>
+        <Heading level={5}>Configure</Heading>
 
-        <form onChange={this.updateDeviceName}>
-          <Input
-            name="appName"
-            label="IoT App Name"
-            placeholder="App Name"
-            autofocus
-            required
-          />
-        </form>
+        <Input
+          name="appName"
+          label="IoT App Name"
+          placeholder="App Name"
+          value={this.appName}
+          onChange={this.updateDeviceName}
+          required
+        />
 
         <SchemaContainer
           schema={latestSchema}

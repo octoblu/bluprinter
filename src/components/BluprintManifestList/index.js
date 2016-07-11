@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React, { PropTypes } from 'react'
-import List, { ListItem } from 'zooid-list'
+import TextTruncate from 'react-text-truncate'
+import Card from 'zooid-card'
 import DeviceIcon from 'zooid-device-icon'
 
 import styles from './styles.css'
@@ -16,14 +17,16 @@ const BluprintManifestList = ({ manifest }) => {
 
   const items = _.map(manifest, (node) => {
     return (
-      <ListItem key={node.id} >
-        <DeviceIcon type={node.type} size="small" />
-        <a href={node.documentation} target="_blank">{node.name}</a>
-      </ListItem>
+      <div className={styles.GridListItem} key={node.id} >
+        <DeviceIcon className={styles.GridListItemImage} type={node.type} />
+        <a className={styles.GridListItemName} href={node.documentation} target="_blank">
+          <TextTruncate text={node.name} truncateText="..." />
+        </a>
+      </div>
     )
   })
 
-  return <List>{items}</List>
+  return <div className={styles.GridList}>{items}</div>
 }
 
 BluprintManifestList.propTypes    = propTypes

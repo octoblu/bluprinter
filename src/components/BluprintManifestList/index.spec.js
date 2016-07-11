@@ -4,7 +4,7 @@ import React from 'react'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import { mount, shallow } from 'enzyme'
-import List, { ListItem } from 'zooid-list'
+import DeviceIcon from 'zooid-device-icon'
 
 import BluprintManifestList from './'
 
@@ -38,7 +38,10 @@ describe('<BluprintManifestList />', () => {
       ]
 
       const sut = shallow(<BluprintManifestList manifest={manifest} />)
-      expect(sut.find(ListItem).length).to.equal(2)
+      manifest.map((node) => {
+        expect(sut).to.contain.text(node.name)
+        expect(sut).to.contain(<DeviceIcon type={node.type} size="small"/>)
+      })
     })
   })
 })
