@@ -1,40 +1,43 @@
-import url from 'url'
-
 import React from 'react'
-import { Page, FormField, FormInput } from 'zooid-ui'
+import MeshbluHttp from 'browser-meshblu-http'
+import superagent from 'superagent'
+import url from 'url'
+import Button from 'zooid-button'
 import Heading from 'zooid-heading'
 import Spinner from 'zooid-spinner'
 import Input from 'zooid-input'
-import MeshbluHttp from 'browser-meshblu-http'
+import {SchemaContainer} from 'zooid-meshblu-device-editor'
+import { Page, FormField, FormInput } from 'zooid-ui'
+
+import {OCTOBLU_URL, FLOW_DEPLOY_URL} from 'config'
 
 import FlowService from '../services/flow-service'
 import {getMeshbluConfig} from '../services/auth-service'
 
-import {OCTOBLU_URL, FLOW_DEPLOY_URL} from 'config'
-import superagent from 'superagent'
-import {SchemaContainer} from 'zooid-meshblu-device-editor'
 
 import BluprintManifestList from '../components/BluprintManifestList/'
 import * as deviceConfig from '../../test/data/bluprint-config.json'
 
 import async from 'async'
 
+
 class ImportBluprint extends React.Component {
-  state = {
-    loading: false
-  }
 
-  componentWillMount() {
+  constructor(props) {
+    super(props)
 
+    this.bluprintId    = this.props.params.uuid
     this.meshbluConfig = getMeshbluConfig()
+    this.meshblu       = new MeshbluHttp(this.meshbluConfig)
+    this.flowService   = new FlowService(this.meshbluConfig)
 
-    this.bluprintId     = this.props.params.uuid
-    this.meshblu        = new MeshbluHttp(this.meshbluConfig)
-    this.flowService    = new FlowService(this.meshbluConfig)
+    this.state = {
+      loading: false,
+      showManifest: false,
+    }
   }
 
   componentDidMount() {
-
     this.meshblu.device(this.bluprintId, (error, device) => {
       console.log("Bluprint Device", device)
 
@@ -52,8 +55,6 @@ class ImportBluprint extends React.Component {
     this.meshblu.search(ownedDevices, (error, selectableDevices) =>{
       this.setState({selectableDevices})
     })
-
-    console.log('didmount')
   }
 
   getMessageFromDevices = (bluprint) => {
@@ -204,8 +205,17 @@ class ImportBluprint extends React.Component {
     this.appName = target.value
   }
 
+
   render = () => {
-    const {bluprint, name, selectableDevices, loading, manifest, latestSchema} = this.state
+    const {
+      bluprint,
+      latestSchema,
+      loading,
+      manifest,
+      name,
+      selectableDevices,
+      showManifest,
+    } = this.state
 
     if(!bluprint || loading) return <Page width="small"><Spinner>Hang On...</Spinner></Page>
 
@@ -213,9 +223,11 @@ class ImportBluprint extends React.Component {
       <Page width="small">
         <Heading level={4}>Import {name}</Heading>
 
-        <Heading level={5}>Things  Manifest ????</Heading>
-
-        <BluprintManifestList manifest={manifest} />
+        <BluprintManifestList
+          manifest={manifest}
+          expanded={showManifest}
+          onChange={() => this.setState({ showManifest: !this.state.showManifest })}
+        />
 
         <Heading level={5}>Configure</Heading>
 

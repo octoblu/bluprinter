@@ -16,7 +16,7 @@
   align-items: center;
 
   width: 20%;
-  height: 160px;
+  height: 130px;
 }
 
 .GridListItemImage {
@@ -27,4 +27,11 @@
 
 .GridListItemName {
   text-align: center;
+}
+
+.ManifestHeader {
+  margin-bottom: 10px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
