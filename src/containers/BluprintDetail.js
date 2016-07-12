@@ -2,20 +2,17 @@ import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import MeshbluHttp from 'browser-meshblu-http'
 import superagent from 'superagent'
-import Toast from 'zooid-toast'
-import Button from 'zooid-button'
-import Heading from 'zooid-heading'
 import Input from 'zooid-input'
-import Spinner from 'zooid-spinner'
 import Page from 'zooid-page'
+import Card from 'zooid-card'
 import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
 
 import { getMeshbluConfig } from '../services/auth-service'
 import { getLatestConfigSchema } from '../services/bluprint-service'
 
 import BluprintManifestList from '../components/BluprintManifestList/'
-import BluprintConfigureForm from '../components/BluprintConfigureForm/'
-import BluprintDetailPageActions from '../components/BluprintDetailPageActions/'
+import BluprintPageHeader from '../components/BluprintPageHeader/'
+import ShareUrl from '../components/ShareUrl/'
 
 const propTypes = {
   routeParams: PropTypes.object,
@@ -31,8 +28,8 @@ class BluprintDetail extends React.Component {
       error: null,
       loading: false,
       selectableDevices: [],
-      updatingVersion: false,
       deletingBluprint: false,
+      publicBluprint: false,
     }
   }
 
@@ -57,44 +54,28 @@ class BluprintDetail extends React.Component {
     })
   }
 
-  handleUpdateVersion = () => {
-    this.setState({ updatingVersion: true })
-
-    const { uuid, token } = getMeshbluConfig()
-    const { flowId, latest } = this.state.device.bluprint
-
-    superagent
-      .post(`${FLOW_DEPLOY_URL}/bluprint/${flowId}/${latest}`)
-      .auth(uuid, token)
-      .end((error) => {
-        if (error) {
-          this.setState({
-            error,
-            updatingVersion: false,
-          })
-          return
-        }
-
-        this.setState({
-          alertMessage: 'Bluprint Version Updated',
-          updatingVersion: false,
-        })
-      })
-  }
-
   handleDeleteBluprint = () => {
     console.log('Delete Bluprint');
   }
 
+  handleImport = () => {
+    this.props.history.push(`bluprints/${this.state.device.uuid}/import`)
+  }
+
+  handlePublic = () => {
+    this.setState({publicBluprint: !this.state.publicBluprint})
+  }
+
+
   render() {
     const {
       alertMessage,
+      deletingBluprint,
       device,
       error,
       loading,
+      publicBluprint,
       selectableDevices,
-      updatingVersion,
-      deletingBluprint,
     } = this.state
 
     if (loading) return <Page loading={loading} />
@@ -105,21 +86,26 @@ class BluprintDetail extends React.Component {
     const latestConfigSchema = getLatestConfigSchema(bluprint)
 
     return (
-      <Page title={name}>
-        <BluprintDetailPageActions
-          onDeleteBluprint={this.handleDeleteBluprint}
-          deleting={deletingBluprint}
-          onUpdateVersion={this.handleUpdateVersion}
-          updating={updatingVersion}
-        />
+      <Page>
+        <Card>
+          <BluprintPageHeader
+            device={device}
+            onDelete={this.handleDeleteBluprint}
+            deleting={deletingBluprint}
+            onImport={this.handleImport}
+          />
 
-        <Input label="Name" name="bluprintName" value={name} />
+          <Input label="Name" name="bluprintName" value={name} />
 
-        <BluprintManifestList manifest={bluprint.manifest} />
+          <ShareUrl uuid={device.uuid} publicBluprint={publicBluprint} onChange={this.handlePublic} />
+
+          <BluprintManifestList manifest={bluprint.manifest} />
+        </Card>
       </Page>
     )
   }
 }
+
 
 BluprintDetail.propTypes = propTypes
 

@@ -1,0 +1,15 @@
+.PageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.PageHeaderText {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0 !important;
+}
+
+.PageHeader button {
+  margin-right: 12px;
+}
