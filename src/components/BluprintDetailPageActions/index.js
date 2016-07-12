@@ -6,13 +6,10 @@ const propTypes = {
   deleting: PropTypes.bool,
   onDeleteBluprint: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
-  onUpdateVersion: PropTypes.func.isRequired,
-  updating: PropTypes.bool,
 }
 
 const defaultProps = {
   deleting: false,
-  updating: false,
 }
 
 const BluprintDetailPageActions = ({ deleting, onDeleteBluprint, onImport }) => {
@@ -21,11 +18,11 @@ const BluprintDetailPageActions = ({ deleting, onDeleteBluprint, onImport }) => 
 
   return (
     <PageActions>
-      <Button onClick={onImport} kind="primary" disabled={false}>
+      <Button onClick={onImport} kind="primary" disabled={false} size="small">
         Import
       </Button>
 
-      <Button onClick={onDeleteBluprint} kind="hollow-danger" disabled={false}>
+      <Button onClick={onDeleteBluprint} kind="hollow-danger" disabled={false} size="small">
         {deleteButtonText}
       </Button>
     </PageActions>

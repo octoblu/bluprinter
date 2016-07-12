@@ -3,7 +3,7 @@ import chaiEnzyme from 'chai-enzyme'
 import React from 'react'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-import { mount, shallow } from 'enzyme'
+import { shallow } from 'enzyme'
 import Button from 'zooid-button'
 
 import BluprintDetailPageActions from './'
@@ -19,17 +19,9 @@ describe('<BluprintDetailPageActions />', () => {
       sut = shallow(<BluprintDetailPageActions />)
     })
 
-    xit('should render an update version button', () => {
-      expect(sut.containsMatchingElement(
-        <Button kind="hollow-neutral" size="small" disabled={false}>
-          Update Version
-        </Button>
-      )).to.equal(true)
-    })
-
     it('should render a Delete Bluprint button', () => {
       expect(sut.containsMatchingElement(
-        <Button kind="hollow-danger" disabled={false}>
+        <Button kind="hollow-danger" disabled={false} size="small">
           Delete
         </Button>
       )).to.equal(true)
@@ -37,23 +29,10 @@ describe('<BluprintDetailPageActions />', () => {
 
     it('should render an Import Bluprint button', () => {
       expect(sut.containsMatchingElement(
-        <Button kind="primary" disabled={false}>
+        <Button kind="primary" disabled={false} size="small">
           Import
         </Button>
       )).to.equal(true)
-    })
-  })
-
-  describe('when updateVersionBtn is clicked', () => {
-    xit('should call handleUpdateVersion', () => {
-      const handleUpdateVersion = sinon.spy()
-      const sut = shallow(
-        <BluprintDetailPageActions onUpdateVersion={handleUpdateVersion} />
-      )
-      const updateVersionBtn = sut.find({ children: 'Update Version'})
-
-      updateVersionBtn.simulate('click')
-      expect(handleUpdateVersion).to.have.been.called
     })
   })
 
