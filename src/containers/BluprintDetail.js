@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React, { PropTypes } from 'react'
+import {browserHistory} from 'react-router'
 import MeshbluHttp from 'browser-meshblu-http'
 import superagent from 'superagent'
 import Input from 'zooid-input'
@@ -59,7 +60,7 @@ class BluprintDetail extends React.Component {
   }
 
   handleImport = () => {
-    this.props.history.push(`bluprints/${this.state.device.uuid}/import`)
+    browserHistory.push(`bluprints/${this.state.device.uuid}/import`)
   }
 
   handlePublic = () => {

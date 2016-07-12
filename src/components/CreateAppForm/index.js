@@ -41,7 +41,7 @@ const CreateAppForm = (props) => {
     <form onSubmit={onCreate}>
       <Input
         name="appName"
-        label="IoT App Name"
+        label="Bluprint Name"
         placeholder="App Name"
         autofocus
         required
@@ -56,7 +56,7 @@ const CreateAppForm = (props) => {
 
       <ShareDevices sharedDevices={sharedDevices} onShareDevices={onShareDevices} />
 
-      <Button type="submit" kind="primary">Create IoT App</Button>
+      <Button type="submit" kind="primary">Create</Button>
     </form>
   )
 }

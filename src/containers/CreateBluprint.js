@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import url from 'url'
+import { browserHistory } from 'react-router'
 import MeshbluHttp from 'browser-meshblu-http'
 import superagent from 'superagent'
 import Card from 'zooid-card'
@@ -88,13 +89,12 @@ class CreateBluprint extends React.Component {
 
   handleCreate = (event) => {
     event.preventDefault()
-
     this.setState({ loading: true })
 
     const { configSchema, sharedDevices } = this.state
 
     const { appName } = event.target
-    const { flowUuid } = this.props.routeParams
+    const { flowUuid, history } = this.props
     const meshbluConfig = getMeshbluConfig()
     const meshblu = new MeshbluHttp(meshbluConfig)
     const { flowDevice, version } = this.state
@@ -112,10 +112,8 @@ class CreateBluprint extends React.Component {
       version,
       sharedDevices
     })
-    
-    console.log('Registering a new device')
+
     meshblu.register(bluprintConfig, (error, device) => {
-      console.log("Bluprint Device Registered", device)
       if (error) {
         this.setErrorState(error)
         return
@@ -140,7 +138,7 @@ class CreateBluprint extends React.Component {
                 this.setErrorState(updateError)
                 return
               }
-              window.location = `${OCTOBLU_URL}/device/${device.uuid}`
+              history.push(`/bluprints/${device.uuid}`)
             })
           })
         })
@@ -242,15 +240,13 @@ class CreateBluprint extends React.Component {
       configSchema,
       sharedDevices
     } = this.state
-    console.log("Flow Device", flowDevice)
-    console.log("Operation Schemas", operationSchemas)
-    console.log("Device Schemas", deviceSchemas)
+
     if (loading) return <Page loading />
     if (error) return <Page error={error.message} />
     if (!flowDevice || !operationSchemas || !deviceSchemas) return null
 
     return (
-      <Page title="Create IoT App">
+      <Page title="Author New Bluprint">
         <Card>
           <CreateAppForm
             nodes={flowDevice.draft.nodes}
