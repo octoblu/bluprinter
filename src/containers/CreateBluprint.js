@@ -246,18 +246,16 @@ class CreateBluprint extends React.Component {
     if (!flowDevice || !operationSchemas || !deviceSchemas) return null
 
     return (
-      <Page title="Author New Bluprint">
-        <Card>
-          <CreateAppForm
-            nodes={flowDevice.draft.nodes}
-            operationSchemas={operationSchemas}
-            deviceSchemas={deviceSchemas}
-            sharedDevices={sharedDevices}
-            onCreate={this.handleCreate}
-            onUpdate={this.handleUpdate}
-            onShareDevices={this.handleShareDevices}
-          />
-        </Card>
+      <Page title="Create a new Bluprint">
+        <CreateAppForm
+          nodes={flowDevice.draft.nodes}
+          operationSchemas={operationSchemas}
+          deviceSchemas={deviceSchemas}
+          sharedDevices={sharedDevices}
+          onCreate={this.handleCreate}
+          onUpdate={this.handleUpdate}
+          onShareDevices={this.handleShareDevices}
+        />
       </Page>
     )
   }

@@ -2,9 +2,12 @@ import noop from 'lodash.noop'
 import React, { PropTypes } from 'react'
 import Button from 'zooid-button'
 import Input from 'zooid-input'
+import FormField from 'zooid-form-field'
+import FormLabel from 'zooid-form-label'
 import BluprintConfigBuilder from 'zooid-ui-bluprint-config-builder'
 
 import ShareDevices from '../ShareDevices/'
+import styles from './styles.css'
 
 const propTypes = {
   deviceSchemas: PropTypes.object,
@@ -39,24 +42,53 @@ const CreateAppForm = (props) => {
 
   return (
     <form onSubmit={onCreate}>
-      <Input
-        name="appName"
-        label="Bluprint Name"
-        placeholder="App Name"
-        autofocus
-        required
-      />
+      <fieldset className={styles.fieldset}>
+        <Input
+          name="appName"
+          label="Bluprint Name"
+          description="Great Bluprint names are descriptive"
+          autoFocus
+          required
+        />
 
-      <BluprintConfigBuilder
-        nodes={nodes}
-        operationSchemas={operationSchemas}
-        deviceSchemas={deviceSchemas}
-        onUpdate={onUpdate}
-      />
+        <Input
+          name="appDescription"
+          label="Description"
+        />
+      </fieldset>
 
-      <ShareDevices sharedDevices={sharedDevices} onShareDevices={onShareDevices} />
+      <fieldset className={styles.fieldset}>
+        <legend className={styles.legend}>Visibility</legend>
 
-      <Button type="submit" kind="primary">Create</Button>
+        <FormField>
+          <FormLabel>
+            <input type="radio" name="visibility" value="Public" /> Public
+          </FormLabel>
+          <div>Shared in our App Store</div>
+        </FormField>
+
+        <FormField>
+          <FormLabel>
+            <input type="radio" name="visibility" value="Private" /> Private
+          </FormLabel>
+          <div>You choose who has permission.</div>
+        </FormField>
+      </fieldset>
+
+      <fieldset className={styles.fieldset}>
+        <legend className={styles.legend}>Configuration</legend>
+
+        <BluprintConfigBuilder
+          nodes={nodes}
+          operationSchemas={operationSchemas}
+          deviceSchemas={deviceSchemas}
+          onUpdate={onUpdate}
+        />
+
+        <ShareDevices sharedDevices={sharedDevices} onShareDevices={onShareDevices} />
+      </fieldset>
+
+      <Button type="submit" kind="primary">Create IoT App Bluprint</Button>
     </form>
   )
 }
