@@ -10,7 +10,7 @@ import BluprintVersionSelect from './'
 chai.use(chaiEnzyme())
 chai.use(sinonChai)
 
-describe.only('<BluprintVersionSelect />', () => {
+describe('<BluprintVersionSelect />', () => {
   describe('When given a list of versions', () => {
     it('should render the versions as options', () => {
       const versions = [{version: '1.0.0'}, {version: '2.0.0'}]
