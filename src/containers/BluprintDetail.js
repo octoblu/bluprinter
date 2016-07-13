@@ -11,9 +11,10 @@ import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
 import { getMeshbluConfig } from '../services/auth-service'
 import { getLatestConfigSchema } from '../services/bluprint-service'
 
-import BluprintManifestList from '../components/BluprintManifestList/'
-import BluprintPageHeader from '../components/BluprintPageHeader/'
 import ShareUrl from '../components/ShareUrl/'
+import BluprintPageHeader from '../components/BluprintPageHeader/'
+import BluprintManifestList from '../components/BluprintManifestList/'
+import BluprintVersionSelect from '../components/BluprintVersionSelect/'
 
 const propTypes = {
   routeParams: PropTypes.object,
@@ -67,6 +68,10 @@ class BluprintDetail extends React.Component {
     this.setState({publicBluprint: !this.state.publicBluprint})
   }
 
+  handleVersionSelect = () => {
+    console.log("VERSION SELECTED!");
+  }
+
 
   render() {
     const {
@@ -86,6 +91,7 @@ class BluprintDetail extends React.Component {
     const { bluprint, name } = device
     const latestConfigSchema = getLatestConfigSchema(bluprint)
 
+
     return (
       <Page>
         <Card>
@@ -96,7 +102,9 @@ class BluprintDetail extends React.Component {
             onImport={this.handleImport}
           />
 
-          <Input label="Name" name="bluprintName" value={name} />
+          <Input label="Name" name="bluprintName" defaultValue={name} />
+
+          <BluprintVersionSelect latest={bluprint.latest} versions={bluprint.versions} onChange={this.handleVersionSelect} />
 
           <ShareUrl uuid={device.uuid} publicBluprint={publicBluprint} onChange={this.handlePublic} />
 
