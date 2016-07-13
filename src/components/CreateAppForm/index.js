@@ -46,7 +46,7 @@ const CreateAppForm = (props) => {
         <Input
           name="appName"
           label="Bluprint Name"
-          description="Great Bluprint names are descriptive"
+          description="Pick a name to help you identify this Bluprint."
           autoFocus
           required
         />
@@ -61,17 +61,27 @@ const CreateAppForm = (props) => {
         <legend className={styles.legend}>Visibility</legend>
 
         <FormField>
-          <FormLabel>
-            <input type="radio" name="visibility" value="Public" /> Public
-          </FormLabel>
-          <div>Shared in our App Store</div>
+          <label className={styles.radioLabel}>
+            <input type="radio" name="visibility" value="Public" />
+            <div className={styles.radioBody}>
+              Public
+              <div className={styles.radioDescription}>
+                Shared in our App Store.
+              </div>
+            </div>
+          </label>
         </FormField>
 
         <FormField>
-          <FormLabel>
-            <input type="radio" name="visibility" value="Private" /> Private
-          </FormLabel>
-          <div>You choose who has permission.</div>
+          <label className={styles.radioLabel}>
+            <input type="radio" name="visibility" value="Private" />
+            <div className={styles.radioBody}>
+              Private
+              <div className={styles.radioDescription}>
+                You choose who has permission.
+              </div>
+            </div>
+          </label>
         </FormField>
       </fieldset>
 
