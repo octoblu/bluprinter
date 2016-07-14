@@ -1,0 +1,1 @@
+export const CREATE_BLUPRINT = 'CREATE_BLUPRINT'

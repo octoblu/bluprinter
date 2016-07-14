@@ -4,10 +4,7 @@ import Button from 'zooid-button'
 import Heading from 'zooid-heading'
 import Input from 'zooid-input'
 import FormField from 'zooid-form-field'
-import FormLabel from 'zooid-form-label'
-import BluprintConfigBuilder from 'zooid-ui-bluprint-config-builder'
 
-import ShareDevices from '../ShareDevices/'
 import styles from './styles.css'
 
 const propTypes = {
@@ -88,20 +85,7 @@ const CreateAppForm = (props) => {
           </FormField>
         </fieldset>
 
-        <fieldset className={styles.fieldset}>
-          <legend className={styles.legend}>Configuration</legend>
-
-          <BluprintConfigBuilder
-            nodes={nodes}
-            operationSchemas={operationSchemas}
-            deviceSchemas={deviceSchemas}
-            onUpdate={onUpdate}
-          />
-
-          <ShareDevices sharedDevices={sharedDevices} onShareDevices={onShareDevices} />
-        </fieldset>
-
-        <Button type="submit" kind="primary">Create IoT App Bluprint</Button>
+        <Button type="submit" kind="primary">Create & Continue</Button>
       </form>
     </div>
   )

@@ -1,0 +1,17 @@
+.root {
+  dispay: flex;
+  width: 100%;
+  max-width: 150px;
+  margin: 64px 48px 0 0;
+}
+
+.step {
+  margin-bottom: 0.35em;
+  color: #a2a5ab;
+  text-align: right;
+}
+
+.activeStep {
+  composes: step;
+  color: #485264;
+}
