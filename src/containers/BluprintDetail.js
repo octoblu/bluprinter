@@ -57,7 +57,13 @@ class BluprintDetail extends React.Component {
   }
 
   handleDeleteBluprint = () => {
-    console.log('Delete Bluprint');
+    this.setState({deletingBluprint: true})
+    const meshbluConfig = getMeshbluConfig()
+    const meshblu = new MeshbluHttp(meshbluConfig)
+
+    meshblu.unregister(this.state.device.uuid, (error) => {
+      window.location = `${OCTOBLU_URL}/things/my`
+    })
   }
 
   handleImport = () => {
@@ -91,14 +97,13 @@ class BluprintDetail extends React.Component {
     const { bluprint, name } = device
     const latestConfigSchema = getLatestConfigSchema(bluprint)
 
-
     return (
       <Page>
         <Card>
           <BluprintPageHeader
             device={device}
             onDelete={this.handleDeleteBluprint}
-            deleting={deletingBluprint}
+            deletingBluprint={deletingBluprint}
             onImport={this.handleImport}
           />
 
