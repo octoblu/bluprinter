@@ -13,15 +13,18 @@ const BluprintDetailPageActions = ({ deleting, onDeleteBluprint, onImport }) => 
   if (deleting) deleteButtonText = 'Deleting...'
 
   return (
-    <PageActions>
-      <Button onClick={onImport} kind="primary" disabled={false} size="small">
-        Import
-      </Button>
+    <div>
+      <PageActions>
+        <Button onClick={onImport} kind="primary" disabled={false} size="small">
+          Import
+        </Button>
 
-      <Button onClick={onDeleteBluprint} kind="hollow-danger" disabled={false} size="small">
-        {deleteButtonText}
-      </Button>
-    </PageActions>
+        <Button onClick={onDeleteBluprint} kind="hollow-danger" disabled={false} size="small">
+          {deleteButtonText}
+        </Button>
+
+      </PageActions>
+    </div>
   )
 }
 

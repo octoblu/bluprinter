@@ -12,6 +12,7 @@ import { getMeshbluConfig } from '../services/auth-service'
 import { getLatestConfigSchema } from '../services/bluprint-service'
 
 import ShareUrl from '../components/ShareUrl/'
+import Dialog from '../components/Dialog/'
 import BluprintPageHeader from '../components/BluprintPageHeader/'
 import BluprintManifestList from '../components/BluprintManifestList/'
 import BluprintVersionSelect from '../components/BluprintVersionSelect/'
@@ -32,6 +33,7 @@ class BluprintDetail extends React.Component {
       selectableDevices: [],
       deletingBluprint: false,
       publicBluprint: false,
+      showDeleteDialog: false,
     }
   }
 
@@ -57,13 +59,21 @@ class BluprintDetail extends React.Component {
   }
 
   handleDeleteBluprint = () => {
-    this.setState({deletingBluprint: true})
+    this.setState({deletingBluprint: true, showDeleteDialog: false})
     const meshbluConfig = getMeshbluConfig()
     const meshblu = new MeshbluHttp(meshbluConfig)
 
     meshblu.unregister(this.state.device.uuid, (error) => {
       window.location = `${OCTOBLU_URL}/things/my`
     })
+  }
+
+  checkBeforeDeleting = () => {
+    this.setState({showDeleteDialog: true})
+  }
+
+  cancelDeleteBluprint = () => {
+    this.setState({showDeleteDialog: false})
   }
 
   handleImport = () => {
@@ -88,6 +98,7 @@ class BluprintDetail extends React.Component {
       loading,
       publicBluprint,
       selectableDevices,
+      showDeleteDialog,
     } = this.state
 
     if (loading) return <Page loading={loading} />
@@ -99,10 +110,16 @@ class BluprintDetail extends React.Component {
 
     return (
       <Page>
+        <Dialog
+          showDialog={showDeleteDialog}
+          body="Are you sure you want to delete this bluprint?"
+          onCancel={this.cancelDeleteBluprint}
+          onConfirm={this.handleDeleteBluprint}
+        />
         <Card>
           <BluprintPageHeader
             device={device}
-            onDelete={this.handleDeleteBluprint}
+            onDelete={this.checkBeforeDeleting}
             deletingBluprint={deletingBluprint}
             onImport={this.handleImport}
           />
