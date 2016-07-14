@@ -11,9 +11,10 @@ import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
 import { getMeshbluConfig } from '../services/auth-service'
 import { getLatestConfigSchema } from '../services/bluprint-service'
 
-import BluprintManifestList from '../components/BluprintManifestList/'
-import BluprintPageHeader from '../components/BluprintPageHeader/'
 import ShareUrl from '../components/ShareUrl/'
+import BluprintPageHeader from '../components/BluprintPageHeader/'
+import BluprintManifestList from '../components/BluprintManifestList/'
+import BluprintVersionSelect from '../components/BluprintVersionSelect/'
 
 const propTypes = {
   routeParams: PropTypes.object,
@@ -56,7 +57,13 @@ class BluprintDetail extends React.Component {
   }
 
   handleDeleteBluprint = () => {
-    console.log('Delete Bluprint');
+    this.setState({deletingBluprint: true})
+    const meshbluConfig = getMeshbluConfig()
+    const meshblu = new MeshbluHttp(meshbluConfig)
+
+    meshblu.unregister(this.state.device.uuid, (error) => {
+      window.location = `${OCTOBLU_URL}/things/my`
+    })
   }
 
   handleImport = () => {
@@ -65,6 +72,10 @@ class BluprintDetail extends React.Component {
 
   handlePublic = () => {
     this.setState({publicBluprint: !this.state.publicBluprint})
+  }
+
+  handleVersionSelect = () => {
+    console.log("VERSION SELECTED!");
   }
 
 
@@ -92,11 +103,13 @@ class BluprintDetail extends React.Component {
           <BluprintPageHeader
             device={device}
             onDelete={this.handleDeleteBluprint}
-            deleting={deletingBluprint}
+            deletingBluprint={deletingBluprint}
             onImport={this.handleImport}
           />
 
-          <Input label="Name" name="bluprintName" value={name} />
+          <Input label="Name" name="bluprintName" defaultValue={name} />
+
+          <BluprintVersionSelect latest={bluprint.latest} versions={bluprint.versions} onChange={this.handleVersionSelect} />
 
           <ShareUrl uuid={device.uuid} publicBluprint={publicBluprint} onChange={this.handlePublic} />
 
