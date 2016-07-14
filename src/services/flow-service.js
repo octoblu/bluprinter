@@ -31,14 +31,17 @@ export default class FlowService {
 
   getDeviceSchemas = (nodes) => {
     const deviceUuids = _(nodes)
-      .filter({category: 'device'})
+      .filter(({category}) =>{
+        if(category == 'device' || category == "endo") return true
+        return false
+      })
       .uniqBy('type')
       .map('uuid')
       .value()
 
     return new Promise((resolve, reject) => {
       const search = {query: {uuid: {$in: deviceUuids}}, projection: {type: true, 'schemas.message': true, messageSchema: true}}
-
+    
       this.meshblu.search(search, (error, devices) => {
         if(error) return reject(error)
 
