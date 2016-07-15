@@ -1,17 +1,25 @@
 import React, { PropTypes } from 'react'
+import _ from 'lodash'
 import styles from './styles.css'
 
-const propTypes = {}
-const defaultProps = {}
+const propTypes = {
+  steps: PropTypes.array,
+}
+const defaultProps = {
+  steps: []
+}
 
-const CreateBluprintSteps = () => {
-  return (
-    <nav className={styles.root}>
-      <div className={styles.activeStep}>Create a Bluprint</div>
-      <div className={styles.step}>Configure</div>
-      <div className={styles.step}>Finish</div>
-    </nav>
-  )
+const CreateBluprintSteps = ({steps}) => {
+  const items = _.map(steps, ({ state, label }) => {
+    let className = styles.step
+
+    if (state === 'ACTIVE') className = styles.activeStep
+    if (state === 'COMPLETED') className = styles.completedStep
+
+    return React.createElement('div', { className, key: label }, label)
+  })
+
+  return <div className={styles.root}>{items}</div>
 }
 
 CreateBluprintSteps.propTypes    = propTypes

@@ -4,6 +4,13 @@
   flex: 1;
 }
 
+
+.NewBluprintPage {
+  display: flex;
+  flex-direction: row;
+}
+
+
 .fieldset {
   border: 0;
   margin: 0 0 1.5em;

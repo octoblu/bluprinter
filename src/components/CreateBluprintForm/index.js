@@ -64,7 +64,7 @@ class CreateBluprintForm extends React.Component {
 
   render() {
     const { creating, error } = this.props.bluprint
-    console.log('Error', error);
+
     return (
       <div className={styles.root}>
         <Heading level={4}>Create a Bluprint</Heading>

@@ -3,11 +3,11 @@ import * as actionTypes from '../../constants/action-types'
 
 import reducer from './'
 
-describe.only('Flow Reducer', () => {
+describe('Flow Reducer', () => {
   const initialState = {
     error: null,
     fetching: false,
-    flowDevice: null,
+    device: null,
   }
 
   it('should return the initial state', () => {
@@ -16,14 +16,14 @@ describe.only('Flow Reducer', () => {
     ).to.deep.equal(initialState)
   })
 
-  it('should update state when action.type is GET_FLOW_REQUEST', () => {
+  it('should handle GET_FLOW_REQUEST', () => {
     expect(
       reducer(null, { type: actionTypes.GET_FLOW_REQUEST })
     ).to.deep.equal({ ...initialState, fetching: true})
   })
 
-  it('should set the flowDevice on state when action.type is GET_FLOW_SUCCESS', () => {
-    const flowDevice = {
+  it('should handle GET_FLOW_SUCCESS', () => {
+    const device = {
       uuid: 'my-flow-uuid',
       nodes: [
         {
@@ -35,11 +35,11 @@ describe.only('Flow Reducer', () => {
 
     expect(reducer(null, {
       type: actionTypes.GET_FLOW_SUCCESS,
-      payload: flowDevice
-    })).to.deep.equal({...initialState, flowDevice })
+      payload: device
+    })).to.deep.equal({...initialState, device })
   })
 
-  it('should set the error on state when action.type is GET_FLOW_FAILURE', () => {
+  it('should handle GET_FLOW_FAILURE', () => {
     expect(reducer(null, {
       type: actionTypes.GET_FLOW_FAILURE,
       payload: new Error('Bang!')

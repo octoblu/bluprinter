@@ -15,3 +15,8 @@
   composes: step;
   color: #485264;
 }
+
+.completedStep {
+  composes: step;
+  color: green;
+}

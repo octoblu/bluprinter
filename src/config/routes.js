@@ -27,9 +27,7 @@ export default ({ history }) => {
           <IndexRoute component={CreateBluprintForm} />
         </Route>
 
-        <Route path="bluprints/:uuid/configure" component={NewBluprint}>
-          <IndexRoute component={ConfigureBluprint} />
-        </Route>
+        <Route path="bluprints/:bluprintUuid/configure" component={ConfigureBluprint} />
 
         <Route path="bluprints/:uuid" component={BluprintDetail} />
         <Route path="bluprints/:uuid/import" component={ImportBluprint} />

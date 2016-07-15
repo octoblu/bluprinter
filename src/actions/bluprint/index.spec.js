@@ -4,13 +4,13 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import enableDestroy from 'server-destroy'
 
-import { getFlow } from './'
+import { getBluprint } from './'
 import * as actionTypes from '../../constants/action-types'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
-describe('Flow Actions', () => {
+describe('Bluprint Actions', () => {
   let meshbluMock
   let meshbluConfig
   let userAuth
@@ -33,56 +33,56 @@ describe('Flow Actions', () => {
     meshbluMock.destroy(done)
   })
 
-  describe('When the user is authenticated and owns the flow', () => {
+  describe('When the user is authenticated and owns the bluprint', () => {
     beforeEach(() => {
       meshbluMock
-      .get('/v2/devices/my-flow-uuid')
+      .get('/v2/devices/my-bluprint-uuid')
       .set('Authorization', `Basic ${userAuth}`)
       .reply(200, {
-        uuid: 'my-flow-uuid',
+        uuid: 'my-bluprint-uuid',
       })
     })
 
     const expectedActions = [
-      { type: actionTypes.GET_FLOW_REQUEST },
+      { type: actionTypes.GET_BLUPRINT_REQUEST },
       {
-        type: actionTypes.GET_FLOW_SUCCESS,
+        type: actionTypes.GET_BLUPRINT_SUCCESS,
         payload: {
-          uuid: 'my-flow-uuid',
+          uuid: 'my-bluprint-uuid',
         }
       },
     ]
-    const store = mockStore({ flow: {}})
+    const store = mockStore({bluprint:{}})
 
-    it('should dispatch  GET_FLOW_SUCCESS', () => {
+    it('should dispatch GET_BLUPRINT_SUCCESS', () => {
       return store.dispatch(
-        getFlow('my-flow-uuid', meshbluConfig)
+        getBluprint('my-bluprint-uuid', meshbluConfig)
       ).then(() => {
         expect(store.getActions()).to.deep.equal(expectedActions)
       })
     })
   })
 
-  describe('When getFlow results in an error', () => {
+  describe('When getBluprint results in an error', () => {
     beforeEach(() => {
       meshbluMock
-      .get('/v2/devices/my-flow-uuid')
+      .get('/v2/devices/my-bluprint-uuid')
       .set('Authorization', `Basic ${userAuth}`)
       .reply(403, 'Unauthorized')
     })
 
     const expectedActions = [
-      { type: actionTypes.GET_FLOW_REQUEST },
+      { type: actionTypes.GET_BLUPRINT_REQUEST },
       {
-        type: actionTypes.GET_FLOW_FAILURE,
-        payload: new Error('Could not get Flow device')
+        type: actionTypes.GET_BLUPRINT_FAILURE,
+        payload: new Error('Error getting Bluprint device')
       },
     ]
-    const store = mockStore({ flow: {}})
+    const store = mockStore({ bluprint: {}})
 
-    it('should dispatch GET_FLOW_FAILURE', () => {
+    it('should dispatch GET_BLUPRINT_FAILURE', () => {
       return store.dispatch(
-        getFlow('my-flow-uuid', meshbluConfig)
+        getBluprint('my-bluprint-uuid', meshbluConfig)
       ).catch(() => {
         expect(store.getActions()).to.deep.equal(expectedActions)
       })
