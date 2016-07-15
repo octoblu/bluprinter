@@ -3,6 +3,7 @@
   flex-direction: column;
   flex: 1;
 }
+
 .fieldset {
   border: 0;
   margin: 0 0 1.5em;
@@ -21,28 +22,4 @@
   font-size: 0.8em;
   font-weight: 700;
   text-transform: uppercase;
-}
-
-.radioDescription {
-  font-size: .8em;
-  color: #6e798b;
-}
-
-.radioLabel {
-  display: flex;
-  align-items: center;
-  margin-bottom: .5em;
-  font-size: 1em;
-  font-weight: 700;
-}
-
-.radioBody {
-  margin-left: 1em;
-}
-
-.errorAlert {
-  margin-top: 0.5em;
-  border: 0;
-  padding: 0;
-  background: transparent;
 }

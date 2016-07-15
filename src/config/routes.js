@@ -4,6 +4,7 @@ import { IndexRoute, Router, Route } from 'react-router'
 import App from '../containers/App'
 import BluprintDetail from '../containers/BluprintDetail'
 import CreateBluprint from '../containers/CreateBluprint'
+import ConfigureBluprint from '../containers/ConfigureBluprint'
 import Home from '../containers/Home'
 import ImportBluprint from '../containers/ImportBluprint'
 import Logout from '../containers/Logout'
@@ -25,7 +26,11 @@ export default ({ history }) => {
         <Route path="bluprints/new/:flowUuid" component={NewBluprint}>
           <IndexRoute component={CreateBluprintForm} />
         </Route>
-        
+
+        <Route path="bluprints/:uuid/configure" component={NewBluprint}>
+          <IndexRoute component={ConfigureBluprint} />
+        </Route>
+
         <Route path="bluprints/:uuid" component={BluprintDetail} />
         <Route path="bluprints/:uuid/import" component={ImportBluprint} />
         <Route path="app/:uuid" component={RunIotApp} />

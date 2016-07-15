@@ -11,8 +11,4 @@ chai.use(chaiEnzyme())
 chai.use(sinonChai)
 
 describe('<CreateBluprintForm />', () => {
-  it('should render nothing', () => {
-    const sut = shallow(<CreateBluprintForm />)
-    expect(sut).to.be.empty
-  })
 })

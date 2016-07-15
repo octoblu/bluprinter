@@ -1,97 +1,131 @@
-import noop from 'lodash.noop'
+import _ from 'lodash'
 import React, { PropTypes } from 'react'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
+import Alert from 'zooid-alert'
 import Button from 'zooid-button'
 import Heading from 'zooid-heading'
 import Input from 'zooid-input'
 import FormField from 'zooid-form-field'
 
 import styles from './styles.css'
+import { createBluprint } from '../../actions/bluprint.actions'
 
 const propTypes = {
-  deviceSchemas: PropTypes.object,
-  operationSchemas: PropTypes.object,
-  nodes: PropTypes.array,
-  sharedDevices: PropTypes.array,
-  onShareDevices: PropTypes.func,
-  onCreate: PropTypes.func,
-  onUpdate: PropTypes.func,
+  bluprint: PropTypes.object,
+  dispatch: PropTypes.func,
+  onCreateBluprint: PropTypes.func,
+  params: PropTypes.object,
 }
 
-const defaultProps = {
-  deviceSchemas: null,
-  nodes: null,
-  operationSchemas: null,
-  sharedDevices: null,
-  onCreate: noop,
-  onUpdate: noop,
-  onShareDevices: noop,
-}
+class CreateBluprintForm extends React.Component {
+  constructor(props) {
+    super(props)
 
-const CreateAppForm = (props) => {
-  const {
-    nodes,
-    operationSchemas,
-    deviceSchemas,
-    sharedDevices,
-    onCreate,
-    onUpdate,
-    onShareDevices,
-  } = props
+    this.handleCreateBluprint = this.handleCreateBluprint.bind(this)
+  }
 
-  return (
-    <div className={styles.root}>
-      <Heading level={4}>Choose a name</Heading>
-      <form onSubmit={onCreate}>
-        <fieldset className={styles.fieldset}>
-          <Input
-            name="appName"
-            label="Bluprint Name"
-            description="Pick a name to help you identify this Bluprint."
-            autoFocus
-            required
-          />
+  componentWillReceiveProps({bluprint}) {
+    if (_.isEmpty(bluprint.device)) return
 
-          <Input
-            name="appDescription"
-            label="Description"
-          />
-        </fieldset>
+    this.props.dispatch(push(`/bluprints/${bluprint.device.uuid}/configure`))
+  }
 
-        <fieldset className={styles.fieldset}>
-          <legend className={styles.legend}>Visibility</legend>
+  handleCreateBluprint(event) {
+    event.preventDefault()
+    const { name, description, visibility } = event.target
+    const bluprintAction = {
+      name: name.value,
+      description: description.value,
+      visibility: visibility.value,
+      flowId: this.props.params.flowUuid,
+    }
 
-          <FormField>
-            <label className={styles.radioLabel}>
-              <input type="radio" name="visibility" value="Public" />
-              <div className={styles.radioBody}>
-                Public
-                <div className={styles.radioDescription}>
-                  Shared in our App Store.
+    this.props.dispatch(createBluprint(bluprintAction))
+  }
+
+  renderSubmitButton(loading) {
+    let submitButton = (
+      <Button type="submit" kind="primary">
+        Create & Continue
+      </Button>
+    )
+
+    if (loading) {
+      submitButton = (
+        <Button type="submit" kind="primary" disabled>
+          Creating...
+        </Button>
+      )
+    }
+
+    return submitButton
+  }
+
+  render() {
+    const { creating, error } = this.props.bluprint
+    console.log('Error', error);
+    return (
+      <div className={styles.root}>
+        <Heading level={4}>Create a Bluprint</Heading>
+
+        <form onSubmit={this.handleCreateBluprint}>
+          <fieldset className={styles.fieldset}>
+            <Input
+              name="name"
+              label="Bluprint Name"
+              description="Pick a name to help you identify this Bluprint."
+              autoFocus
+              required
+            />
+
+            <Input
+              name="description"
+              label="Description"
+            />
+          </fieldset>
+
+          <fieldset className={styles.fieldset}>
+            <legend className={styles.legend}>Visibility</legend>
+
+            <FormField>
+              <label className={styles.radioLabel}>
+                <input type="radio" name="visibility" value="private" defaultChecked />
+                <div className={styles.radioBody}>
+                  Private
+                  <div className={styles.radioDescription}>
+                    You choose who has permission.
+                  </div>
                 </div>
-              </div>
-            </label>
-          </FormField>
+              </label>
+            </FormField>
 
-          <FormField>
-            <label className={styles.radioLabel}>
-              <input type="radio" name="visibility" value="Private" />
-              <div className={styles.radioBody}>
-                Private
-                <div className={styles.radioDescription}>
-                  You choose who has permission.
+            <FormField>
+              <label className={styles.radioLabel}>
+                <input type="radio" name="visibility" value="public" />
+                <div className={styles.radioBody}>
+                  Public
+                  <div className={styles.radioDescription}>
+                    Shared in our App Store.
+                  </div>
                 </div>
-              </div>
-            </label>
-          </FormField>
-        </fieldset>
+              </label>
+            </FormField>
+          </fieldset>
 
-        <Button type="submit" kind="primary">Create & Continue</Button>
-      </form>
-    </div>
-  )
+          {this.renderSubmitButton(creating)}
+
+          {error && <Alert type="error" className={styles.errorAlert}>{error.message}</Alert>}
+        </form>
+      </div>
+    )
+  }
 }
 
-CreateAppForm.propTypes    = propTypes
-CreateAppForm.defaultProps = defaultProps
+const mapStateToProps = ({ bluprint }) => {
+  return { bluprint }
+}
 
-export default CreateAppForm
+CreateBluprintForm.propTypes = propTypes
+
+export default connect(mapStateToProps)(CreateBluprintForm)

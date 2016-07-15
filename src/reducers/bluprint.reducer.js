@@ -1,22 +1,25 @@
-import _ from 'lodash'
 import * as actionTypes from '../constants/action-types'
-// import { BASE_DEVICE_PROPS } from '../constants/devices'
 
 const initialState = {
-  configSchema: null,
-  description: '',
-  flowId: null,
+  creating: false,
+  device: null,
+  deviceSchemas: null,
+  error: null,
+  flowDevice: null,
   manifest: null,
-  messageSchema: null,
-  name: '',
-  sharedDevices: null,
-  version: '1.0.0',
+  operationSchemas: null,
 }
 
 export default function types(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.CREATE_BLUPRINT:
-      return { ...state, name: 'John Doe', description: 'lorem...', flowId: '007' }
+    case actionTypes.CREATE_BLUPRINT_REQUEST:
+      return { ...initialState, creating: true }
+
+    case actionTypes.CREATE_BLUPRINT_SUCCESS:
+      return { ...initialState, device: action.payload }
+
+    case actionTypes.CREATE_BLUPRINT_FAILURE:
+      return { ...initialState, error: action.payload }
 
     default:
       return state
