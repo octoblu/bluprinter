@@ -9,11 +9,12 @@ import Heading from 'zooid-heading'
 import Input from 'zooid-input'
 import Page from 'zooid-page'
 import BluprintConfigBuilder from 'zooid-ui-bluprint-config-builder'
+import { TOOLS_SCHEMA_REGISTRY_URL } from 'config'
 
 import { getBluprint } from '../../actions/bluprint'
 import { getFlow } from '../../actions/flow'
+import { getOperationSchemas } from '../../actions/schemas'
 import CreateBluprintSteps from '../../components/CreateBluprintSteps'
-
 import styles from './styles.css'
 
 const propTypes = {
@@ -27,6 +28,7 @@ class ConfigureBluprint extends React.Component {
   componentDidMount() {
     const { dispatch, params } = this.props
     dispatch(getBluprint(params.bluprintUuid))
+    dispatch(getOperationSchemas(TOOLS_SCHEMA_REGISTRY_URL))
   }
 
   componentWillReceiveProps({ bluprint, flow }) {
@@ -63,6 +65,7 @@ class ConfigureBluprint extends React.Component {
 
     if (fetching) return <Page className={styles.NewBluprintPage} loading />
     if (error) return <Page className={styles.NewBluprintPage} error={error} />
+    if (_.isEmpty(bluprint.device)) return null
 
     const { name } = bluprint.device
     const steps = [
@@ -82,8 +85,8 @@ class ConfigureBluprint extends React.Component {
   }
 }
 
-const mapStateToProps = ({ bluprint, flow }) => {
-  return { bluprint, flow }
+const mapStateToProps = ({ bluprint, flow, schemas }) => {
+  return { bluprint, flow, schemas }
 }
 
 ConfigureBluprint.propTypes = propTypes

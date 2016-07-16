@@ -9,7 +9,7 @@ describe('Bluprint Reducer', () => {
     device: null,
     deviceSchemas: null,
     error: null,
-    fetching: true,
+    fetching: false,
     flowDevice: null,
     manifest: null,
     operationSchemas: null,
