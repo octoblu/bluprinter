@@ -5,7 +5,10 @@ import reducer from './'
 
 describe('Schema Reducer', () => {
   const initialState = {
+    deviceSchemas: null,
     operationSchemas: null,
+    fetchingOperationSchemas: false,
+    fetchingDeviceSchemas: false,
   }
 
   it('should return the initial state', () => {
@@ -17,7 +20,7 @@ describe('Schema Reducer', () => {
   it('should handle GET_OPERATION_SCHEMAS_REQUEST', () => {
     expect(
       reducer(null, { type: actionTypes.GET_OPERATION_SCHEMAS_REQUEST })
-    ).to.deep.equal({ ...initialState, fetching: true})
+    ).to.deep.equal({ ...initialState, fetchingOperationSchemas: true})
   })
 
   it('should handle GET_OPERATION_SCHEMAS_SUCCESS', () => {
@@ -34,6 +37,32 @@ describe('Schema Reducer', () => {
   it('should handle GET_OPERATION_SCHEMAS_FAILURE', () => {
     expect(reducer(null, {
       type: actionTypes.GET_OPERATION_SCHEMAS_FAILURE,
+      payload: new Error('Bang!')
+    })).to.deep.equal({...initialState, error: new Error('Bang!') })
+  })
+
+
+
+  it('should handle GET_DEVICE_SCHEMAS_REQUEST', () => {
+    expect(
+      reducer(null, { type: actionTypes.GET_DEVICE_SCHEMAS_REQUEST })
+    ).to.deep.equal({ ...initialState, fetchingDeviceSchemas: true })
+  })
+
+  it('should handle GET_DEVICE_SCHEMAS_SUCCESS', () => {
+    const deviceSchemas = {
+      uuid: 'my-uuid',
+    }
+
+    expect(reducer(null, {
+      type: actionTypes.GET_DEVICE_SCHEMAS_SUCCESS,
+      payload: deviceSchemas
+    })).to.deep.equal({...initialState, deviceSchemas })
+  })
+
+  it('should handle GET_DEVICE_SCHEMAS_FAILURE', () => {
+    expect(reducer(null, {
+      type: actionTypes.GET_DEVICE_SCHEMAS_FAILURE,
       payload: new Error('Bang!')
     })).to.deep.equal({...initialState, error: new Error('Bang!') })
   })

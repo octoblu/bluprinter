@@ -1,6 +1,6 @@
 import * as actionTypes from '../../constants/action-types'
 import superagent from 'superagent'
-
+import Promise from 'bluebird'
 function getOperationSchemasRequest() {
   return {
     type: actionTypes.GET_OPERATION_SCHEMAS_REQUEST
@@ -29,9 +29,11 @@ export function getOperationSchemas(toolsSchemaRegistryUrl) {
       superagent
         .get(toolsSchemaRegistryUrl)
         .end((error, response) => {
-          // if (error) {
-          //   return reject(dispa)
-          // }
+          if (error) {
+            return reject(dispatch(getOperationSchemasFailure(
+              new Error('Errorr fetching operation schemas')
+            )))
+          }
           return resolve(dispatch(getOperationSchemasSuccess(response.body)))
         })
     })
