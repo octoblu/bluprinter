@@ -98,47 +98,46 @@ class CreateBluprint extends React.Component {
     const meshbluConfig = getMeshbluConfig()
     const meshblu = new MeshbluHttp(meshbluConfig)
     const { flowDevice, version } = this.state
-    if (!_.isEmpty(sharedDevices)) {
-      this.flowService.addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
-        console.log('Added Global Message Receive Permission', error, deviceResult)
+
+    this.flowService.addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
+      console.log('Added Global Message Receive Permission', error, deviceResult)
+      const bluprintConfig = this.deviceDefaults({
+        name: appName.value,
+        flowId: flowUuid,
+        messageSchema: this.flowService.getMessageSchema({nodes: flowDevice.draft.nodes}),
+        manifest: this.state.manifest,
+        configSchema,
+        version,
+        sharedDevices
       })
-    }
-    const bluprintConfig = this.deviceDefaults({
-      name: appName.value,
-      flowId: flowUuid,
-      messageSchema: this.flowService.getMessageSchema({nodes: flowDevice.draft.nodes}),
-      manifest: this.state.manifest,
-      configSchema,
-      version,
-      sharedDevices
-    })
 
-    meshblu.register(bluprintConfig, (error, device) => {
-      if (error) {
-        this.setErrorState(error)
-        return
-      }
-
-      meshblu.updateDangerously(flowUuid, {
-          $addToSet: {
-            discoverWhitelist: device.uuid
+      meshblu.register(bluprintConfig, (error, device) => {
+        if (error) {
+          this.setErrorState(error)
+          return
         }
-      },
-      (error, result) => {
-        superagent
-          .post(`${FLOW_DEPLOY_URL}/bluprint/${device.uuid}/${version}`)
-          .auth(meshbluConfig.uuid, meshbluConfig.token)
-          .send({flowId: flowUuid})
-          .end(() => {
-            const { uuid } = device
-            const update = this.linksProperties({ uuid })
 
-            meshblu.update(uuid, update, (updateError) => {
-              if (updateError) {
-                this.setErrorState(updateError)
-                return
-              }
-              history.push(`/bluprints/${device.uuid}`)
+        meshblu.updateDangerously(flowUuid, {
+            $addToSet: {
+              discoverWhitelist: device.uuid
+          }
+        },
+        (error, result) => {
+          superagent
+            .post(`${FLOW_DEPLOY_URL}/bluprint/${device.uuid}/${version}`)
+            .auth(meshbluConfig.uuid, meshbluConfig.token)
+            .send({flowId: flowUuid})
+            .end(() => {
+              const { uuid } = device
+              const update = this.linksProperties({ uuid })
+
+              meshblu.update(uuid, update, (updateError) => {
+                if (updateError) {
+                  this.setErrorState(updateError)
+                  return
+                }
+                history.push(`/bluprints/${device.uuid}`)
+              })
             })
           })
         })
