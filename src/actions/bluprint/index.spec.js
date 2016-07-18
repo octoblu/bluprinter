@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import enableDestroy from 'server-destroy'
 
-import { getBluprint } from './'
+import { getBluprint, setBluprintConfigSchema, setBluprintSharedDevices } from './'
 import * as actionTypes from '../../constants/action-types'
 
 const middlewares = [thunk]
@@ -86,6 +86,27 @@ describe('Bluprint Actions', () => {
       ).catch(() => {
         expect(store.getActions()).to.deep.equal(expectedActions)
       })
+    })
+  })
+
+  describe('when setBluprintConfigSchema is dispatched', () => {
+    it('should dispatch SET_BLUPRINT_CONFIG_SCHEMA', () => {
+      const expectedAction = {
+        type: actionTypes.SET_BLUPRINT_CONFIG_SCHEMA,
+        payload: { uuid: 'yuma' }
+      }
+      expect(setBluprintConfigSchema({ uuid: 'yuma' })).to.deep.equal(expectedAction)
+    })
+  })
+
+  describe('when setBluprintSharedDevices is dispatched', () => {
+    it('should dispatch SET_BLUPRINT_SHARED_DEVICES', () => {
+      const expectedAction = {
+        type: actionTypes.SET_BLUPRINT_SHARED_DEVICES,
+        payload: { uuid: 'Lagos' }
+      }
+
+      expect(setBluprintSharedDevices({ uuid: 'Lagos' })).to.deep.equal(expectedAction)
     })
   })
 })

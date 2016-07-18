@@ -39,3 +39,18 @@ export function getBluprint(bluprintUuid, meshbluConfig = getMeshbluConfig()) {
     })
   }
 }
+
+
+export function setBluprintConfigSchema(bluprintConfigSchema) {
+  return {
+    type: actionTypes.SET_BLUPRINT_CONFIG_SCHEMA,
+    payload: bluprintConfigSchema,
+  }
+}
+
+export function setBluprintSharedDevices(sharedDevices) {
+  return {
+    type: actionTypes.SET_BLUPRINT_SHARED_DEVICES,
+    payload: sharedDevices,
+  }
+}

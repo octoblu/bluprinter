@@ -1,21 +1,22 @@
 import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
-import Alert from 'zooid-alert'
 import Button from 'zooid-button'
-import FormField from 'zooid-form-field'
 import Heading from 'zooid-heading'
-import Input from 'zooid-input'
 import Page from 'zooid-page'
 import BluprintConfigBuilder from 'zooid-ui-bluprint-config-builder'
 import { TOOLS_SCHEMA_REGISTRY_URL } from 'config'
 
-import { getBluprint } from '../../actions/bluprint'
-import { getFlow } from '../../actions/flow'
-import { getOperationSchemas, getDeviceSchemas } from '../../actions/schemas'
 import CreateBluprintSteps from '../../components/CreateBluprintSteps'
 import styles from './styles.css'
+
+import { getFlow } from '../../actions/flow'
+import { getOperationSchemas } from '../../actions/schemas'
+import {
+  getBluprint,
+  setBluprintConfigSchema,
+  setBluprintSharedDevices,
+} from '../../actions/bluprint'
 
 const propTypes = {
   bluprint: PropTypes.object,
@@ -26,6 +27,12 @@ const propTypes = {
 }
 
 class ConfigureBluprint extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.handleConfigUpdate = this.handleConfigUpdate.bind(this)
+  }
+
   componentDidMount() {
     const { dispatch, params } = this.props
     dispatch(getBluprint(params.bluprintUuid))
@@ -42,6 +49,11 @@ class ConfigureBluprint extends React.Component {
       this.props.dispatch(getFlow(bluprint.device.bluprint.flowId))
       return
     }
+  }
+
+  handleConfigUpdate({ configSchema, sharedDevices }) {
+    this.props.dispatch(setBluprintConfigSchema(configSchema))
+    this.props.dispatch(setBluprintSharedDevices(sharedDevices))
   }
 
   renderSubmitButton(loading) {
@@ -91,7 +103,7 @@ class ConfigureBluprint extends React.Component {
             nodes={flow.device.draft.nodes}
             operationSchemas={schemas.operationSchemas}
             deviceSchemas={schemas.deviceSchemas}
-            onUpdate={_.noop}
+            onUpdate={this.handleConfigUpdate}
           />
 
           <Button kind="primary">Configure & Continue</Button>
