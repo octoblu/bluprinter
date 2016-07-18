@@ -40,21 +40,24 @@ describe('Flow Actions', () => {
       .set('Authorization', `Basic ${userAuth}`)
       .reply(200, {
         uuid: 'my-flow-uuid',
+        draft: { nodes: [] }
       })
     })
 
     const expectedActions = [
       { type: actionTypes.GET_FLOW_REQUEST },
+      { type: actionTypes.GET_DEVICE_SCHEMAS_REQUEST },
       {
         type: actionTypes.GET_FLOW_SUCCESS,
         payload: {
           uuid: 'my-flow-uuid',
+          draft: { nodes: [] }
         }
       },
     ]
     const store = mockStore({ flow: {}})
 
-    it('should dispatch  GET_FLOW_SUCCESS', () => {
+    it('should dispatch GET_FLOW_SUCCESS', () => {
       return store.dispatch(
         getFlow('my-flow-uuid', meshbluConfig)
       ).then(() => {

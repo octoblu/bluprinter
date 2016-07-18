@@ -48,11 +48,10 @@ describe('Schemas Actions', () => {
   })
 
   describe('when fetching operation schemas fails', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       mock
       .get('/tool-schema-registry/latest/schema-registry.json')
-      .reply(404, 'Not found')
-      done()
+      .reply(404, 'File not found')
     })
 
     it('creates GET_OPERATION_SCHEMAS_FAILURE', () => {

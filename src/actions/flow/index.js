@@ -3,6 +3,7 @@ import * as actionTypes from '../../constants/action-types'
 import { getMeshbluConfig } from '../../services/auth-service'
 import FlowService          from '../../services/flow-service'
 import NodeService          from '../../services/node-service'
+import { getDeviceSchemas } from '../../actions/schemas'
 
 
 function getFlowRequest() {
@@ -37,6 +38,7 @@ export function getFlow(flowUuid, meshbluConfig = getMeshbluConfig()) {
           return reject(dispatch(getFlowFailure(new Error('Could not get Flow device'))))
         }
 
+        dispatch(getDeviceSchemas(flowDevice))
         return resolve(dispatch(getFlowSuccess(flowDevice)))
       })
     })

@@ -23,7 +23,7 @@ describe('Bluprint Reducer', () => {
 
   it('should handle CREATE_BLUPRINT_REQUEST', () => {
     expect(
-      reducer(null, { type: actionTypes.CREATE_BLUPRINT_REQUEST })
+      reducer(undefined, { type: actionTypes.CREATE_BLUPRINT_REQUEST })
     ).to.deep.equal({ ...initialState, creating: true})
   })
 
@@ -32,14 +32,14 @@ describe('Bluprint Reducer', () => {
       uuid: 'my-bluprint-uuid'
     }
 
-    expect(reducer(null, {
+    expect(reducer(undefined, {
       type: actionTypes.CREATE_BLUPRINT_SUCCESS,
       payload: device
     })).to.deep.equal({...initialState, device })
   })
 
   it('should handle CREATE_BLUPRINT_FAILURE', () => {
-    expect(reducer(null, {
+    expect(reducer(undefined, {
       type: actionTypes.CREATE_BLUPRINT_FAILURE,
       payload: new Error('Bang!')
     })).to.deep.equal({...initialState, error: new Error('Bang!') })
@@ -48,7 +48,7 @@ describe('Bluprint Reducer', () => {
 
   it('should handle GET_BLUPRINT_REQUEST', () => {
     expect(
-      reducer(null, { type: actionTypes.GET_BLUPRINT_REQUEST })
+      reducer(undefined, { type: actionTypes.GET_BLUPRINT_REQUEST })
     ).to.deep.equal({ ...initialState, fetching: true})
   })
 
@@ -57,14 +57,14 @@ describe('Bluprint Reducer', () => {
       uuid: 'my-bluprint-uuid',
     }
 
-    expect(reducer(null, {
+    expect(reducer(undefined, {
       type: actionTypes.GET_BLUPRINT_SUCCESS,
       payload: device
     })).to.deep.equal({...initialState, device })
   })
 
   it('should handle GET_BLUPRINT_FAILURE', () => {
-    expect(reducer(null, {
+    expect(reducer(undefined, {
       type: actionTypes.GET_BLUPRINT_FAILURE,
       payload: new Error('Bang!')
     })).to.deep.equal({...initialState, error: new Error('Bang!') })

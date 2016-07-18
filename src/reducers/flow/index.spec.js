@@ -18,7 +18,7 @@ describe('Flow Reducer', () => {
 
   it('should handle GET_FLOW_REQUEST', () => {
     expect(
-      reducer(null, { type: actionTypes.GET_FLOW_REQUEST })
+      reducer(undefined, { type: actionTypes.GET_FLOW_REQUEST })
     ).to.deep.equal({ ...initialState, fetching: true})
   })
 
@@ -33,14 +33,14 @@ describe('Flow Reducer', () => {
       ]
     }
 
-    expect(reducer(null, {
+    expect(reducer(undefined, {
       type: actionTypes.GET_FLOW_SUCCESS,
       payload: device
     })).to.deep.equal({...initialState, device })
   })
 
   it('should handle GET_FLOW_FAILURE', () => {
-    expect(reducer(null, {
+    expect(reducer(undefined, {
       type: actionTypes.GET_FLOW_FAILURE,
       payload: new Error('Bang!')
     })).to.deep.equal({...initialState, error: new Error('Bang!') })

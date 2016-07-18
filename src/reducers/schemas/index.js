@@ -10,22 +10,44 @@ const initialState = {
 export default function types(state = initialState, action) {
   switch (action.type) {
     case actionTypes.GET_OPERATION_SCHEMAS_REQUEST:
-      return { ...initialState, fetchingOperationSchemas: true }
+      return {
+        ...state,
+        fetchingOperationSchemas: true,
+      }
 
     case actionTypes.GET_OPERATION_SCHEMAS_SUCCESS:
-      return { ...initialState, operationSchemas: action.payload }
+      return {
+        ...state,
+        operationSchemas: action.payload,
+        fetchingOperationSchemas: false,
+      }
 
     case actionTypes.GET_OPERATION_SCHEMAS_FAILURE:
-      return { ...initialState, error: action.payload }
+      return {
+        ...state,
+        error: action.payload,
+        fetchingOperationSchemas: false,
+      }
 
     case actionTypes.GET_DEVICE_SCHEMAS_REQUEST:
-      return { ...initialState, fetchingDeviceSchemas: true }
+      return {
+        ...state,
+        fetchingDeviceSchemas: true,
+      }
 
     case actionTypes.GET_DEVICE_SCHEMAS_SUCCESS:
-      return { ...initialState, deviceSchemas: action.payload }
+      return {
+        ...state,
+        deviceSchemas: action.payload,
+        fetchingDeviceSchemas: false,
+      }
 
     case actionTypes.GET_DEVICE_SCHEMAS_FAILURE:
-      return { ...initialState, error: action.payload }
+      return {
+        ...state,
+        error: action.payload,
+        fetchingDeviceSchemas: false,
+      }
 
     default:
       return state

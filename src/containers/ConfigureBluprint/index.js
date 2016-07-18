@@ -13,7 +13,7 @@ import { TOOLS_SCHEMA_REGISTRY_URL } from 'config'
 
 import { getBluprint } from '../../actions/bluprint'
 import { getFlow } from '../../actions/flow'
-import { getOperationSchemas } from '../../actions/schemas'
+import { getOperationSchemas, getDeviceSchemas } from '../../actions/schemas'
 import CreateBluprintSteps from '../../components/CreateBluprintSteps'
 import styles from './styles.css'
 
@@ -22,6 +22,7 @@ const propTypes = {
   dispatch: PropTypes.func,
   flow: PropTypes.object,
   params: PropTypes.object,
+  schemas: PropTypes.object,
 }
 
 class ConfigureBluprint extends React.Component {
@@ -31,7 +32,9 @@ class ConfigureBluprint extends React.Component {
     dispatch(getOperationSchemas(TOOLS_SCHEMA_REGISTRY_URL))
   }
 
-  componentWillReceiveProps({ bluprint, flow }) {
+  componentWillReceiveProps(nextProps) {
+    const { bluprint, flow } = nextProps
+
     if (bluprint === this.props.bluprint) return
     if (_.isEmpty(bluprint.device)) return
 
@@ -60,12 +63,16 @@ class ConfigureBluprint extends React.Component {
   }
 
   render() {
-    const { bluprint }        = this.props
-    const { error, fetching } = bluprint
+    const { bluprint, flow, schemas } = this.props
+    const { error, fetching }         = bluprint
+    const { fetchingOperationSchemas, fetchingDeviceSchemas } = schemas
 
     if (fetching) return <Page className={styles.NewBluprintPage} loading />
+    if (fetchingOperationSchemas || fetchingDeviceSchemas) {
+      return <Page className={styles.NewBluprintPage} loading />
+    }
     if (error) return <Page className={styles.NewBluprintPage} error={error} />
-    if (_.isEmpty(bluprint.device)) return null
+    if (_.isEmpty(bluprint.device) || _.isEmpty(flow.device)) return null
 
     const { name } = bluprint.device
     const steps = [
@@ -79,6 +86,13 @@ class ConfigureBluprint extends React.Component {
         <CreateBluprintSteps steps={steps} />
         <div className={styles.root}>
           <Heading level={4}>Configure Bluprint: {name}</Heading>
+
+          <BluprintConfigBuilder
+            nodes={flow.device.draft.nodes}
+            operationSchemas={schemas.operationSchemas}
+            deviceSchemas={schemas.deviceSchemas}
+            onUpdate={_.noop}
+          />
         </div>
       </Page>
     )
