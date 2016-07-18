@@ -93,6 +93,8 @@ class ConfigureBluprint extends React.Component {
             deviceSchemas={schemas.deviceSchemas}
             onUpdate={_.noop}
           />
+
+          <Button kind="primary">Configure & Continue</Button>
         </div>
       </Page>
     )
