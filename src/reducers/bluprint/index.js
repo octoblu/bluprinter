@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import * as actionTypes from '../../constants/action-types'
+import {BLUPRINTER_URL} from 'config'
 
 const initialState = {
   configureSchema: null,
@@ -11,6 +12,7 @@ const initialState = {
   flowDevice: null,
   manifest: null,
   messageSchema: null,
+  octobluLinks: null,
   operationSchemas: null,
   sharedDevices: null,
   updating: false,
@@ -71,14 +73,14 @@ export default function types(state = initialState, action) {
     case actionTypes.GET_BLUPRINT_FAILURE:
       return { ...state, error: action.payload, fetching: false }
 
-    case actionTypes.UPDATE_BLUPRINT_FAILURE:
-      return { ...state, error: action.payload, updating: false }
-
     case actionTypes.UPDATE_BLUPRINT_REQUEST:
       return { ...state, updating: true }
 
     case actionTypes.UPDATE_BLUPRINT_SUCCESS:
       return { ...state, updating: false }
+
+    case actionTypes.UPDATE_BLUPRINT_FAILURE:
+      return { ...state, error: action.payload, updating: false }
 
     case actionTypes.SET_BLUPRINT_CONFIG_SCHEMA:
       return { ...state, configureSchema: action.payload }
@@ -89,6 +91,22 @@ export default function types(state = initialState, action) {
     case actionTypes.SET_MESSAGE_SCHEMA: {
       const messageSchema = getMessageSchemaFromNodes(action.payload.draft.nodes)
       return { ...state, messageSchema }
+    }
+
+    case actionTypes.SET_OCTOBLU_LINKS: {
+      const octobluLinks = {
+        links: [
+          {
+            title: 'Bluprint Detail',
+            url: `${BLUPRINTER_URL}/bluprints/${action.payload}`,
+          },
+          {
+            title: 'Import Bluprint',
+            url: `${BLUPRINTER_URL}/bluprints/${action.payload}/import`,
+          },
+        ],
+      }
+      return { ...state, octobluLinks }
     }
 
     default:

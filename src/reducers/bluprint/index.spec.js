@@ -1,5 +1,6 @@
-import chai, { expect } from 'chai'
+import { expect } from 'chai'
 import * as actionTypes from '../../constants/action-types'
+import { BLUPRINTER_URL } from 'config'
 
 import reducer from './'
 
@@ -14,6 +15,7 @@ describe('Bluprint Reducer', () => {
     flowDevice: null,
     manifest: null,
     messageSchema: null,
+    octobluLinks: null,
     operationSchemas: null,
     sharedDevices: null,
     updating: false,
@@ -76,13 +78,19 @@ describe('Bluprint Reducer', () => {
   it('should handle UPDATE_BLUPRINT_REQUEST', () => {
     expect(
       reducer(undefined, { type: actionTypes.UPDATE_BLUPRINT_REQUEST })
-    ).to.deep.equal({ ...initialState, updating: true })
+    ).to.deep.equal({
+      ...initialState,
+      updating: true,
+    })
   })
 
   it('should handle UPDATE_BLUPRINT_SUCCESS', () => {
     expect(
       reducer({ ...initialState, updating: true }, { type: actionTypes.UPDATE_BLUPRINT_SUCCESS })
-    ).to.deep.equal({ ...initialState, updating: false })
+    ).to.deep.equal({
+      ...initialState,
+      updating: false,
+    })
   })
 
   it('should handle UPDATE_BLUPRINT_FAILURE', () => {
@@ -97,7 +105,6 @@ describe('Bluprint Reducer', () => {
       updating: false,
     })
   })
-
 
   it('should handle SET_BLUPRINT_CONFIG_SCHEMA', () => {
     const configureSchema = { uuid: 'Scottsdale'}
@@ -155,5 +162,24 @@ describe('Bluprint Reducer', () => {
       type: actionTypes.SET_MESSAGE_SCHEMA,
       payload: flowDevice,
     })).to.deep.equal({...initialState, messageSchema: defaultMessageSchema })
+  })
+
+  it('should handle SET_OCTOBLU_LINKS', () => {
+    const octobluLinks =  {
+      links: [
+        {
+          title: 'Bluprint Detail',
+          url: `${BLUPRINTER_URL}/bluprints/my-fancy-bluprint-uuid`,
+        },
+        {
+          title: 'Import Bluprint',
+          url: `${BLUPRINTER_URL}/bluprints/my-fancy-bluprint-uuid/import`,
+        },
+      ],
+    }
+    expect(reducer(undefined, {
+      type: actionTypes.SET_OCTOBLU_LINKS,
+      payload: 'my-fancy-bluprint-uuid',
+    })).to.deep.equal({ ...initialState, octobluLinks })
   })
 })

@@ -1,4 +1,6 @@
 import MeshbluHttp from 'browser-meshblu-http'
+import { push } from 'react-router-redux'
+
 import * as actionTypes from '../../constants/action-types'
 import { getMeshbluConfig } from '../../services/auth-service'
 
@@ -23,6 +25,13 @@ function getBluprintFailure(error) {
   }
 }
 
+export function setOctobluLinks(bluprintUuid) {
+  return {
+    type: actionTypes.SET_OCTOBLU_LINKS,
+    payload: bluprintUuid,
+  }
+}
+
 export function getBluprint(bluprintUuid, meshbluConfig = getMeshbluConfig()) {
   return dispatch => {
     dispatch(getBluprintRequest())
@@ -34,6 +43,7 @@ export function getBluprint(bluprintUuid, meshbluConfig = getMeshbluConfig()) {
           return reject(dispatch(getBluprintFailure(new Error('Error getting Bluprint device'))))
         }
 
+        dispatch(setOctobluLinks(bluprintUuid))
         return resolve(dispatch(getBluprintSuccess(device)))
       })
     })
@@ -60,7 +70,7 @@ function updateBluprintFailure(error) {
 }
 
 export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
-  const { device, configureSchema, messageSchema, sharedDevices } = bluprint
+  const { device, configureSchema, messageSchema, sharedDevices, octobluLinks } = bluprint
 
   return dispatch => {
     dispatch(updateBluprintRequest())
@@ -85,7 +95,8 @@ export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
               default: messageSchema
             }
           }
-        }]
+        }],
+        octoblu: octobluLinks,
       }
     }
 
@@ -99,7 +110,7 @@ export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
             )
           )
         }
-        dispatch(getBluprint(uuid))
+        dispatch(push(`/bluprints/${uuid}`))
         return resolve(dispatch(updateBluprintSuccess()))
       })
     })

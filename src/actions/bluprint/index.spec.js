@@ -9,7 +9,8 @@ import {
   getBluprint,
   setBluprintConfigSchema,
   setBluprintSharedDevices,
-  updateBluprint
+  setOctobluLinks,
+  updateBluprint,
 } from './'
 
 const middlewares = [thunk]
@@ -50,6 +51,10 @@ describe('Bluprint Actions', () => {
 
     const expectedActions = [
       { type: actionTypes.GET_BLUPRINT_REQUEST },
+      {
+        type: actionTypes.SET_OCTOBLU_LINKS,
+        payload: 'my-bluprint-uuid',
+      },
       {
         type: actionTypes.GET_BLUPRINT_SUCCESS,
         payload: {
@@ -149,7 +154,13 @@ describe('Bluprint Actions', () => {
 
     const expectedActions = [
       { type: actionTypes.UPDATE_BLUPRINT_REQUEST},
-      { type: actionTypes.GET_BLUPRINT_REQUEST },
+      {
+        type: '@@router/CALL_HISTORY_METHOD',
+        payload: {
+          args: ['/bluprints/my-bluprint-uuid'],
+          method: 'push'
+        }
+      },
       {
         type: actionTypes.UPDATE_BLUPRINT_SUCCESS,
       }
@@ -169,6 +180,16 @@ describe('Bluprint Actions', () => {
         updateBluprintHandler.done()
         expect(store.getActions()).to.deep.equal(expectedActions)
       })
+    })
+  })
+
+  describe('when setOctobluLinks is called', () => {
+    it('should dispatch SET_OCTOBLU_LINKS', () => {
+      const expectedAction = {
+        type: actionTypes.SET_OCTOBLU_LINKS,
+        payload: 'aaf-asdfas-asdfas'
+      }
+      expect(setOctobluLinks('aaf-asdfas-asdfas')).to.deep.equal(expectedAction)
     })
   })
 })
