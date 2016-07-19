@@ -16,6 +16,7 @@ import {
   getBluprint,
   setBluprintConfigSchema,
   setBluprintSharedDevices,
+  updateBluprint,
 } from '../../actions/bluprint'
 
 const propTypes = {
@@ -30,7 +31,8 @@ class ConfigureBluprint extends React.Component {
   constructor(props) {
     super(props)
 
-    this.handleConfigUpdate = this.handleConfigUpdate.bind(this)
+    this.handleConfigUpdate   = this.handleConfigUpdate.bind(this)
+    this.handleBluprintUpdate = this.handleBluprintUpdate.bind(this)
   }
 
   componentDidMount() {
@@ -52,8 +54,15 @@ class ConfigureBluprint extends React.Component {
   }
 
   handleConfigUpdate({ configSchema, sharedDevices }) {
-    this.props.dispatch(setBluprintConfigSchema(configSchema))
-    this.props.dispatch(setBluprintSharedDevices(sharedDevices))
+    const { dispatch } = this.props
+
+    dispatch(setBluprintConfigSchema(configSchema))
+    dispatch(setBluprintSharedDevices(sharedDevices))
+  }
+
+  handleBluprintUpdate() {
+    const { bluprint, dispatch } = this.props
+    dispatch(updateBluprint(bluprint))
   }
 
   renderSubmitButton(loading) {
@@ -106,7 +115,7 @@ class ConfigureBluprint extends React.Component {
             onUpdate={this.handleConfigUpdate}
           />
 
-          <Button kind="primary">Configure & Continue</Button>
+          <Button kind="primary" onClick={this.handleBluprintUpdate}>Configure & Continue</Button>
         </div>
       </Page>
     )

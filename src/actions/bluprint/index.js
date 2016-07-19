@@ -40,6 +40,72 @@ export function getBluprint(bluprintUuid, meshbluConfig = getMeshbluConfig()) {
   }
 }
 
+function updateBluprintRequest() {
+  return {
+    type: actionTypes.UPDATE_BLUPRINT_REQUEST
+  }
+}
+
+function updateBluprintSuccess() {
+  return {
+    type: actionTypes.UPDATE_BLUPRINT_SUCCESS,
+  }
+}
+
+function updateBluprintFailure(error) {
+  return {
+    type: actionTypes.UPDATE_BLUPRINT_FAILURE,
+    payload: error,
+  }
+}
+
+export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
+  const { device, configureSchema, messageSchema, sharedDevices } = bluprint
+
+  return dispatch => {
+    dispatch(updateBluprintRequest())
+
+    const {uuid} = device
+    const updateQuery = {
+      $set: {
+        'bluprint.sharedDevices': sharedDevices,
+        'bluprint.schemas.configure': {
+          default: configureSchema
+        },
+        'bluprint.schemas.message': {
+          default: messageSchema
+        },
+        versions: [{
+          sharedDevices,
+          schemas: {
+            configure: {
+              default: configureSchema
+            },
+            message: {
+              default: messageSchema
+            }
+          }
+        }]
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      const meshblu = new MeshbluHttp(meshbluConfig)
+      meshblu.updateDangerously(uuid, updateQuery, (error) => {
+        if (error) {
+          return reject(
+            dispatch(
+              updateBluprintFailure(
+              new Error('Error updating Bluprint device')
+            )
+          )
+        )
+        }
+        return resolve(dispatch(updateBluprintSuccess()))
+      })
+    })
+  }
+}
 
 export function setBluprintConfigSchema(bluprintConfigSchema) {
   return {
