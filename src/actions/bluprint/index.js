@@ -101,6 +101,7 @@ export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
           )
         )
         }
+        dispatch(getBluprint(uuid))
         return resolve(dispatch(updateBluprintSuccess()))
       })
     })
