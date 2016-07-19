@@ -94,7 +94,8 @@ class CreateBluprint extends React.Component {
     const { configSchema, sharedDevices } = this.state
 
     const { appName } = event.target
-    const { flowUuid, history } = this.props
+    const {history } = this.props
+    const {flowUuid} = this.props.routeParams
     const meshbluConfig = getMeshbluConfig()
     const meshblu = new MeshbluHttp(meshbluConfig)
     const { flowDevice, version } = this.state
