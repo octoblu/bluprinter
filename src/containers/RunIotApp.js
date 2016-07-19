@@ -1,9 +1,14 @@
+import superagent from 'superagent'
 import React from 'react'
 import MeshbluHttp from 'browser-meshblu-http'
 import {getMeshbluConfig} from '../services/auth-service'
 import {Page} from 'zooid-ui'
 import {DeviceMessageSchemaContainer} from 'zooid-meshblu-device-editor';
 import MeshbluJsonSchemaResolver from 'meshblu-json-schema-resolver'
+import RunPageHeader from '../components/RunPageHeader/'
+
+
+import {OCTOBLU_URL} from 'config'
 
 class RunIotApp extends React.Component {
   state = {}
@@ -30,13 +35,52 @@ class RunIotApp extends React.Component {
     })
   }
 
+  onStart = () => {
+    const {device} = this.state
+    if(!device) return
+    this.startFlow(device.uuid, (error, response) => console.log('onStart', error, response))
+  }
+
+  onStop = () => {
+    const {device} = this.state
+    if(!device) return
+    this.stopFlow(device.uuid, (error, response) => console.log('onStop', error, response))
+  }
+
+  startFlow = (flowId, callback) => {
+    const {uuid, token} = getMeshbluConfig()
+    superagent
+      .post(`${OCTOBLU_URL}/api/flows/${flowId}/instance`)
+      .auth(uuid, token)
+      .send({})
+      .end((error, response) =>{
+        if(error) return callback(error)
+        return callback(error, response.body)
+      })
+  }
+
+  stopFlow = (flowId, callback) => {
+    const {uuid, token} = getMeshbluConfig()
+    superagent
+      .del(`${OCTOBLU_URL}/api/flows/${flowId}/instance`)
+      .auth(uuid, token)
+      .end((error, response) =>{
+        if(error) return callback(error)
+        return callback(error, response.body)
+      })
+  }
+
   render = () => {
     const {device} = this.state
-    if(!device) return <h1>Haaaaaaaaaaang onnnnnnnn</h1>
+    if(!device) return <h1>Loading</h1>
     return (
       <main>
         <Page>
-          <h1> Omg, you are totally running your IoT App </h1>
+          <RunPageHeader
+            device={device}
+            onStart={this.onStart}
+            onStop={this.onStop}
+          />
 
           <DeviceMessageSchemaContainer
             device={device}

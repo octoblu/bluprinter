@@ -12,7 +12,7 @@ import Dialog from './'
 chai.use(chaiEnzyme())
 chai.use(sinonChai)
 
-describe.only('<Dialog />', () => {
+describe('<Dialog />', () => {
   describe('when given a body', () => {
     it('should render the dialog with the body', () => {
       const sut = shallow(
