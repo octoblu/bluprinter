@@ -65,7 +65,7 @@ class CreateBluprint extends React.Component {
         })
 
       this.flowService
-        .getDeviceSchemas(flowDevice.draft.nodes)
+        .setDeviceSchemas(flowDevice.draft.nodes)
         .then((deviceSchemas) => {
           this.setState({ deviceSchemas, loading: false})
         })

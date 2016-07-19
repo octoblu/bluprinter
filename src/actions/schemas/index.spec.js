@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import enableDestroy from 'server-destroy'
 
-import { getOperationSchemas } from './'
+import { getOperationSchemas, setMessageSchema } from './'
 import * as actionTypes from '../../constants/action-types'
 
 const middlewares = [thunk]
@@ -69,6 +69,17 @@ describe('Schemas Actions', () => {
         .catch(() => { // return of async actions
           expect(store.getActions()).to.deep.equal(expectedActions)
         })
+    })
+  })
+  describe('when getMessageSchema is called', () => {
+    const flowDevice = {
+      uuid: 'my-flow-uuid'
+    }
+    it('should create the expected action', () => {
+      expect(setMessageSchema(flowDevice)).to.deep.equal({
+        type: actionTypes.SET_MESSAGE_SCHEMA,
+        payload: flowDevice,
+      })
     })
   })
 })

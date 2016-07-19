@@ -2,8 +2,7 @@ import MeshbluHttp from 'browser-meshblu-http'
 import * as actionTypes from '../../constants/action-types'
 import { getMeshbluConfig } from '../../services/auth-service'
 import FlowService          from '../../services/flow-service'
-import NodeService          from '../../services/node-service'
-import { getDeviceSchemas } from '../../actions/schemas'
+import { setDeviceSchemas, setMessageSchema } from '../../actions/schemas'
 
 
 function getFlowRequest() {
@@ -38,7 +37,8 @@ export function getFlow(flowUuid, meshbluConfig = getMeshbluConfig()) {
           return reject(dispatch(getFlowFailure(new Error('Could not get Flow device'))))
         }
 
-        dispatch(getDeviceSchemas(flowDevice))
+        dispatch(setDeviceSchemas(flowDevice))
+        dispatch(setMessageSchema(flowDevice))
         return resolve(dispatch(getFlowSuccess(flowDevice)))
       })
     })

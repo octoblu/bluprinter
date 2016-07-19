@@ -75,7 +75,7 @@ export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
         'bluprint.schemas.message': {
           default: messageSchema
         },
-        versions: [{
+        'bluprint.versions': [{
           sharedDevices,
           schemas: {
             configure: {
@@ -95,11 +95,9 @@ export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
         if (error) {
           return reject(
             dispatch(
-              updateBluprintFailure(
-              new Error('Error updating Bluprint device')
+              updateBluprintFailure(new Error('Error updating Bluprint'))
             )
           )
-        )
         }
         dispatch(getBluprint(uuid))
         return resolve(dispatch(updateBluprintSuccess()))

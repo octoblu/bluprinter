@@ -58,32 +58,32 @@ const reduceSchemas = (result, value) => {
   return result
 }
 
-function getDeviceSchemasRequest() {
+function setDeviceSchemasRequest() {
   return {
-    type: actionTypes.GET_DEVICE_SCHEMAS_REQUEST
+    type: actionTypes.SET_DEVICE_SCHEMAS_REQUEST
   }
 }
 
-function getDeviceSchemasSuccess(schemas) {
+function setDeviceSchemasSuccess(schemas) {
   return {
-    type: actionTypes.GET_DEVICE_SCHEMAS_SUCCESS,
+    type: actionTypes.SET_DEVICE_SCHEMAS_SUCCESS,
     payload: schemas,
   }
 }
 
-function getDeviceSchemasFailure(error) {
+function setDeviceSchemasFailure(error) {
   return {
-    type: actionTypes.GET_DEVICE_SCHEMAS_FAILURE,
+    type: actionTypes.SET_DEVICE_SCHEMAS_FAILURE,
     payload: error,
   }
 }
 
-export function getDeviceSchemas(flowDevice, meshbluConfig = getMeshbluConfig()) {
+export function setDeviceSchemas(flowDevice, meshbluConfig = getMeshbluConfig()) {
   const { nodes } = flowDevice.draft
   const meshblu   = new MeshbluHttp(meshbluConfig)
 
   return dispatch => {
-    dispatch(getDeviceSchemasRequest())
+    dispatch(setDeviceSchemasRequest())
 
     const deviceUuids = _(nodes)
       .filter({category: 'device'})
@@ -100,13 +100,21 @@ export function getDeviceSchemas(flowDevice, meshbluConfig = getMeshbluConfig())
       }
 
       meshblu.search(search, (searchError, devices) => {
-        if (searchError) return reject(dispatch(getDeviceSchemasFailure(searchError)))
+        if (searchError) return reject(dispatch(setDeviceSchemasFailure(searchError)))
 
         return $RefParser.dereference(devices, (error, resolvedSchemas) => {
           const schemaRegistry = _.reduce(resolvedSchemas, reduceSchemas, {})
-          return resolve(dispatch(getDeviceSchemasSuccess(schemaRegistry)))
+          return resolve(dispatch(setDeviceSchemasSuccess(schemaRegistry)))
         })
       })
     })
+  }
+}
+
+
+export function setMessageSchema(flowDevice) {
+  return {
+    type: actionTypes.SET_MESSAGE_SCHEMA,
+    payload: flowDevice,
   }
 }

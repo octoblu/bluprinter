@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+import Alert from 'zooid-alert'
 import Button from 'zooid-button'
 import Heading from 'zooid-heading'
 import Page from 'zooid-page'
@@ -83,19 +84,35 @@ class ConfigureBluprint extends React.Component {
     return submitButton
   }
 
+  renderBluprintConfigBuilder() {
+    const { flow, schemas } = this.props
+
+    if (_.isEmpty(flow)) return null
+    if (_.isEmpty(schemas.operationSchemas)) return null
+    if (_.isEmpty(schemas.deviceSchemas)) return null
+
+    return (
+      <BluprintConfigBuilder
+        nodes={flow.device.draft.nodes}
+        operationSchemas={schemas.operationSchemas}
+        deviceSchemas={schemas.deviceSchemas}
+        onUpdate={this.handleConfigUpdate}
+      />
+    )
+  }
   render() {
     const { bluprint, flow, schemas } = this.props
-    const { error, fetching }         = bluprint
+    const { device, error, fetching, updating } = bluprint
     const { fetchingOperationSchemas, fetchingDeviceSchemas } = schemas
 
     if (fetching) return <Page className={styles.NewBluprintPage} loading />
     if (fetchingOperationSchemas || fetchingDeviceSchemas) {
       return <Page className={styles.NewBluprintPage} loading />
     }
-    if (error) return <Page className={styles.NewBluprintPage} error={error} />
-    if (_.isEmpty(bluprint.device) || _.isEmpty(flow.device)) return null
+    if (_.isEmpty(device) || _.isEmpty(flow.device)) return null
 
-    const { name } = bluprint.device
+    const { name } = device
+
     const steps = [
       { label: 'Create a Bluprint', state: 'COMPLETED' },
       { label: 'Configure', state: 'ACTIVE' },
@@ -108,14 +125,16 @@ class ConfigureBluprint extends React.Component {
         <div className={styles.root}>
           <Heading level={4}>Configure Bluprint: {name}</Heading>
 
-          <BluprintConfigBuilder
-            nodes={flow.device.draft.nodes}
-            operationSchemas={schemas.operationSchemas}
-            deviceSchemas={schemas.deviceSchemas}
-            onUpdate={this.handleConfigUpdate}
-          />
+          {this.renderBluprintConfigBuilder()}
 
-          <Button kind="primary" onClick={this.handleBluprintUpdate}>Configure & Continue</Button>
+          <Button
+            kind="primary"
+            onClick={this.handleBluprintUpdate}
+          >
+            {updating ? 'Updating...' : 'Configure & Continue'}
+          </Button>
+
+          {error && <Alert type="error">{error.message}</Alert>}
         </div>
       </Page>
     )

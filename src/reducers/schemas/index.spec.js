@@ -1,4 +1,4 @@
-import chai, { expect } from 'chai'
+import { expect } from 'chai'
 import * as actionTypes from '../../constants/action-types'
 
 import reducer from './'
@@ -41,26 +41,26 @@ describe('Schema Reducer', () => {
     })).to.deep.equal({...initialState, error: new Error('Bang!') })
   })
 
-  it('should handle GET_DEVICE_SCHEMAS_REQUEST', () => {
+  it('should handle SET_DEVICE_SCHEMAS_REQUEST', () => {
     expect(
-      reducer(undefined, { type: actionTypes.GET_DEVICE_SCHEMAS_REQUEST })
+      reducer(undefined, { type: actionTypes.SET_DEVICE_SCHEMAS_REQUEST })
     ).to.deep.equal({ ...initialState, fetchingDeviceSchemas: true })
   })
 
-  it('should handle GET_DEVICE_SCHEMAS_SUCCESS', () => {
+  it('should handle SET_DEVICE_SCHEMAS_SUCCESS', () => {
     const deviceSchemas = {
       uuid: 'my-uuid',
     }
 
     expect(reducer(undefined, {
-      type: actionTypes.GET_DEVICE_SCHEMAS_SUCCESS,
+      type: actionTypes.SET_DEVICE_SCHEMAS_SUCCESS,
       payload: deviceSchemas
     })).to.deep.equal({...initialState, deviceSchemas })
   })
 
-  it('should handle GET_DEVICE_SCHEMAS_FAILURE', () => {
+  it('should handle SET_DEVICE_SCHEMAS_FAILURE', () => {
     expect(reducer(undefined, {
-      type: actionTypes.GET_DEVICE_SCHEMAS_FAILURE,
+      type: actionTypes.SET_DEVICE_SCHEMAS_FAILURE,
       payload: new Error('Bang!')
     })).to.deep.equal({...initialState, error: new Error('Bang!') })
   })

@@ -40,10 +40,10 @@ function deviceDefaults({ description, flowId, name, version, visibility }) {
       schemas: {
         version: '2.0.0',
         configure: {
-          bluprint: {},
+          default: {},
         },
         message: {
-          bluprint: {},
+          default: {},
         }
       },
       versions: [
@@ -53,10 +53,10 @@ function deviceDefaults({ description, flowId, name, version, visibility }) {
           sharedDevices: {},
           schemas: {
             configure: {
-              bluprint: {},
+              default: {},
             },
             message: {
-              bluprint: {},
+              default: {},
             }
           },
         },

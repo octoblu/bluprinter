@@ -29,20 +29,20 @@ export default function types(state = initialState, action) {
         fetchingOperationSchemas: false,
       }
 
-    case actionTypes.GET_DEVICE_SCHEMAS_REQUEST:
+    case actionTypes.SET_DEVICE_SCHEMAS_REQUEST:
       return {
         ...state,
         fetchingDeviceSchemas: true,
       }
 
-    case actionTypes.GET_DEVICE_SCHEMAS_SUCCESS:
+    case actionTypes.SET_DEVICE_SCHEMAS_SUCCESS:
       return {
         ...state,
         deviceSchemas: action.payload,
         fetchingDeviceSchemas: false,
       }
 
-    case actionTypes.GET_DEVICE_SCHEMAS_FAILURE:
+    case actionTypes.SET_DEVICE_SCHEMAS_FAILURE:
       return {
         ...state,
         error: action.payload,

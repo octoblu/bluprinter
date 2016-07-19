@@ -130,7 +130,7 @@ describe('Bluprint Actions', () => {
           'bluprint.schemas.message': {
             default: {}
           },
-          versions: [{
+          'bluprint.versions': [{
             sharedDevices: [],
             schemas: {
               configure: {

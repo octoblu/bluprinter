@@ -44,15 +44,19 @@ describe('Flow Actions', () => {
       })
     })
 
+    const flowDevice = {
+      uuid: 'my-flow-uuid',
+      draft: { nodes: [] }
+    }
     const expectedActions = [
       { type: actionTypes.GET_FLOW_REQUEST },
-      { type: actionTypes.GET_DEVICE_SCHEMAS_REQUEST },
+      { type: actionTypes.SET_DEVICE_SCHEMAS_REQUEST },
+      { type: actionTypes.SET_MESSAGE_SCHEMA,
+        payload: flowDevice,
+      },
       {
         type: actionTypes.GET_FLOW_SUCCESS,
-        payload: {
-          uuid: 'my-flow-uuid',
-          draft: { nodes: [] }
-        }
+        payload: flowDevice,
       },
     ]
     const store = mockStore({ flow: {}})

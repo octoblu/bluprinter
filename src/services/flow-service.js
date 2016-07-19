@@ -29,7 +29,7 @@ export default class FlowService {
     })
   }
 
-  getDeviceSchemas = (nodes) => {
+  setDeviceSchemas = (nodes) => {
     const deviceUuids = _(nodes)
       .filter({category: 'device'})
       .uniqBy('type')
