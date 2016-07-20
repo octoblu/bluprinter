@@ -96,7 +96,7 @@ function createBluprintFailure(error) {
 }
 
 export function createBluprint(deviceOptions) {
-   const {flowId} = deviceOptions
+  const {flowId} = deviceOptions
   return dispatch => {
     dispatch(createBluprintRequest())
 
@@ -108,7 +108,7 @@ export function createBluprint(deviceOptions) {
       if (error) {
         return dispatch(createBluprintFailure(new Error('Could not create Bluprint device')))
       }
-      makeFlowDiscoverable({flowUuid: flowId, bluprintUuid: device.uuid})
+      dispatch(makeFlowDiscoverable({flowUuid: flowId, bluprintUuid: device.uuid}))
       return dispatch(createBluprintSuccess(device))
     })
   }
