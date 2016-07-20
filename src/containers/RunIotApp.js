@@ -6,9 +6,9 @@ import {Page} from 'zooid-ui'
 import {DeviceMessageSchemaContainer} from 'zooid-meshblu-device-editor';
 import MeshbluJsonSchemaResolver from 'meshblu-json-schema-resolver'
 import RunPageHeader from '../components/RunPageHeader/'
+import async from 'async'
 
-
-import {OCTOBLU_URL} from 'config'
+import {FLOW_DEPLOY_URL} from 'config'
 
 class RunIotApp extends React.Component {
   state = {}
@@ -31,43 +31,33 @@ class RunIotApp extends React.Component {
       this.meshbluJsonSchemaResolver.resolve(device, (error, resolvedDevice) => {
           this.setState({device: resolvedDevice})
       })
-
     })
   }
 
   onStart = () => {
-    const {device} = this.state
-    if(!device) return
-    this.startFlow(device.uuid, (error, response) => console.log('onStart', error, response))
+    this.toggleOnline(true)
   }
 
   onStop = () => {
+    this.toggleOnline(false)
+  }
+
+  toggleOnline = (online) => {
     const {device} = this.state
     if(!device) return
-    this.stopFlow(device.uuid, (error, response) => console.log('onStop', error, response))
+
+    const flowId = device.uuid
+
+    async.series([
+        async.apply(this.meshblu.update, flowId, {online}),
+        async.apply(this.fetchDevice),
+      ], this.handleError
+    )
   }
 
-  startFlow = (flowId, callback) => {
-    const {uuid, token} = getMeshbluConfig()
-    superagent
-      .post(`${OCTOBLU_URL}/api/flows/${flowId}/instance`)
-      .auth(uuid, token)
-      .send({})
-      .end((error, response) =>{
-        if(error) return callback(error)
-        return callback(error, response.body)
-      })
-  }
-
-  stopFlow = (flowId, callback) => {
-    const {uuid, token} = getMeshbluConfig()
-    superagent
-      .del(`${OCTOBLU_URL}/api/flows/${flowId}/instance`)
-      .auth(uuid, token)
-      .end((error, response) =>{
-        if(error) return callback(error)
-        return callback(error, response.body)
-      })
+  handleError = (error) => {
+    if(!error) return
+    console.log('error', error)
   }
 
   render = () => {
