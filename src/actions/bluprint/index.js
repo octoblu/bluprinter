@@ -1,5 +1,4 @@
 import MeshbluHttp from 'browser-meshblu-http'
-import { push } from 'react-router-redux'
 import { FLOW_DEPLOY_URL } from 'config'
 import * as actionTypes from '../../constants/action-types'
 import { getMeshbluConfig } from '../../services/auth-service'

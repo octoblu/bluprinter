@@ -5,6 +5,7 @@ import App from '../containers/App'
 import BluprintDetail from '../containers/BluprintDetail'
 import CreateBluprint from '../containers/CreateBluprint'
 import ConfigureBluprint from '../containers/ConfigureBluprint'
+import FinishCreateBluprint from '../containers/FinishCreateBluprint'
 import Home from '../containers/Home'
 import ImportBluprint from '../containers/ImportBluprint'
 import Logout from '../containers/Logout'
@@ -28,6 +29,7 @@ export default ({ history }) => {
         </Route>
 
         <Route path="bluprints/:bluprintUuid/configure" component={ConfigureBluprint} />
+        <Route path="bluprints/:bluprintUuid/finish" component={FinishCreateBluprint} />
 
         <Route path="bluprints/:uuid" component={BluprintDetail} />
         <Route path="bluprints/:uuid/import" component={ImportBluprint} />
