@@ -8,6 +8,7 @@ describe('Bluprint Reducer', () => {
   const initialState = {
     configureSchema: null,
     creating: false,
+    deploying: false,
     device: null,
     deviceSchemas: null,
     error: null,
@@ -103,6 +104,38 @@ describe('Bluprint Reducer', () => {
       ...initialState,
       error: new Error('Error updating Bluprint'),
       updating: false,
+    })
+  })
+
+
+  it('should handle DEPLOY_BLUPRINT_REQUEST', () => {
+    expect(
+      reducer(undefined, { type: actionTypes.DEPLOY_BLUPRINT_REQUEST })
+    ).to.deep.equal({
+      ...initialState,
+      deploying: true,
+    })
+  })
+
+  it('should handle DEPLOY_BLUPRINT_SUCCESS', () => {
+    expect(
+      reducer({ ...initialState, deploying: true }, { type: actionTypes.DEPLOY_BLUPRINT_SUCCESS })
+    ).to.deep.equal({
+      ...initialState,
+      deploying: false,
+    })
+  })
+
+  it('should handle DEPLOY_BLUPRINT_FAILURE', () => {
+    expect(
+      reducer({ ...initialState, deploying: true }, {
+        type: actionTypes.DEPLOY_BLUPRINT_FAILURE,
+        payload: new Error('Error deploying Bluprint')
+      })
+    ).to.deep.equal({
+      ...initialState,
+      error: new Error('Error deploying Bluprint'),
+      deploying: false,
     })
   })
 

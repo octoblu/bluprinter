@@ -1,11 +1,12 @@
-import shmock from 'shmock'
-import chai, { expect } from 'chai'
+import { expect } from 'chai'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import enableDestroy from 'server-destroy'
+import shmock from 'shmock'
 
 import * as actionTypes from '../../constants/action-types'
 import {
+  deployBluprint,
   getBluprint,
   setBluprintConfigSchema,
   setBluprintSharedDevices,
@@ -154,13 +155,7 @@ describe('Bluprint Actions', () => {
 
     const expectedActions = [
       { type: actionTypes.UPDATE_BLUPRINT_REQUEST},
-      {
-        type: '@@router/CALL_HISTORY_METHOD',
-        payload: {
-          args: ['/bluprints/my-bluprint-uuid'],
-          method: 'push'
-        }
-      },
+      { type: actionTypes.DEPLOY_BLUPRINT_REQUEST},
       {
         type: actionTypes.UPDATE_BLUPRINT_SUCCESS,
       }
@@ -171,7 +166,12 @@ describe('Bluprint Actions', () => {
     it('should dispatch UPDATE_BLUPRINT_SUCCESS', () => {
       return store.dispatch(
         updateBluprint({
-          device: {uuid: 'my-bluprint-uuid'},
+          device: {
+            uuid: 'my-bluprint-uuid',
+            bluprint: {
+              version: '1.0.0', flowId: 'my-flow-uuid'
+            },
+          },
           configureSchema: {},
           messageSchema: {},
           sharedDevices: []
@@ -190,6 +190,99 @@ describe('Bluprint Actions', () => {
         payload: 'aaf-asdfas-asdfas'
       }
       expect(setOctobluLinks('aaf-asdfas-asdfas')).to.deep.equal(expectedAction)
+    })
+  })
+
+  describe('when deployBluprint is called with valid bluprint', () => {
+    let nanocyteFlowDeployMock
+    let publishBluprintHandler
+    const bluprint = {
+      uuid: 'my-bluprint-uuid',
+      bluprint: {
+        version: '1.0.0',
+        flowId: 'my-flow-uuid',
+      }
+    }
+    const store = mockStore()
+
+    before(() => {
+      nanocyteFlowDeployMock = shmock(0xbaba)
+      enableDestroy(nanocyteFlowDeployMock)
+    })
+
+    after((done) => {
+      nanocyteFlowDeployMock.destroy(done)
+    })
+
+    beforeEach((done) => {
+      publishBluprintHandler = nanocyteFlowDeployMock
+      .post('/bluprint/my-bluprint-uuid/1.0.0')
+      .set('Authorization', `Basic ${userAuth}`)
+      .send({flowId: 'my-flow-uuid'})
+      .reply(201, 'SUCCESS')
+      done()
+    })
+
+    it('should try to hit the nanocyte flow deploy service publish endpoint', () => {
+      const expectedActions = [
+        { type: actionTypes.DEPLOY_BLUPRINT_REQUEST },
+        { type: actionTypes.DEPLOY_BLUPRINT_SUCCESS },
+      ]
+
+      store.dispatch(
+        deployBluprint(bluprint, `http://127.0.0.1/${0xbaba}`, meshbluConfig)
+      ).then(() => {
+        publishBluprintHandler.done()
+        expect(store.getActions()).to.deep.equal(expectedActions)
+      })
+    })
+  })
+
+  describe('when deployBluprint is called and the deploy fails', () => {
+    let nanocyteFlowDeployMock
+    let publishBluprintHandler
+
+    const bluprint = {
+      uuid: 'my-bluprint-uuid',
+      bluprint: {
+        version: '1.0.0',
+        flowId: 'my-flow-uuid',
+      }
+    }
+    const store = mockStore()
+
+    before(() => {
+      nanocyteFlowDeployMock = shmock(0xc0c0)
+      enableDestroy(nanocyteFlowDeployMock)
+    })
+
+    after((done) => {
+      nanocyteFlowDeployMock.destroy(done)
+    })
+
+    beforeEach((done) => {
+      publishBluprintHandler = nanocyteFlowDeployMock
+      .post('/bluprint/my-bluprint-uuid/1.0.0')
+      .set('Authorization', `Basic ${userAuth}`)
+      .send({flowId: 'my-flow-uuid'})
+      .reply(412, 'ERROR DEPLOYING FLOW')
+      done()
+    })
+
+    it('should try to hit the nanocyte flow deploy service publish endpoint', () => {
+      const expectedActions = [
+        { type: actionTypes.DEPLOY_BLUPRINT_REQUEST },
+        { type: actionTypes.DEPLOY_BLUPRINT_FAILURE,
+          payload: new Error('Could not deploy Bluprint')
+        },
+      ]
+
+      store.dispatch(
+        deployBluprint(bluprint, `http://127.0.0.1/${0xc0c0}`, meshbluConfig)
+      ).catch(() => {
+        publishBluprintHandler.done()
+        expect(store.getActions()).to.deep.equal(expectedActions)
+      })
     })
   })
 })

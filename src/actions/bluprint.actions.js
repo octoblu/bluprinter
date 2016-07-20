@@ -2,6 +2,7 @@ import MeshbluHttp from 'browser-meshblu-http'
 
 import * as actionTypes from '../constants/action-types'
 import { getMeshbluConfig } from '../services/auth-service'
+import { makeFlowDiscoverable } from './bluprint/index'
 
 
 function getVisibilityPermission({ visibility, userUuid }) {
@@ -95,6 +96,7 @@ function createBluprintFailure(error) {
 }
 
 export function createBluprint(deviceOptions) {
+   const {bluprint} = deviceOptions
   return dispatch => {
     dispatch(createBluprintRequest())
 
@@ -106,7 +108,7 @@ export function createBluprint(deviceOptions) {
       if (error) {
         return dispatch(createBluprintFailure(new Error('Could not create Bluprint device')))
       }
-
+      makeFlowDiscoverable({flowUuid: bluprint.flowId, bluprintUuid: device.uuid})
       return dispatch(createBluprintSuccess(device))
     })
   }

@@ -1,9 +1,9 @@
 import MeshbluHttp from 'browser-meshblu-http'
 import { push } from 'react-router-redux'
-
+import { FLOW_DEPLOY_URL } from 'config'
 import * as actionTypes from '../../constants/action-types'
 import { getMeshbluConfig } from '../../services/auth-service'
-
+import superagent from 'superagent'
 
 function getBluprintRequest() {
   return {
@@ -22,6 +22,43 @@ function getBluprintFailure(error) {
   return {
     type: actionTypes.GET_BLUPRINT_FAILURE,
     payload: error,
+  }
+}
+export function deployBluprintRequest() {
+  return {
+    type: actionTypes.DEPLOY_BLUPRINT_REQUEST,
+  }
+}
+export function deployBluprintSuccess() {
+  return {
+    type: actionTypes.DEPLOY_BLUPRINT_SUCCESS
+  }
+}
+export function deployBluprintFailure(error) {
+  return {
+    type: actionTypes.DEPLOY_BLUPRINT_FAILURE,
+    payload: error,
+  }
+}
+
+export function deployBluprint({uuid, version, flowId}, flowDeployUrl = FLOW_DEPLOY_URL, meshbluConfig = getMeshbluConfig()) {
+  return dispatch => {
+    dispatch(deployBluprintRequest())
+
+    console.log('{uuid, version, flowId}', {uuid, version, flowId})
+
+    return new Promise((resolve, reject) => {
+      superagent
+        .post(`${FLOW_DEPLOY_URL}/bluprint/${uuid}/${version}`)
+        .auth(meshbluConfig.uuid, meshbluConfig.token)
+        .send({flowId})
+        .end((error) => {
+          if (error) {
+            return reject(dispatch(deployBluprintFailure(new Error('Could not deploy Bluprint'))))
+          }
+          return resolve(dispatch(deployBluprintSuccess()))
+        })
+    })
   }
 }
 
@@ -74,7 +111,6 @@ export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
 
   return dispatch => {
     dispatch(updateBluprintRequest())
-
     const {uuid} = device
     const updateQuery = {
       $set: {
@@ -110,7 +146,10 @@ export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
             )
           )
         }
-        dispatch(push(`/bluprints/${uuid}`))
+        dispatch(deployBluprint({
+          uuid,
+          flowId: device.bluprint.flowId,
+          version: device.bluprint.version}))
         return resolve(dispatch(updateBluprintSuccess()))
       })
     })
@@ -128,5 +167,49 @@ export function setBluprintSharedDevices(sharedDevices) {
   return {
     type: actionTypes.SET_BLUPRINT_SHARED_DEVICES,
     payload: sharedDevices,
+  }
+}
+
+function makeFlowDiscoverableRequest() {
+  return {
+    type: actionTypes.MAKE_FLOW_DISCOVERABLE_REQUEST,
+  }
+}
+
+function makeFlowDiscoverableSuccess() {
+  return {
+    type: actionTypes.MAKE_FLOW_DISCOVERABLE_SUCCESS,
+  }
+}
+
+function makeFlowDiscoverableFailure(error) {
+  return {
+    type: actionTypes.MAKE_FLOW_DISCOVERABLE_FAILURE,
+    payload: error,
+  }
+}
+export function makeFlowDiscoverable({flowUuid, bluprintUuid}, meshbluConfig = getMeshbluConfig()) {
+  return dispatch => {
+    dispatch(makeFlowDiscoverableRequest())
+    return new Promise((resolve, reject) => {
+      const meshblu = new MeshbluHttp(meshbluConfig)
+      meshblu.updateDangerously(flowUuid, {
+        $addToSet: {
+          discoverWhitelist: bluprintUuid
+        }
+      },
+      (error) => {
+        if (error) {
+          return reject(
+            dispatch(
+              makeFlowDiscoverableFailure(
+                new Error('Could not update flow discover permissions')
+              )
+            )
+          )
+        }
+        return resolve(dispatch(makeFlowDiscoverableSuccess()))
+      })
+    })
   }
 }

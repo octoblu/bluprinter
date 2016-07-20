@@ -5,6 +5,7 @@ import {BLUPRINTER_URL} from 'config'
 const initialState = {
   configureSchema: null,
   creating: false,
+  deploying: false,
   device: null,
   deviceSchemas: null,
   error: null,
@@ -63,6 +64,15 @@ export default function types(state = initialState, action) {
 
     case actionTypes.CREATE_BLUPRINT_FAILURE:
       return { ...state, error: action.payload, creating: false }
+
+    case actionTypes.DEPLOY_BLUPRINT_REQUEST:
+      return { ...state, deploying: true }
+
+    case actionTypes.DEPLOY_BLUPRINT_SUCCESS:
+      return { ...state, deploying: false }
+
+    case actionTypes.DEPLOY_BLUPRINT_FAILURE:
+      return { ...state, error: action.payload, deploying: false }
 
     case actionTypes.GET_BLUPRINT_REQUEST:
       return { ...state, fetching: true }
