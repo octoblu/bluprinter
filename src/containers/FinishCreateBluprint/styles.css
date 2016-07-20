@@ -1,0 +1,10 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.NewBluprintPage {
+  display: flex;
+  flex-direction: row;
+}
