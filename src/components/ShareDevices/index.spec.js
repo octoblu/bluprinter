@@ -21,9 +21,9 @@ describe('<ShareDevices />', () => {
   describe('when sharedDevices prop is an array', () => {
     const sharedDevices = ['first-uuid', 'second-uuid', 'third-uuid']
 
-  it('should render an alert', () => {
+    it('should render an alert', () => {
       const sut = shallow(<ShareDevices sharedDevices={sharedDevices} />)
       expect(sut.containsMatchingElement(Alert)).to.equal(true)
+    })
   })
-})
 })

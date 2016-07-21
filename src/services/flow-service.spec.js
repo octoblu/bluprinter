@@ -28,7 +28,7 @@ describe('FlowService', function () {
   describe('->addGlobalMessageReceivePermissions', function () {
     describe('when given a list of device uuids', function () {
       let firstDeviceHandler
-      let secondDeviceHandler      
+      let secondDeviceHandler
       beforeEach(function (done) {
         const userAuth = new Buffer('my-meshblu-uuid:my-meshblu-token').toString('base64')
         const sharedDevices = ['device-1-uuid', 'device-2-uuid']

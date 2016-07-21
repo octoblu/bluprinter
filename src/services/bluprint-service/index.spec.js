@@ -8,7 +8,7 @@ chai.use(chaiSubset)
 
 describe('BluprintService', () => {
   let meshbluMock
-  
+
   beforeEach(function () {
     meshbluMock = shmock(0xDEAD)
     enableDestroy(meshbluMock)

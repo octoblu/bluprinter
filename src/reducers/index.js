@@ -4,12 +4,14 @@ import toast from './toast.reducer'
 import bluprint from './bluprint'
 import flow from './flow'
 import schemas from './schemas'
+import sharedDevices from '../modules/SharedDevices'
 
 const rootReducer = combineReducers({
   bluprint,
   flow,
   toast,
-  schemas, 
+  schemas,
+  sharedDevices,
   routing: routerReducer,
 })
 

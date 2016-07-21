@@ -15,7 +15,6 @@ chai.use(chaiEnzyme())
 chai.use(sinonChai)
 
 describe('<BluprintManifestList />', () => {
-
   describe('when manifest prop is not specified', () => {
     it('should render nothing', () => {
       const sut = shallow(<BluprintManifestList />)

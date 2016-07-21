@@ -1,4 +1,3 @@
-import MeshbluHttp from 'browser-meshblu-http'
 import * as actionTypes from '../../constants/action-types'
 import { getMeshbluConfig } from '../../services/auth-service'
 import FlowService          from '../../services/flow-service'

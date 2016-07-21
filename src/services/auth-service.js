@@ -20,14 +20,14 @@ export function getMeshbluConfig() {
 }
 
 export function fetchOctobluUser(callback) {
-  let bearerToken = cookie.load('meshbluBearerToken')
+  const bearerToken = cookie.load('meshbluBearerToken')
 
   if (!bearerToken) {
     return callback(null, null)
   }
 
-  let meshbluConfig = getMeshbluConfig()
-  let meshbluHttp = new MeshbluHttp(meshbluConfig)
+  const meshbluConfig = getMeshbluConfig()
+  const meshbluHttp = new MeshbluHttp(meshbluConfig)
   meshbluHttp.whoami(callback)
 }
 
