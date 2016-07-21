@@ -31,7 +31,9 @@ export default class FlowService {
 
   setDeviceSchemas = (nodes) => {
     const deviceUuids = _(nodes)
-      .filter({category: 'device'})
+      .filter(({category}) =>{
+        return (category == 'device' || category == "endo")
+      })
       .uniqBy('type')
       .map('uuid')
       .value()

@@ -8,28 +8,26 @@ const propTypes = {
   onImport: PropTypes.func.isRequired,
 }
 
-const defaultProps = {
-  deleting: false,
-}
-
 const BluprintDetailPageActions = ({ deleting, onDeleteBluprint, onImport }) => {
   let deleteButtonText = 'Delete'
   if (deleting) deleteButtonText = 'Deleting...'
 
   return (
-    <PageActions>
-      <Button onClick={onImport} kind="primary" disabled={false} size="small">
-        Import
-      </Button>
+    <div>
+      <PageActions>
+        <Button onClick={onImport} kind="primary" disabled={false} size="small">
+          Import
+        </Button>
 
-      <Button onClick={onDeleteBluprint} kind="hollow-danger" disabled={false} size="small">
-        {deleteButtonText}
-      </Button>
-    </PageActions>
+        <Button onClick={onDeleteBluprint} kind="hollow-danger" disabled={false} size="small">
+          {deleteButtonText}
+        </Button>
+
+      </PageActions>
+    </div>
   )
 }
 
-BluprintDetailPageActions.propTypes    = propTypes
-BluprintDetailPageActions.defaultProps = defaultProps
+BluprintDetailPageActions.propTypes = propTypes
 
 export default BluprintDetailPageActions
