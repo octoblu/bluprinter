@@ -7,16 +7,16 @@ import  List, { ListItem } from 'zooid-list'
 
 
 const propTypes = {
-  onUpdatePermission: PropTypes.func,
+  onUpdatePermissions: PropTypes.func,
   sharedDevices: PropTypes.array,
 }
 
 const defaultProps = {
-  onUpdatePermission: _.noop,
+  onUpdatePermissions: _.noop,
   sharedDevices: null,
 }
 
-const UpdateSharedDevicesAlert = ({ sharedDevices, onUpdatePermission }) => {
+const UpdateSharedDevicesAlert = ({ sharedDevices, onUpdatePermissions}) => {
   if (_.isEmpty(sharedDevices)) return null
   const items = _.map(sharedDevices, (device) => {
     return (
@@ -46,7 +46,7 @@ const UpdateSharedDevicesAlert = ({ sharedDevices, onUpdatePermission }) => {
       <List>{items}</List>
       <Button
         kind="hollow-primary"
-        onClick={onUpdatePermission}
+        onClick={onUpdatePermissions}
         block
         name="updatePermissions"
       >

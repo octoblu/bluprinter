@@ -1,11 +1,17 @@
 import Promise from 'bluebird'
 import { getMeshbluConfig } from '../services/auth-service'
 import MeshbluHttp from 'browser-meshblu-http'
+import FlowService from '../services/flow-service'
 
-export const GET_SHARED_DEVICES = 'GET_SHARED_DEVICES'
+export const GET_SHARED_DEVICES         = 'GET_SHARED_DEVICES'
 export const GET_SHARED_DEVICES_REQUEST = 'GET_SHARED_DEVICES_REQUEST'
 export const GET_SHARED_DEVICES_FAILURE = 'GET_SHARED_DEVICES_FAILURE'
 export const GET_SHARED_DEVICES_SUCCESS = 'GET_SHARED_DEVICES_SUCCESS'
+
+export const UPDATE_SHARED_DEVICES_PERMISSIONS         = 'UPDATE_SHARED_DEVICES_PERMISSIONS'
+export const UPDATE_SHARED_DEVICES_PERMISSIONS_REQUEST = 'UPDATE_SHARED_DEVICES_PERMISSIONS_REQUEST'
+export const UPDATE_SHARED_DEVICES_PERMISSIONS_FAILURE = 'UPDATE_SHARED_DEVICES_PERMISSIONS_FAILURE'
+export const UPDATE_SHARED_DEVICES_PERMISSIONS_SUCCESS = 'UPDATE_SHARED_DEVICES_SUCCESS'
 
 const initialState = {
   devices: null,
@@ -68,7 +74,6 @@ export function getSharedDevices(sharedDeviceUuids, meshbluConfig = getMeshbluCo
       const meshblu = new MeshbluHttp(meshbluConfig)
       meshblu.search(searchQuery, (error, devices) => {
         if (error) {
-          console.log('Failed to search', error)
           return reject(
             dispatch(
               getSharedDevicesFailure(
@@ -78,6 +83,44 @@ export function getSharedDevices(sharedDeviceUuids, meshbluConfig = getMeshbluCo
           )
         }
         return resolve(dispatch(getSharedDevicesSuccess(devices)))
+      })
+    })
+  }
+}
+
+function updateSharedDevicesPermissionsRequest() {
+  return {
+    type: UPDATE_SHARED_DEVICES_PERMISSIONS_REQUEST
+  }
+}
+
+function updateSharedDevicesPermissionsSuccess() {
+  return {
+    type: UPDATE_SHARED_DEVICES_PERMISSIONS_SUCCESS
+  }
+}
+
+function updateSharedDevicesPermissionsFailure(error) {
+  return {
+    type: UPDATE_SHARED_DEVICES_PERMISSIONS_FAILURE,
+    payload: error,
+  }
+}
+
+export function updateSharedDevicesPermissions(sharedDeviceUuids, meshbluConfig = getMeshbluConfig()) {
+  return dispatch => {
+    dispatch(updateSharedDevicesPermissionsRequest())
+
+    return new Promise((resolve, reject) => {
+      const flowService = new FlowService(meshbluConfig)
+
+      flowService.addGlobalMessageReceivePermissions(sharedDeviceUuids, (error) => {
+        if (error) {
+          reject(dispatch(updateSharedDevicesPermissionsFailure(
+            new Error('Could not set global message permissions on devices')
+          )))
+        }
+        return resolve(dispatch(updateSharedDevicesPermissionsSuccess()))
       })
     })
   }

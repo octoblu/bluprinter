@@ -66,7 +66,12 @@ class ConfigureBluprint extends React.Component {
     const { bluprint, dispatch } = this.props
     dispatch(updateBluprint(bluprint))
     .then(() => {
-      dispatch(push(`/bluprints/${bluprint.device.uuid}/finish`))
+      if (_.isEmpty(bluprint.sharedDevices)) {
+        dispatch(push(`/bluprints/${bluprint.device.uuid}/finish`))
+        return
+      }
+
+      dispatch(push(`/bluprints/${bluprint.device.uuid}/update-permissions`))
     })
     .catch(() => {
       console.log('Update failed')

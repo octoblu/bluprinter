@@ -12,6 +12,7 @@ import Logout from '../containers/Logout'
 import NewBluprint from '../containers/NewBluprint'
 import NotFound from '../containers/NotFound'
 import RunIotApp from '../containers/RunIotApp'
+import UpdatePermissions from '../containers/UpdatePermissions'
 
 import CreateBluprintForm from '../components/CreateBluprintForm'
 
@@ -29,6 +30,7 @@ export default ({ history }) => {
         </Route>
 
         <Route path="bluprints/:bluprintUuid/configure" component={ConfigureBluprint} />
+        <Route path="bluprints/:bluprintUuid/update-permissions" component={UpdatePermissions} />
         <Route path="bluprints/:bluprintUuid/finish" component={FinishCreateBluprint} />
 
         <Route path="bluprints/:uuid" component={BluprintDetail} />

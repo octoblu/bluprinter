@@ -19,7 +19,7 @@ const ShareDevices = ({ sharedDevices }) => {
   return (
     <div className={styles.root}>
       <Alert dismissable type="info">By sharing an existing device, you are modifying its
-       permissions to allow it receive messages from other devices. 
+       permissions to allow it receive messages from other devices.
       </Alert>
     </div>
   )

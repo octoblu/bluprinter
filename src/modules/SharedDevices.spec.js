@@ -6,9 +6,12 @@ import shmock from 'shmock'
 
 import reducer, {
   getSharedDevices,
+  updateSharedDevicesPermissions,
   GET_SHARED_DEVICES_SUCCESS,
   GET_SHARED_DEVICES_REQUEST,
   GET_SHARED_DEVICES_FAILURE,
+  UPDATE_SHARED_DEVICES_PERMISSIONS_REQUEST,
+  UPDATE_SHARED_DEVICES_PERMISSIONS_SUCCESS,
 } from './SharedDevices'
 
 
@@ -85,6 +88,66 @@ describe('SharedDevices', () => {
       })
     })
   })
+  describe('->updateSharedDevicesPermissions', () => {
+    describe('when given a list of device uuids', function () {
+      let firstDeviceHandler
+      let secondDeviceHandler
+      const store = mockStore({})
+
+      beforeEach(function (done) {
+        meshbluMock.post('/search/devices')
+          .send({
+            uuid: {
+              $in: ['device-1-uuid', 'device-2-uuid']
+            },
+            'meshblu.version': '2.0.0'
+          })
+          .reply(200, [{uuid: 'device-1-uuid'}, {uuid: 'device-2-uuid'}])
+
+
+        firstDeviceHandler = meshbluMock.put('/v2/devices/device-1-uuid')
+          .send({
+            $addToSet: {
+              'meshblu.whitelists.message.from': {uuid: '*'},
+              'meshblu.whitelists.broadcast.sent': {uuid: '*'}
+            }
+          })
+          .set('Authorization', `Basic ${userAuth}`)
+          .reply(200, [{uuid: 'device-1-uuid'}])
+
+        secondDeviceHandler = meshbluMock.put('/v2/devices/device-2-uuid')
+          .send({
+            $addToSet: {
+              sendWhitelist: '*',
+              receiveWhitelist: '*'
+            }
+          })
+          .set('Authorization', `Basic ${userAuth}`)
+          .reply(200, [{uuid: 'device-2-uuid'}])
+        done()
+      })
+
+      it('should actually try to update both devices dangerously', function () {
+        const expectedActions = [
+          { type: UPDATE_SHARED_DEVICES_PERMISSIONS_REQUEST },
+          {
+            type: UPDATE_SHARED_DEVICES_PERMISSIONS_SUCCESS
+          },
+        ]
+        store.dispatch(
+          updateSharedDevicesPermissions(['device-1-uuid', 'device-2-uuid'], meshbluConfig)
+        ).then(() => {
+          firstDeviceHandler.done()
+          secondDeviceHandler.done()
+          expect(store.getActions()).to.deep.equal(expectedActions)
+        })
+        .catch(() => {
+          return
+        })
+      })
+    })
+  })
+
   describe('->reducer', () => {
     const initialState = {
       error: null,
