@@ -4,7 +4,7 @@ import _ from 'lodash'
 import styles from './styles.css'
 
 const propTypes = {
-  latest: PropTypes.string.isRequired,
+  latest: PropTypes.number.isRequired,
   versions: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
 }
