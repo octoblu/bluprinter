@@ -41,8 +41,8 @@ class ImportBluprint extends React.Component {
     this.meshblu.device(this.bluprintId, (error, device) => {
       console.log("Bluprint Device", device)
 
-      const latestSchema  = this.getLatestConfigSchema(device.bluprint)
-      const {manifest}    = this.getLatestVersion(device.bluprint)
+      const latestSchema = this.getLatestConfigSchema(device.bluprint)
+      const {manifest}   = this.getLatestVersion(device.bluprint)
 
       this.setState({bluprint: device.bluprint, name: device.name, appId: this.bluprintId, manifest, latestSchema})
     })

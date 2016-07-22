@@ -33,12 +33,15 @@ class CreateBluprintForm extends React.Component {
 
   handleCreateBluprint(event) {
     event.preventDefault()
+
+    const { params, bluprint } = this.props
     const { name, description, visibility } = event.target
     const bluprintAction = {
       name: name.value,
       description: description.value,
       visibility: visibility.value,
-      flowId: this.props.params.flowUuid,
+      flowId: params.flowUuid,
+      manifest: bluprint.manifest,
     }
 
     this.props.dispatch(createBluprint(bluprintAction))

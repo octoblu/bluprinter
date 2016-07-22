@@ -4,6 +4,7 @@ import Page from 'zooid-page'
 
 import CreateBluprintSteps from '../components/CreateBluprintSteps'
 import { getFlow } from '../actions/flow/'
+import { setBluprintManifest } from '../actions/bluprint/'
 
 import styles from './styles.css'
 
@@ -11,6 +12,7 @@ const propTypes = {
   children: PropTypes.node,
   dispatch: PropTypes.func,
   flow: PropTypes.object,
+  isLoading: PropTypes.bool,
   params: PropTypes.object,
   routeParams: PropTypes.object,
 }
@@ -18,14 +20,17 @@ const propTypes = {
 class NewBluprint extends React.Component {
   componentDidMount() {
     const { dispatch, params } = this.props
-    dispatch(getFlow(params.flowUuid))
+    dispatch(getFlow(params.flowUuid)).then(() => {
+      const { flow } = this.props
+      dispatch(setBluprintManifest(flow.device.draft.nodes))
+    })
   }
 
   render() {
-    const { children, flow }  = this.props
-    const { error, fetching } = flow
+    const { children, flow, isLoading }  = this.props
+    const { error } = flow
 
-    if (fetching) return <Page loading className={styles.NewBluprintPage} />
+    if (isLoading) return <Page loading className={styles.NewBluprintPage} />
     if (error) return <Page error={error} className={styles.NewBluprintPage} />
 
     const steps = [
@@ -43,8 +48,11 @@ class NewBluprint extends React.Component {
   }
 }
 
-const mapStateToProps = ({ flow }) => {
-  return { flow }
+const mapStateToProps = ({ bluprint, flow }) => {
+  return {
+    flow,
+    isLoading: bluprint.settingManifest || flow.fetching,
+  }
 }
 
 NewBluprint.propTypes = propTypes

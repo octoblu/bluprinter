@@ -18,6 +18,7 @@ describe('Bluprint Reducer', () => {
     messageSchema: null,
     octobluLinks: null,
     operationSchemas: null,
+    settingManifest: false,
     sharedDevices: null,
     updating: false,
   }
@@ -107,7 +108,6 @@ describe('Bluprint Reducer', () => {
     })
   })
 
-
   it('should handle DEPLOY_BLUPRINT_REQUEST', () => {
     expect(
       reducer(undefined, { type: actionTypes.DEPLOY_BLUPRINT_REQUEST })
@@ -136,6 +136,50 @@ describe('Bluprint Reducer', () => {
       ...initialState,
       error: new Error('Error deploying Bluprint'),
       deploying: false,
+    })
+  })
+
+  it('should handle SET_BLUPRINT_MANIFEST_REQUEST', () => {
+    expect(
+      reducer(undefined, {
+        type: actionTypes.SET_BLUPRINT_MANIFEST_REQUEST
+      })
+    ).to.deep.equal({
+      ...initialState,
+      settingManifest: true,
+    })
+  })
+
+  it('should handle SET_BLUPRINT_MANIFEST_SUCCESS', () => {
+    const manifest = {
+      name: 'Bang Bang!',
+      type: 'TYPE',
+      nodeId: 'Bang-Bang1',
+      docUrl: 'http://docs.ftw',
+    }
+
+    expect(
+      reducer({ ...initialState, settingManifest: true }, {
+        type: actionTypes.SET_BLUPRINT_MANIFEST_SUCCESS,
+        payload: manifest,
+      })
+    ).to.deep.equal({
+      ...initialState,
+      manifest,
+      settingManifest: false,
+    })
+  })
+
+  it('should handle SET_BLUPRINT_MANIFEST_FAILURE', () => {
+    expect(
+      reducer({ ...initialState, settingManifest: true }, {
+        type: actionTypes.SET_BLUPRINT_MANIFEST_FAILURE,
+        payload: new Error('Error setting Bluprint manifest')
+      })
+    ).to.deep.equal({
+      ...initialState,
+      error: new Error('Error setting Bluprint manifest'),
+      settingManifest: false,
     })
   })
 

@@ -15,6 +15,7 @@ const initialState = {
   messageSchema: null,
   octobluLinks: null,
   operationSchemas: null,
+  settingManifest: false,
   sharedDevices: null,
   updating: false,
 }
@@ -91,6 +92,15 @@ export default function types(state = initialState, action) {
 
     case actionTypes.UPDATE_BLUPRINT_FAILURE:
       return { ...state, error: action.payload, updating: false }
+
+    case actionTypes.SET_BLUPRINT_MANIFEST_REQUEST:
+      return { ...state, settingManifest: true }
+
+    case actionTypes.SET_BLUPRINT_MANIFEST_SUCCESS:
+      return { ...state, manifest: action.payload, settingManifest: false }
+
+    case actionTypes.SET_BLUPRINT_MANIFEST_FAILURE:
+      return { ...state, error: action.payload, settingManifest: false }
 
     case actionTypes.SET_BLUPRINT_CONFIG_SCHEMA:
       return { ...state, configureSchema: action.payload }

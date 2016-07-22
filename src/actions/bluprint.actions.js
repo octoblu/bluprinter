@@ -12,7 +12,7 @@ function getVisibilityPermission({ visibility, userUuid }) {
   return { view: [{ uuid }] }
 }
 
-function deviceDefaults({ description, flowId, name, version, visibility }) {
+function deviceDefaults({ description, flowId, name, visibility, manifest }) {
   const USER_UUID = getMeshbluConfig().uuid
   return {
     name,
@@ -37,27 +37,27 @@ function deviceDefaults({ description, flowId, name, version, visibility }) {
     bluprint: {
       version: '1.0.0',
       flowId,
-      latest: version,
+      latest: '1.0.0',
       schemas: {
         version: '2.0.0',
         configure: {
-          default: {},
+          bluprint: {},
         },
         message: {
-          default: {},
+          bluprint: {},
         }
       },
       versions: [
         {
-          manifest: {},
-          version,
+          manifest,
+          version: '1.0.0',
           sharedDevices: {},
           schemas: {
             configure: {
-              default: {},
+              bluprint: {},
             },
             message: {
-              default: {},
+              bluprint: {},
             }
           },
         },
