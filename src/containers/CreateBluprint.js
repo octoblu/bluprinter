@@ -16,6 +16,7 @@ import CreateAppForm from '../components/CreateAppForm'
 import NodeService          from '../services/node-service'
 import { getMeshbluConfig } from '../services/auth-service'
 import FlowService          from '../services/flow-service'
+import BluprintService      from '../services/bluprint-service'
 
 
 const propTypes = {
@@ -35,17 +36,18 @@ class CreateBluprint extends React.Component {
       configSchema: null,
       sharedDevices: null,
       name: '',
-      version: '1.0.0',
+      version: 1,
       toastMessage: null,
     }
 
     this.flowService = new FlowService()
     this.nodeService = new NodeService()
+    this.bluprintService = new BluprintService()
   }
 
   componentWillMount() {
     const { flowUuid } = this.props.routeParams
-
+    this.bluprintService.getBluprints( (error, bluprints) => this.setState({bluprints}))
     this.flowService.getFlowDevice(flowUuid, (error, flowDevice) => {
       if (error) {
         this.setErrorState(error)
@@ -87,6 +89,12 @@ class CreateBluprint extends React.Component {
     this.setState({configSchema, sharedDevices, toastMessage: null })
   }
 
+  handleBluprintSelect = ({target}) => {
+    const bluprint = target.value
+    if(bluprint == 'new') return this.setState({bluprint: undefined})
+    return this.setState({bluprint})
+  }
+
   handleCreate = (event) => {
     event.preventDefault()
     this.setState({ loading: true })
@@ -101,7 +109,6 @@ class CreateBluprint extends React.Component {
     const { flowDevice, version } = this.state
 
     this.flowService.addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
-      console.log('Added Global Message Receive Permission', error, deviceResult)
       const bluprintConfig = this.deviceDefaults({
         name: appName.value,
         flowId: flowUuid,
@@ -144,7 +151,6 @@ class CreateBluprint extends React.Component {
         })
       })
   }
-
 
   deviceDefaults({ flowId, name, configSchema, messageSchema, version, manifest, sharedDevices }) {
     const USER_UUID = getMeshbluConfig().uuid
@@ -238,6 +244,7 @@ class CreateBluprint extends React.Component {
       operationSchemas,
       toastMessage,
       configSchema,
+      bluprints,
       sharedDevices
     } = this.state
 
@@ -249,11 +256,13 @@ class CreateBluprint extends React.Component {
       <Page title="Author New Bluprint">
         <Card>
           <CreateAppForm
+            bluprints={bluprints}
             nodes={flowDevice.draft.nodes}
             operationSchemas={operationSchemas}
             deviceSchemas={deviceSchemas}
             sharedDevices={sharedDevices}
             onCreate={this.handleCreate}
+            onBluprintSelect={this.handleBluprintSelect}
             onUpdate={this.handleUpdate}
             onShareDevices={this.handleShareDevices}
           />
