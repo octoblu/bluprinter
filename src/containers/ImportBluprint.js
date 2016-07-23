@@ -68,8 +68,6 @@ class ImportBluprint extends React.Component {
   }
 
   importBluprint = (flowData) => {
-    console.log('importBluprint')
-
     this.setState({loading: true})
     this.createFlow((error, flow) => {
       if(error) return
@@ -118,7 +116,6 @@ class ImportBluprint extends React.Component {
         }
       }
     }
-
     this.meshblu.updateDangerously(flowId, update, callback)
   }
 
@@ -174,13 +171,13 @@ class ImportBluprint extends React.Component {
       schemas: {
         version: '2.0.0',
         configure: {
-          bluprint: {
-            $ref: `meshbludevice://${this.bluprintId}/#/bluprint/schemas/configure/bluprint`
+          default: {
+            $ref: `meshbludevice://${this.bluprintId}/#/bluprint/schemas/configure/default`
           }
         },
         message: {
-          bluprint: {
-            $ref: `meshbludevice://${this.bluprintId}/#/bluprint/schemas/message/bluprint`
+          default: {
+            $ref: `meshbludevice://${this.bluprintId}/#/bluprint/schemas/message/default`
           }
         }
       },
@@ -190,15 +187,15 @@ class ImportBluprint extends React.Component {
   }
 
   getLatestVersion = (bluprint) => {
-    return _.find(bluprint.versions, {version: bluprint.latest})
+    return  _.find(bluprint.versions, {version: bluprint.latest})
   }
 
   getLatestConfigSchema = (bluprint) => {
-    return this.getLatestVersion(bluprint).schemas.configure.bluprint
+    return this.getLatestVersion(bluprint).schemas.configure.default
   }
 
   getLatestMessageSchema = (bluprint) => {
-    return this.getLatestVersion(bluprint).schemas.message.bluprint
+    return this.getLatestVersion(bluprint).schemas.message.default
   }
 
   updateDeviceName = ({target}) => {

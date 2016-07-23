@@ -10,7 +10,7 @@ export const getLatestConfigSchema = ({latest, versions}) => {
 
   if (_.isEmpty(latestVersion)) return null
 
-  return latestVersion.schemas.configure.bluprint
+  return latestVersion.schemas.configure.default
 }
 
 export const getBluprints = (callback) => {

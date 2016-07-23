@@ -10,6 +10,7 @@ import {
   getBluprint,
   setBluprintConfigSchema,
   setBluprintSharedDevices,
+  setBluprintManifest,
   setOctobluLinks,
   updateBluprint,
 } from './'
@@ -109,6 +110,16 @@ describe('Bluprint Actions', () => {
     })
   })
 
+  describe('when setBluprintManifest is dispatched', () => {
+    it('should dispatch SET_BLUPRINT_CONFIG_SCHEMA', () => {
+      const expectedAction = {
+        type: actionTypes.SET_BLUPRINT_CONFIG_SCHEMA,
+        payload: { uuid: 'yuma' }
+      }
+      expect(setBluprintConfigSchema({ uuid: 'yuma' })).to.deep.equal(expectedAction)
+    })
+  })
+
   describe('when setBluprintSharedDevices is dispatched', () => {
     it('should dispatch SET_BLUPRINT_SHARED_DEVICES', () => {
       const expectedAction = {
@@ -129,7 +140,8 @@ describe('Bluprint Actions', () => {
       .set('Authorization', `Basic ${userAuth}`)
       .send({
         $set: {
-          'bluprint.sharedDevices': {},
+          version: 1,
+          'bluprint.sharedDevices': [],
           'bluprint.schemas.configure': {
             default: {}
           },
@@ -137,6 +149,8 @@ describe('Bluprint Actions', () => {
             default: {}
           },
           'bluprint.versions': [{
+            version: 1,
+            manifest: [],
             sharedDevices: [],
             schemas: {
               configure: {
@@ -147,6 +161,7 @@ describe('Bluprint Actions', () => {
               }
             }
           }],
+          octoblu: []
         }
       })
       .reply(200, {})
@@ -174,7 +189,9 @@ describe('Bluprint Actions', () => {
           },
           configureSchema: {},
           messageSchema: {},
-          sharedDevices: []
+          sharedDevices: [],
+          octobluLinks: [],
+          manifest: [],
         }, meshbluConfig)
       ).then(() => {
         updateBluprintHandler.done()

@@ -52,7 +52,7 @@ describe('BluprintService', () => {
             version: '1.0.0',
             schemas: {
               configure: {
-                bluprint: {
+                default: {
                   type: 'object',
                   properties: {
                     'Dev Github': {

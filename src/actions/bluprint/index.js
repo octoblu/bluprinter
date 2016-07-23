@@ -2,6 +2,7 @@ import MeshbluHttp from 'browser-meshblu-http'
 import { FLOW_DEPLOY_URL } from 'config'
 import * as actionTypes from '../../constants/action-types'
 import { getMeshbluConfig } from '../../services/auth-service'
+import NodeService from '../../services/node-service'
 import superagent from 'superagent'
 
 function getBluprintRequest() {
@@ -43,9 +44,6 @@ export function deployBluprintFailure(error) {
 export function deployBluprint({uuid, version, flowId}, flowDeployUrl = FLOW_DEPLOY_URL, meshbluConfig = getMeshbluConfig()) {
   return dispatch => {
     dispatch(deployBluprintRequest())
-
-    console.log('{uuid, version, flowId}', {uuid, version, flowId})
-
     return new Promise((resolve, reject) => {
       superagent
         .post(`${FLOW_DEPLOY_URL}/bluprint/${uuid}/${version}`)
@@ -58,6 +56,43 @@ export function deployBluprint({uuid, version, flowId}, flowDeployUrl = FLOW_DEP
           return resolve(dispatch(deployBluprintSuccess()))
         })
     })
+  }
+}
+
+function setBluprintManifestRequest() {
+  return {
+    type: actionTypes.SET_BLUPRINT_MANIFEST_REQUEST
+  }
+}
+
+function setBluprintManifestFailure(error) {
+  return {
+    type: actionTypes.SET_BLUPRINT_MANIFEST_FAILURE,
+    payload: error,
+  }
+}
+
+function setBluprintManifestSuccess(manifest) {
+  return {
+    type: actionTypes.SET_BLUPRINT_MANIFEST_SUCCESS,
+    payload: manifest,
+  }
+}
+
+export function setBluprintManifest(nodes, meshbluConfig = getMeshbluConfig()) {
+  return dispatch => {
+
+    dispatch(setBluprintManifestRequest())
+    const nodeService = new NodeService(meshbluConfig)
+    nodeService.createManifest(nodes)
+    .then((manifest) => {
+      return dispatch(setBluprintManifestSuccess(manifest))
+    })
+    .catch((error) => {
+      console.log("SET_BLUPRINT_MANIFEST", error)
+      return dispatch(setBluprintManifestFailure(new Error('Could not create manifest')))
+    })
+
   }
 }
 
@@ -106,13 +141,14 @@ function updateBluprintFailure(error) {
 }
 
 export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
-  const { device, configureSchema, messageSchema, sharedDevices, octobluLinks } = bluprint
+  const { device, configureSchema, messageSchema, sharedDevices, octobluLinks, manifest } = bluprint
 
   return dispatch => {
     dispatch(updateBluprintRequest())
     const {uuid} = device
     const updateQuery = {
       $set: {
+        version: 1,
         'bluprint.sharedDevices': sharedDevices,
         'bluprint.schemas.configure': {
           default: configureSchema
@@ -121,6 +157,8 @@ export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
           default: messageSchema
         },
         'bluprint.versions': [{
+          version: 1,
+          manifest,
           sharedDevices,
           schemas: {
             configure: {
@@ -209,6 +247,116 @@ export function makeFlowDiscoverable({flowUuid, bluprintUuid}, meshbluConfig = g
         }
         return resolve(dispatch(makeFlowDiscoverableSuccess()))
       })
+    })
+  }
+}
+
+
+function getVisibilityPermission({ visibility, userUuid }) {
+  let uuid = userUuid
+  if (visibility === 'public') uuid = '*'
+
+  return { view: [{ uuid }] }
+}
+
+function deviceDefaults({ description, flowId, name, visibility, manifest }) {
+  const USER_UUID = getMeshbluConfig().uuid
+  return {
+    name,
+    description,
+    owner: USER_UUID,
+    online: true,
+    type: 'bluprint',
+    logo: 'https://s3-us-west-2.amazonaws.com/octoblu-icons/device/bluprint.svg',
+    schemas: {
+      version: '2.0.0',
+      configure: {
+        default: {
+          type: 'object',
+          properties: {
+            description: {
+              type: 'string'
+            },
+          },
+        },
+      },
+    },
+    bluprint: {
+      version: '1.0.0',
+      flowId,
+      latest: 1,
+      schemas: {
+        version: '2.0.0',
+        configure: {
+          default: {},
+        },
+        message: {
+          default: {},
+        }
+      },
+      versions: [
+        {
+          manifest,
+          version: 1,
+          sharedDevices: {},
+          schemas: {
+            configure: {
+              default: {},
+            },
+            message: {
+              default: {},
+            }
+          },
+        },
+      ],
+    },
+    meshblu: {
+      version: '2.0.0',
+      whitelists: {
+        configure: {
+          update: [{ uuid: USER_UUID }],
+        },
+        discover: getVisibilityPermission({ visibility, userUuid: USER_UUID}),
+      },
+    },
+  }
+}
+
+function createBluprintRequest() {
+  return {
+    type: actionTypes.CREATE_BLUPRINT_REQUEST,
+  }
+}
+
+function createBluprintSuccess(device) {
+  return {
+    type: actionTypes.CREATE_BLUPRINT_SUCCESS,
+    payload: device,
+  }
+}
+
+function createBluprintFailure(error) {
+  return {
+    type: actionTypes.CREATE_BLUPRINT_FAILURE,
+    payload: error,
+  }
+}
+
+export function createBluprint(deviceOptions) {
+  const {flowId} = deviceOptions
+  return dispatch => {
+    dispatch(createBluprintRequest())
+
+    const meshbluConfig  = getMeshbluConfig()
+    const meshblu        = new MeshbluHttp(meshbluConfig)
+    const bluprintConfig = deviceDefaults(deviceOptions)
+
+    meshblu.register(bluprintConfig, (error, device) => {
+      if (error) {
+        return dispatch(createBluprintFailure(new Error('Could not create Bluprint device')))
+      }
+      dispatch(makeFlowDiscoverable({flowUuid: flowId, bluprintUuid: device.uuid}))
+      return dispatch(createBluprintSuccess(device))
     })
   }
 }

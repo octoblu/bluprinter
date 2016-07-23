@@ -20,7 +20,7 @@ const propTypes = {
 class NewBluprint extends React.Component {
   componentDidMount() {
     const { dispatch, params } = this.props
-    dispatch(getFlow(params.flowUuid)).then(() => {
+    dispatch(getFlow(params.flowUuid)).then(() => {      
       const { flow } = this.props
       dispatch(setBluprintManifest(flow.device.draft.nodes))
     })
