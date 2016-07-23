@@ -1,14 +1,12 @@
-import superagent from 'superagent'
+import _ from 'lodash'
 import React from 'react'
 import MeshbluHttp from 'browser-meshblu-http'
 import {getMeshbluConfig} from '../services/auth-service'
 import {Page} from 'zooid-ui'
-import {DeviceMessageSchemaContainer} from 'zooid-meshblu-device-editor';
+import {DeviceMessageSchemaContainer} from 'zooid-meshblu-device-editor'
 import MeshbluJsonSchemaResolver from 'meshblu-json-schema-resolver'
 import RunPageHeader from '../components/RunPageHeader/'
 import async from 'async'
-
-import {FLOW_DEPLOY_URL} from 'config'
 
 class RunIotApp extends React.Component {
   state = {}

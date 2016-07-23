@@ -2,20 +2,18 @@ import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import {browserHistory} from 'react-router'
 import MeshbluHttp from 'browser-meshblu-http'
-import superagent from 'superagent'
 import Input from 'zooid-input'
 import Page from 'zooid-page'
 import Card from 'zooid-card'
-import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
-
-import { getMeshbluConfig } from '../services/auth-service'
-import { getLatestConfigSchema } from '../services/bluprint-service'
+import { OCTOBLU_URL } from 'config'
 
 import ShareUrl from '../components/ShareUrl/'
 import Dialog from '../components/Dialog/'
 import BluprintPageHeader from '../components/BluprintPageHeader/'
 import BluprintManifestList from '../components/BluprintManifestList/'
 import BluprintVersionSelect from '../components/BluprintVersionSelect/'
+
+import { getMeshbluConfig } from '../services/auth-service'
 
 const propTypes = {
   routeParams: PropTypes.object,
@@ -29,7 +27,7 @@ class BluprintDetail extends React.Component {
       alertMessage: null,
       device: null,
       error: null,
-      loading: false,
+      loading: true,
       selectableDevices: [],
       deletingBluprint: false,
       publicBluprint: false,
@@ -41,8 +39,6 @@ class BluprintDetail extends React.Component {
     const { uuid } = this.props.routeParams
     const meshbluConfig = getMeshbluConfig()
     const meshblu = new MeshbluHttp(meshbluConfig)
-
-    this.setState({ loading: true })
 
     meshblu.device(uuid, (error, device) => {
       if (error) {
@@ -63,7 +59,7 @@ class BluprintDetail extends React.Component {
     const meshbluConfig = getMeshbluConfig()
     const meshblu = new MeshbluHttp(meshbluConfig)
 
-    meshblu.unregister(this.state.device.uuid, (error) => {
+    meshblu.unregister(this.state.device.uuid, () => {
       window.location = `${OCTOBLU_URL}/things/my`
     })
   }
@@ -85,19 +81,17 @@ class BluprintDetail extends React.Component {
   }
 
   handleVersionSelect = () => {
-    console.log("VERSION SELECTED!");
+    console.log("VERSION SELECTED!")
   }
 
 
   render() {
     const {
-      alertMessage,
       deletingBluprint,
       device,
       error,
       loading,
       publicBluprint,
-      selectableDevices,
       showDeleteDialog,
     } = this.state
 
@@ -106,7 +100,6 @@ class BluprintDetail extends React.Component {
     if (_.isEmpty(device)) return <Page><div>Device not found.</div></Page>
 
     const { bluprint, name } = device
-    const latestConfigSchema = getLatestConfigSchema(bluprint)
 
     return (
       <Page>

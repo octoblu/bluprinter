@@ -2,7 +2,7 @@ import _ from 'lodash'
 import superagent from 'superagent'
 import { getMeshbluConfig } from './auth-service'
 import { OCTOBLU_URL } from 'config'
-import Promise, { using } from 'bluebird'
+import Promise from 'bluebird'
 
 export default class NodeService {
   constructor(meshbluConfig = getMeshbluConfig()) {

@@ -1,15 +1,11 @@
-import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import url from 'url'
-import { browserHistory } from 'react-router'
 import MeshbluHttp from 'browser-meshblu-http'
 import superagent from 'superagent'
 import Card from 'zooid-card'
-import Heading from 'zooid-heading'
-import Toast from 'zooid-toast'
 import Page from 'zooid-page'
 
-import { OCTOBLU_URL, FLOW_DEPLOY_URL } from 'config'
+import { FLOW_DEPLOY_URL } from 'config'
 
 import CreateAppForm from '../components/CreateAppForm'
 
@@ -18,8 +14,8 @@ import { getMeshbluConfig } from '../services/auth-service'
 import FlowService          from '../services/flow-service'
 import BluprintService      from '../services/bluprint-service'
 
-
 const propTypes = {
+  history: PropTypes.object,
   routeParams: PropTypes.object,
 }
 
@@ -91,7 +87,7 @@ class CreateBluprint extends React.Component {
 
   handleBluprintSelect = ({target}) => {
     const bluprint = target.value
-    if(bluprint == 'new') return this.setState({bluprint: undefined})
+    if (bluprint === 'new') return this.setState({bluprint: undefined})
     return this.setState({bluprint})
   }
 
@@ -102,13 +98,13 @@ class CreateBluprint extends React.Component {
     const { configSchema, sharedDevices } = this.state
 
     const { appName } = event.target
-    const {history } = this.props
+    const { history } = this.props
     const {flowUuid} = this.props.routeParams
     const meshbluConfig = getMeshbluConfig()
     const meshblu = new MeshbluHttp(meshbluConfig)
     const { flowDevice, version } = this.state
 
-    this.flowService.addGlobalMessageReceivePermissions(sharedDevices, (error, deviceResult) => {
+    this.flowService.addGlobalMessageReceivePermissions(sharedDevices, () => {
       const bluprintConfig = this.deviceDefaults({
         name: appName.value,
         flowId: flowUuid,
@@ -130,7 +126,7 @@ class CreateBluprint extends React.Component {
               discoverWhitelist: device.uuid
           }
         },
-        (error, result) => {
+        () => {
           superagent
             .post(`${FLOW_DEPLOY_URL}/bluprint/${device.uuid}/${version}`)
             .auth(meshbluConfig.uuid, meshbluConfig.token)
@@ -242,8 +238,6 @@ class CreateBluprint extends React.Component {
       flowDevice,
       loading,
       operationSchemas,
-      toastMessage,
-      configSchema,
       bluprints,
       sharedDevices
     } = this.state

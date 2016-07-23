@@ -3,6 +3,7 @@ import { FLOW_DEPLOY_URL } from 'config'
 import * as actionTypes from '../../constants/action-types'
 import { getMeshbluConfig } from '../../services/auth-service'
 import superagent from 'superagent'
+import Promise from 'bluebird'
 
 function getBluprintRequest() {
   return {

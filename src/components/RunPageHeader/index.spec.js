@@ -42,5 +42,5 @@ describe('<RunPageHeader />', () => {
         <span>Offline</span>
       )).to.equal(true)
     })
-  })  
+  })
 })

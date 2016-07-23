@@ -28,7 +28,7 @@ describe('<RunPageActions />', function () {
 
   describe('when component renders for an offline device', function () {
     beforeEach(function () {
-      this.sut = shallow(<RunPageActions/>)
+      this.sut = shallow(<RunPageActions />)
     })
 
     it('should render a stop button', function () {
@@ -52,12 +52,11 @@ describe('<RunPageActions />', function () {
         </Button>
       )).to.be.false
     })
-
   })
 
   describe('when component renders for an offline device', function () {
     beforeEach(function () {
-      this.sut = shallow(<RunPageActions/>)
+      this.sut = shallow(<RunPageActions />)
     })
 
     it('should render a stop button', function () {
@@ -91,5 +90,4 @@ describe('<RunPageActions />', function () {
       expect(handleOnStop).to.have.been.called
     })
   })
-
 })
