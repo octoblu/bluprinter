@@ -9,7 +9,7 @@ import Input from 'zooid-input'
 import FormField from 'zooid-form-field'
 
 import styles from './styles.css'
-import { createBluprint } from '../../actions/bluprint.actions'
+import { createBluprint } from '../../actions/bluprint'
 
 const propTypes = {
   bluprint: PropTypes.object,

@@ -38,7 +38,7 @@ class ConfigureBluprint extends React.Component {
   }
 
   componentDidMount() {
-    const { dispatch, params } = this.props
+    const { dispatch, params, flow} = this.props
     dispatch(getBluprint(params.bluprintUuid))
     dispatch(getOperationSchemas(TOOLS_SCHEMA_REGISTRY_URL))
   }

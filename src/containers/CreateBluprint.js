@@ -38,12 +38,10 @@ class CreateBluprint extends React.Component {
 
     this.flowService = new FlowService()
     this.nodeService = new NodeService()
-    this.bluprintService = new BluprintService()
   }
 
   componentWillMount() {
     const { flowUuid } = this.props.routeParams
-    this.bluprintService.getBluprints( (error, bluprints) => this.setState({bluprints}))
     this.flowService.getFlowDevice(flowUuid, (error, flowDevice) => {
       if (error) {
         this.setErrorState(error)
@@ -176,10 +174,10 @@ class CreateBluprint extends React.Component {
         schemas: {
           version: '2.0.0',
           configure: {
-            bluprint: configSchema,
+            default: configSchema,
           },
           message: {
-            bluprint: messageSchema,
+            default: messageSchema,
           }
         },
         versions: [
@@ -189,10 +187,10 @@ class CreateBluprint extends React.Component {
             sharedDevices,
             schemas: {
               configure: {
-                bluprint: configSchema,
+                default: configSchema,
               },
               message: {
-                bluprint: messageSchema,
+                default: messageSchema,
               }
             },
           },
