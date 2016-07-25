@@ -1,6 +1,5 @@
 import React from 'react'
 import { AppBar, AppBarPrimary, AppBarSecondary } from 'zooid-ui'
-import Heading from 'zooid-heading'
 import Page from 'zooid-page'
 
 const Home = () => {

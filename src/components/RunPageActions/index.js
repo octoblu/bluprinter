@@ -10,7 +10,7 @@ const propTypes = {
 
 const RunPageActions = ({ onStop, onStart, online }) => {
   const stopOrStartButton = () => {
-    if(online) return <Button onClick={onStop} kind="hollow-danger" size="small">Stop</Button>
+    if (online) return <Button onClick={onStop} kind="hollow-danger" size="small">Stop</Button>
     return <Button onClick={onStart} kind="hollow-approve" size="small">Start</Button>
   }
 
