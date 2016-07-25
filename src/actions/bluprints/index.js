@@ -39,3 +39,10 @@ export function getBluprints(meshbluConfig = getMeshbluConfig()) {
     })
   }
 }
+
+export function selectBluprint(bluprint) {
+  return {
+    type: actionTypes.SELECT_BLUPRINT,
+    payload: bluprint
+  }
+}

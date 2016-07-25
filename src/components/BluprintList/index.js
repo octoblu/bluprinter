@@ -12,9 +12,9 @@ const defaultProps = {
   onBluprintSelected: _.noop
 }
 
-const BluprintList = ({bluprints}) => {
+const BluprintList = ({bluprints, onBluprintSelected}) => {
   if(_.isEmpty(bluprints)) return null
-  const bluprintListItems = _.map(bluprints, (bluprint) => <BluprintListItem bluprint={bluprint} />)
+  const bluprintListItems = _.map(bluprints, (bluprint) => <BluprintListItem key={bluprint.uuid} bluprint={bluprint} onSelected={onBluprintSelected} />)
 
   return <div>{bluprintListItems}</div>
 

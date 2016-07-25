@@ -8,6 +8,7 @@ describe('Bluprints Reducer', () => {
   const initialState = {
     devices: null,
     error: null,
+    selected: null,
     fetching: false,
   }
 
@@ -22,6 +23,13 @@ describe('Bluprints Reducer', () => {
     expect(
       reducer(undefined, { type: actionTypes.GET_BLUPRINTS_REQUEST })
     ).to.deep.equal({ ...initialState, fetching: true})
+  })
+
+  it('should handle SELECT_BLUPRINT', () => {
+    const bluprint = {uuid: '5', name: 'Da Bluprint'}
+    expect(
+      reducer(undefined, { type: actionTypes.SELECT_BLUPRINT, payload: bluprint})
+    ).to.deep.equal({ ...initialState, selected: bluprint})
   })
 
   it('should handle GET_BLUPRINTS_SUCCESS', () => {

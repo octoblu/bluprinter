@@ -5,7 +5,8 @@ import {BLUPRINTER_URL} from 'config'
 const initialState = {
   devices: null,
   error: null,
-  fetching: false,  
+  selected: null,
+  fetching: false,
 }
 
 export default function types(state = initialState, action) {
@@ -19,6 +20,9 @@ export default function types(state = initialState, action) {
 
     case actionTypes.GET_BLUPRINTS_FAILURE:
       return { ...state, error: action.payload, fetching: false }
+
+    case actionTypes.SELECT_BLUPRINT:
+      return { ...state, selected: action.payload}
 
     default:
       return state

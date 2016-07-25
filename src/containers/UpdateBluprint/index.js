@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import {getBluprints} from '../../actions/bluprints'
+import {getBluprints, selectBluprint} from '../../actions/bluprints'
 import Page from 'zooid-page'
 import BluprintList from '../../components/BluprintList/'
 import { connect } from 'react-redux'
@@ -20,6 +20,11 @@ class UpdateBluprint extends React.Component {
     const { dispatch } = this.props
     dispatch(getBluprints())
   }
+
+  handleBluprintSelected = (bluprint) => {
+    dispatch(selectBluprint(bluprint))
+  }
+
   render() {
     const {devices, error, fetching} = this.props
     if (fetching) return <Page loading />
@@ -28,7 +33,7 @@ class UpdateBluprint extends React.Component {
     if (_.isEmpty(devices)) return <Page error="No devices." />
     return (
       <Page>
-        <BluprintList bluprints={devices} />
+        <BluprintList onBluprintSelected={this.handleBluprintSelected} bluprints={devices} />
       </Page>
     )
   }
@@ -37,7 +42,7 @@ class UpdateBluprint extends React.Component {
 UpdateBluprint.propTypes    = propTypes
 UpdateBluprint.defaultProps = defaultProps
 
-const mapStateToProps = ({ bluprints}) => {
+const mapStateToProps = ({bluprints}) => {
   return { devices: bluprints.devices, fetching: bluprints.fetching }
 }
 

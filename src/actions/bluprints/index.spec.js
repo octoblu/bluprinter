@@ -5,9 +5,7 @@ import enableDestroy from 'server-destroy'
 import shmock from 'shmock'
 
 import * as actionTypes from '../../constants/action-types'
-import {
-  getBluprints,
-} from './'
+import {getBluprints, selectBluprint} from './'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
@@ -36,55 +34,69 @@ describe('Bluprints Actions', () => {
     meshbluMock.destroy(done)
   })
 
-  describe('When the user is authenticated and has bluprints', () => {
-    beforeEach(() => {
-      meshbluMock.post('/search/devices')
-        .send({ type: 'bluprint', owner: 'my-user-uuid'})
-        .reply(200, [
-          {uuid: 'bluprint-1-uuid'},
-          {uuid: 'bluprint-2-uuid'}
-        ])
+  context('selectBluprint', () => {
+    describe('When called with a bluprint', () => {
+      const bluprint = {uuid: '5', name: 'Da Bluprint', description: 'whatevs'}
+
+      it('should dispatch SELECT_BLUPRINT', () => {
+        const store = mockStore({bluprint: {}})
+        store.dispatch(selectBluprint(bluprint))
+        expect(store.getActions()).to.deep.contain({type: actionTypes.SELECT_BLUPRINT, payload: bluprint})
+        
     })
+  })
+})
+  context('getBluprints', () => {
+    describe('When the user is authenticated and has bluprints', () => {
+      beforeEach(() => {
+        meshbluMock.post('/search/devices')
+          .send({ type: 'bluprint', owner: 'my-user-uuid'})
+          .reply(200, [
+            {uuid: 'bluprint-1-uuid'},
+            {uuid: 'bluprint-2-uuid'}
+          ])
+      })
 
-    const expectedActions = [
-      { type: actionTypes.GET_BLUPRINTS_REQUEST },
-      { type: actionTypes.GET_BLUPRINTS_SUCCESS, payload: [{uuid: 'bluprint-1-uuid'}, {uuid: 'bluprint-2-uuid'}] },
-    ]
-    const store = mockStore({bluprint: {}})
+      const expectedActions = [
+        { type: actionTypes.GET_BLUPRINTS_REQUEST },
+        { type: actionTypes.GET_BLUPRINTS_SUCCESS, payload: [{uuid: 'bluprint-1-uuid'}, {uuid: 'bluprint-2-uuid'}] },
+      ]
+      const store = mockStore({bluprint: {}})
 
-    it('should dispatch GET_BLUPRINTS_SUCCESS', () => {
-      return store.dispatch(
-        getBluprints(meshbluConfig)
-      ).then(() => {
-        expect(store.getActions()).to.deep.equal(expectedActions)
+      it('should dispatch GET_BLUPRINTS_SUCCESS', () => {
+        return store.dispatch(
+          getBluprints(meshbluConfig)
+        ).then(() => {
+          expect(store.getActions()).to.deep.equal(expectedActions)
+        })
       })
     })
-  })
 
-  describe('When getBluprints results in an error', () => {
-    beforeEach(() => {
-      meshbluMock
-        .get('/v2/devices/my-bluprint-uuid')
-        .set('Authorization', `Basic ${userAuth}`)
-        .reply(403, 'Unauthorized')
-    })
+    describe('When getBluprints results in an error', () => {
+      beforeEach(() => {
+        meshbluMock
+          .get('/v2/devices/my-bluprint-uuid')
+          .set('Authorization', `Basic ${userAuth}`)
+          .reply(403, 'Unauthorized')
+      })
 
-    const expectedActions = [
-      { type: actionTypes.GET_BLUPRINTS_REQUEST },
-      {
-        type: actionTypes.GET_BLUPRINTS_FAILURE,
-        payload: new Error('Error getting Bluprint device')
-      },
-    ]
-    const store = mockStore({ bluprint: {}})
+      const expectedActions = [
+        { type: actionTypes.GET_BLUPRINTS_REQUEST },
+        {
+          type: actionTypes.GET_BLUPRINTS_FAILURE,
+          payload: new Error('Error getting Bluprint device')
+        },
+      ]
+      const store = mockStore({ bluprint: {}})
 
-    it('should dispatch GET_BLUPRINTS_FAILURE', () => {
-      return store.dispatch(
-        getBluprints(meshbluConfig)
-      ).catch(() => {
-        expect(store.getActions()).to.deep.equal(expectedActions)
+      it('should dispatch GET_BLUPRINTS_FAILURE', () => {
+        return store.dispatch(
+          getBluprints(meshbluConfig)
+        ).catch(() => {
+          expect(store.getActions()).to.deep.equal(expectedActions)
+        })
       })
     })
-  })
 
   })
+})

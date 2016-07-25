@@ -6,13 +6,16 @@ const propTypes = {
   onSelected: PropTypes.func,
 }
 
-const defaultProps = {}
+const defaultProps = {
+  bluprint: null,
+  onSelected: _.noop
+}
 
-const BluprintListItem = ({bluprint}) => {
-  console.log(bluprint)
+const BluprintListItem = ({bluprint, onSelected}) => {
+  const handleOnSelected = () => onSelected(bluprint)
 
   if(_.isEmpty(bluprint)) return null
-  return <h3>{bluprint.name}</h3>
+  return <h3 onClick={handleOnSelected}>{bluprint.name}</h3>
 }
 
 BluprintListItem.propTypes    = propTypes
