@@ -3,7 +3,7 @@ import { IndexRoute, Router, Route } from 'react-router'
 
 import App from '../containers/App'
 import BluprintDetail from '../containers/BluprintDetail'
-import CreateBluprint from '../containers/CreateBluprint'
+import UpdateBluprint from '../containers/UpdateBluprint'
 import ConfigureBluprint from '../containers/ConfigureBluprint'
 import FinishCreateBluprint from '../containers/FinishCreateBluprint'
 import Home from '../containers/Home'
@@ -22,10 +22,15 @@ export default ({ history }) => {
   return (
     <Router history={history}>
       <Route path="/" component={App}>
-        <Route path="auth/callback" onEnter={storeAuthenticationAndRedirect} />      
+        <Route path="auth/callback" onEnter={storeAuthenticationAndRedirect} />
+
+
+
         <Route path="bluprints/new/:flowUuid" component={NewBluprint}>
           <IndexRoute component={CreateBluprintForm} />
         </Route>
+
+        <Route path="bluprints/update/:flowUuid" component={UpdateBluprint}/>
 
         <Route path="bluprints/:bluprintUuid/configure" component={ConfigureBluprint} />
         <Route path="bluprints/:bluprintUuid/update-permissions" component={UpdatePermissions} />
