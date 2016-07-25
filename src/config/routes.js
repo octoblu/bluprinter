@@ -22,9 +22,7 @@ export default ({ history }) => {
   return (
     <Router history={history}>
       <Route path="/" component={App}>
-        <Route path="auth/callback" onEnter={storeAuthenticationAndRedirect} />
-        <Route path="flows/:flowUuid/new" component={CreateBluprint} />
-
+        <Route path="auth/callback" onEnter={storeAuthenticationAndRedirect} />      
         <Route path="bluprints/new/:flowUuid" component={NewBluprint}>
           <IndexRoute component={CreateBluprintForm} />
         </Route>
