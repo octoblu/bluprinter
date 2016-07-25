@@ -186,7 +186,7 @@ export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
         dispatch(deployBluprint({
           uuid,
           flowId: device.bluprint.flowId,
-          version: device.bluprint.version}))
+          version: device.bluprint.latest}))
         return resolve(dispatch(updateBluprintSuccess()))
       })
     })
