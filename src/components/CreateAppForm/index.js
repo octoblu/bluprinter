@@ -1,10 +1,9 @@
-import noop from 'lodash.noop'
+import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import Button from 'zooid-button'
 import Heading from 'zooid-heading'
 import Input from 'zooid-input'
 import FormField from 'zooid-form-field'
-import FormLabel from 'zooid-form-label'
 import BluprintConfigBuilder from 'zooid-ui-bluprint-config-builder'
 
 import ShareDevices from '../ShareDevices/'
@@ -25,9 +24,9 @@ const defaultProps = {
   nodes: null,
   operationSchemas: null,
   sharedDevices: null,
-  onCreate: noop,
-  onUpdate: noop,
-  onShareDevices: noop,
+  onCreate: _.noop,
+  onUpdate: _.noop,
+  onShareDevices: _.noop,
 }
 
 const CreateAppForm = (props) => {

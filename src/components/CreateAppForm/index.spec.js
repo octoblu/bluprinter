@@ -1,4 +1,4 @@
-import noop from 'lodash.noop'
+import _ from 'lodash'
 import chai, { expect } from 'chai'
 import chaiEnzyme from 'chai-enzyme'
 import React from 'react'
@@ -13,7 +13,7 @@ chai.use(chaiEnzyme())
 describe('<CreateAppForm />', () => {
   it('should default onCreate to noop if no onCreate function is passed in', () => {
     const sut = mount(<CreateAppForm />)
-    expect(sut).to.have.prop('onCreate').equal(noop)
+    expect(sut).to.have.prop('onCreate').equal(_.noop)
   })
 
   xit('should call the onCreate prop on Submit', () => {
