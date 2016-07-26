@@ -38,7 +38,7 @@ class ConfigureBluprint extends React.Component {
   }
 
   componentDidMount() {
-    const { dispatch, params, flow} = this.props
+    const { dispatch, params, flow, manifest} = this.props
     dispatch(getBluprint(params.bluprintUuid))
     dispatch(getOperationSchemas(TOOLS_SCHEMA_REGISTRY_URL))
   }
@@ -50,8 +50,7 @@ class ConfigureBluprint extends React.Component {
     if (_.isEmpty(bluprint.device)) return
 
     if (_.isEmpty(flow.device) || (flow.device.uuid !== bluprint.device.bluprint.flowId)) {
-      this.props.dispatch(getFlow(bluprint.device.bluprint.flowId))
-      return
+      return this.props.dispatch(getFlow(bluprint.device.bluprint.flowId))
     }
   }
 
