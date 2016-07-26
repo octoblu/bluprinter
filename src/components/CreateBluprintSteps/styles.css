@@ -18,5 +18,4 @@
 
 .completedStep {
   composes: step;
-  color: green;
 }

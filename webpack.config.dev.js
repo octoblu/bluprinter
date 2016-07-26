@@ -1,6 +1,8 @@
-var autoprefixer = require('autoprefixer');
-var path         = require('path');
-var webpack      = require('webpack');
+var autoprefixer     = require('autoprefixer');
+var path             = require('path');
+var webpack          = require('webpack');
+var NpmInstallPlugin = require('npm-install-webpack-plugin');
+
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -15,6 +17,10 @@ module.exports = {
     publicPath: '/'
   },
   plugins: [
+    new NpmInstallPlugin({
+      dev: false,
+      peerDependencies: true,
+    }),
     new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()

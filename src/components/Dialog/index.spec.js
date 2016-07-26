@@ -1,11 +1,10 @@
+import _ from 'lodash'
 import chai, { expect } from 'chai'
 import chaiEnzyme from 'chai-enzyme'
 import React from 'react'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import { shallow } from 'enzyme'
-
-import noop from 'lodash.noop'
 
 import Dialog from './'
 
@@ -18,8 +17,8 @@ describe('<Dialog />', () => {
       const sut = shallow(
         <Dialog
           body="Gotta catch 'em all"
-          onCancel={noop}
-          onConfirm={noop}
+          onCancel={_.noop}
+          onConfirm={_.noop}
           showDialog
         />)
       expect(sut).to.contain.text("Gotta catch 'em all")
@@ -32,7 +31,7 @@ describe('<Dialog />', () => {
         <Dialog
           body="CANCELED"
           onCancel={cancelEverything}
-          onConfirm={noop}
+          onConfirm={_.noop}
           showDialog
         />)
       const cancelBtn = sut.find({children: 'Cancel'})
@@ -43,7 +42,7 @@ describe('<Dialog />', () => {
   describe('when confirm is clicked', () => {
     it('should call the onConfirm callback', () => {
       const doIt = sinon.spy()
-      const sut = shallow(<Dialog body="YAY" onCancel={noop} onConfirm={doIt} showDialog />)
+      const sut = shallow(<Dialog body="YAY" onCancel={_.noop} onConfirm={doIt} showDialog />)
       const confirmBtn = sut.find({children: 'Okay'})
       confirmBtn.simulate('click')
       expect(doIt).to.have.been.called
