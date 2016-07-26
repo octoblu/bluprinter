@@ -27,8 +27,7 @@ export default ({ history }) => {
           <IndexRoute component={CreateBluprintForm} />
         </Route>
 
-        <Route path="bluprints/update/:flowUuid" component={UpdateBluprint}/>
-
+        <Route path="bluprints/:bluprintUuid/update" component={UpdateBluprint}/>
         <Route path="bluprints/:bluprintUuid/configure" component={ConfigureBluprint} />
         <Route path="bluprints/:bluprintUuid/update-permissions" component={UpdatePermissions} />
         <Route path="bluprints/:bluprintUuid/finish" component={FinishCreateBluprint} />

@@ -23,8 +23,8 @@ class FinishCreateBluprint extends React.Component {
   }
 
   componentDidMount() {
-    const { params } = this.props
-    this.props.dispatch(getBluprint(params.bluprintUuid))
+    const { dispatch, params } = this.props
+    dispatch(getBluprint(params.bluprintUuid))
   }
 
   render() {

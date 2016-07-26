@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import _ from 'lodash'
-import Alert from 'zooid-alert'
 import Button from 'zooid-button'
 import Heading from 'zooid-heading'
 import  List, { ListItem } from 'zooid-list'
@@ -30,12 +29,13 @@ const UpdateSharedDevicesAlert = ({ sharedDevices, onUpdatePermissions}) => {
     )
   })
   return (
-    <Alert>
-      <Heading level={5}>Almost Done!</Heading>
-      <p>
+    <div>
+      <Heading level={4}>Almost Done!</Heading>
+      <Heading level={5}>
         Choosing to share an existing device, requires you to
         update it's messaging permissions.
-      </p>
+      </Heading>
+
       <div>
         <Button kind="no-style" size="small">Details</Button>
         <p>
@@ -43,7 +43,9 @@ const UpdateSharedDevicesAlert = ({ sharedDevices, onUpdatePermissions}) => {
           allow the device to receive messages from other devices.
         </p>
       </div>
+
       <List>{items}</List>
+
       <Button
         kind="hollow-primary"
         onClick={onUpdatePermissions}
@@ -52,7 +54,7 @@ const UpdateSharedDevicesAlert = ({ sharedDevices, onUpdatePermissions}) => {
       >
         Update Permissions
       </Button>
-    </Alert>
+    </div>
   )
 }
 

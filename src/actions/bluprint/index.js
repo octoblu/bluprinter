@@ -82,18 +82,17 @@ function setBluprintManifestSuccess(manifest) {
 
 export function setBluprintManifest(nodes, meshbluConfig = getMeshbluConfig()) {
   return dispatch => {
+    const nodeService = new NodeService(meshbluConfig)
 
     dispatch(setBluprintManifestRequest())
-    const nodeService = new NodeService(meshbluConfig)
-    nodeService.createManifest(nodes)
-    .then((manifest) => {
-      return dispatch(setBluprintManifestSuccess(manifest))
-    })
-    .catch((error) => {
-      console.log("SET_BLUPRINT_MANIFEST", error)
-      return dispatch(setBluprintManifestFailure(new Error('Could not create manifest')))
-    })
 
+    return nodeService.createManifest(nodes)
+      .then((manifest) => {
+        return dispatch(setBluprintManifestSuccess(manifest))
+      })
+      .catch((error) => {
+        return dispatch(setBluprintManifestFailure(new Error('Could not create manifest')))
+      })
   }
 }
 

@@ -4,6 +4,7 @@ import toast from './toast.reducer'
 import bluprint from './bluprint'
 import bluprints from './bluprints'
 import flow from './flow'
+import flows from './flows'
 import schemas from './schemas'
 import sharedDevices from '../modules/SharedDevices'
 
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   bluprint,
   bluprints,
   flow,
+  flows,
   toast,
   schemas,
   sharedDevices,

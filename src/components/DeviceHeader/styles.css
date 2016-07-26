@@ -1,0 +1,15 @@
+.root {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0 !important;
+}
+
+.actions {
+  background: pink;
+}

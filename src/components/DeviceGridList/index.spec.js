@@ -5,19 +5,19 @@ import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import { mount, shallow } from 'enzyme'
 
-import BluprintList from './'
-import BluprintListItem from '../BluprintListItem/'
+import DeviceGridList from './'
+import DeviceGridListItem from '../DeviceGridListItem/'
 
 chai.use(chaiEnzyme())
 chai.use(sinonChai)
 
-describe('<BluprintList />', () => {
+describe('<DeviceGridList />', () => {
   it('should render nothing', () => {
-    const sut = shallow(<BluprintList />)
+    const sut = shallow(<DeviceGridList />)
     expect(sut).to.be.empty
   })
 
-  it('should render multiple BluprintListItem components when given a list of bluprints', () => {
+  it('should render multiple DeviceGridListItem components when given a list of bluprints', () => {
     const bluprints = [{
       uuid: 'bluprint-1',
       name: 'Bluprint 1',
@@ -27,7 +27,7 @@ describe('<BluprintList />', () => {
       name: 'Bluprint 2',
     }]
 
-    const sut = shallow(<BluprintList bluprints={bluprints} />)
-    expect(sut.find(BluprintListItem).length).to.equal(2)
+    const sut = shallow(<DeviceGridList devices={bluprints} />)
+    expect(sut.find(DeviceGridListItem).length).to.equal(2)
   })
 })
