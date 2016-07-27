@@ -1,15 +1,15 @@
+import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import Page from 'zooid-page'
+import Alert from 'zooid-alert'
+import Spinner from 'zooid-spinner'
 
-import CreateBluprintSteps from '../components/CreateBluprintSteps'
 import { getFlow } from '../actions/flow/'
 import { setBluprintManifest } from '../actions/bluprint/'
-
-import styles from './styles.css'
+import CreateBluprintForm from '../components/CreateBluprintForm/'
+import { setBreadcrumbs } from '../modules/Breadcrumbs'
 
 const propTypes = {
-  children: PropTypes.node,
   dispatch: PropTypes.func,
   flow: PropTypes.object,
   isLoading: PropTypes.bool,
@@ -17,9 +17,10 @@ const propTypes = {
   routeParams: PropTypes.object,
 }
 
-class NewBluprint extends React.Component {
+class CreateBluprint extends React.Component {
   componentDidMount() {
     const { dispatch, params } = this.props
+  
     dispatch(getFlow(params.flowUuid)).then(() => {
       const { flow } = this.props
       dispatch(setBluprintManifest(flow.device.draft.nodes))
@@ -27,23 +28,15 @@ class NewBluprint extends React.Component {
   }
 
   render() {
-    const { children, flow, isLoading }  = this.props
+    const { flow, isLoading }  = this.props
     const { error } = flow
 
-    if (isLoading) return <Page loading className={styles.NewBluprintPage} />
-    if (error) return <Page error={error} className={styles.NewBluprintPage} />
-
-    const steps = [
-      { label: 'Create a Bluprint', state: 'ACTIVE' },
-      { label: 'Configure' },
-      { label: 'Finish' },
-    ]
+    if (isLoading) return <Spinner />
+    if (error) return <Alert type="error">{error}</Alert>
+    if (_.isEmpty(flow)) return <Alert>Flow not found.</Alert>
 
     return (
-      <Page className={styles.NewBluprintPage}>
-        <CreateBluprintSteps steps={steps} />
-        {children}
-      </Page>
+      <CreateBluprintForm flowId={flow.device.uuid} />
     )
   }
 }
@@ -55,6 +48,6 @@ const mapStateToProps = ({ bluprint, flow }) => {
   }
 }
 
-NewBluprint.propTypes = propTypes
+CreateBluprint.propTypes = propTypes
 
-export default connect(mapStateToProps)(NewBluprint)
+export default connect(mapStateToProps)(CreateBluprint)

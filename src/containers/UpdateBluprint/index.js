@@ -34,7 +34,7 @@ class UpdateBluprint extends React.Component {
     const { dispatch, params }  = this.props
     dispatch(getFlow(uuid))
       .then(({payload}) => dispatch(setBluprintManifest(payload.draft.nodes)))
-      .then(() => dispatch(push(`/bluprints/${params.bluprintUuid}/configure`)))
+      .then(() => dispatch(push(`/bluprints/update/${params.bluprintUuid}/configure`)))
   }
 
   render = () => {

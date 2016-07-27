@@ -10,9 +10,11 @@ import FormField from 'zooid-form-field'
 
 import styles from './styles.css'
 import { createBluprint } from '../../actions/bluprint'
+import { setActiveBreadcrumb } from '../../modules/Breadcrumbs'
 
 const propTypes = {
   bluprint: PropTypes.object,
+  flowId: PropTypes.string,
   dispatch: PropTypes.func,
   onCreateBluprint: PropTypes.func,
   params: PropTypes.object,
@@ -23,24 +25,24 @@ class CreateBluprintForm extends React.Component {
     super(props)
 
     this.handleCreateBluprint = this.handleCreateBluprint.bind(this)
+    props.dispatch(setActiveBreadcrumb('Create a Bluprint'))
   }
 
   componentWillReceiveProps({bluprint}) {
     if (_.isEmpty(bluprint.device)) return
-
-    this.props.dispatch(push(`/bluprints/${bluprint.device.uuid}/configure`))
+    this.props.dispatch(push(`/bluprints/setup/${bluprint.device.uuid}/configure`))
   }
 
   handleCreateBluprint(event) {
     event.preventDefault()
 
-    const { params, bluprint } = this.props
+    const { bluprint, flowId } = this.props
     const { name, description, visibility } = event.target
     const bluprintAction = {
       name: name.value,
       description: description.value,
       visibility: visibility.value,
-      flowId: params.flowUuid,
+      flowId,
       manifest: bluprint.manifest,
     }
 

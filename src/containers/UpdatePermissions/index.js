@@ -7,8 +7,8 @@ import Heading from 'zooid-heading'
 import Page from 'zooid-page'
 
 import { getBluprint } from '../../actions/bluprint'
-import CreateBluprintSteps from '../../components/CreateBluprintSteps'
 import UpdateSharedDevicesAlert from '../../components/UpdateSharedDevicesAlert'
+import { setActiveBreadcrumb } from '../../modules/Breadcrumbs'
 import { getSharedDevices, updateSharedDevicesPermissions } from '../../modules/SharedDevices'
 
 import styles from './styles.css'
@@ -27,12 +27,12 @@ class UpdatePermissions extends React.Component {
 
     this.state = {}
     this.handleUpdatePermissions  = this.handleUpdatePermissions.bind(this)
+    const { dispatch, params } = props
+    dispatch(setActiveBreadcrumb('Update Permissions'))
+    dispatch(getBluprint(params.bluprintUuid))
+
   }
 
-  componentWillMount() {
-    const { params } = this.props
-    this.props.dispatch(getBluprint(params.bluprintUuid))
-  }
   componentWillReceiveProps(nextProps) {
     const { bluprint, sharedDevices } = nextProps
     const {device} = bluprint
@@ -71,17 +71,8 @@ class UpdatePermissions extends React.Component {
       )
     }
 
-    const steps = [
-      { label: 'Create a Bluprint', state: 'COMPLETED' },
-      { label: 'Configure', state: 'COMPLETED' },
-      { label: 'Update Permissions', state: 'ACTIVE' },
-      { label: 'Finish',  },
-    ]
-
     return (
       <Page className={styles.NewBluprintPage}>
-        <CreateBluprintSteps steps={steps} />
-
         <div className={styles.root}>
           <Heading level={4}>Bluprint: {name}</Heading>
           {sharedDevicesAlert}

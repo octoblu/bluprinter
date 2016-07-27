@@ -1,6 +1,8 @@
 import _ from 'lodash'
-import DeviceGridListItem from '../DeviceGridListItem/'
 import React, { PropTypes } from 'react'
+import DeviceGridListItem from '../DeviceGridListItem/'
+
+import styles from './styles.css'
 
 const propTypes = {
   devices: PropTypes.array,
@@ -16,7 +18,7 @@ const DeviceGridList = ({devices, onSelection}) => {
   if(_.isEmpty(devices)) return null
   const deviceListItems = _.map(devices, (device) => <DeviceGridListItem key={device.uuid} device={device} onSelection={onSelection} />)
 
-  return <div>{deviceListItems}</div>
+  return <div className={styles.list}>{deviceListItems}</div>
 }
 
 DeviceGridList.propTypes    = propTypes

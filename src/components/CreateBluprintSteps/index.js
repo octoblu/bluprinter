@@ -18,7 +18,7 @@ const CreateBluprintSteps = ({steps}) => {
     let icon = <MdRadioButtonUnchecked />
 
     if (state === 'ACTIVE') className = styles.activeStep
-    if (state === 'COMPLETED') {
+    if (state === 'DONE') {
       icon = <MdDone />
       className = styles.completedStep
     }

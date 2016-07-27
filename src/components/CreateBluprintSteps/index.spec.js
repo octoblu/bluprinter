@@ -19,7 +19,7 @@ describe('<CreateBluprintSteps />', () => {
       const steps = [
         {
           label: 'Create a Bluprint',
-          state: 'COMPLETED'
+          state: 'DONE'
         },
         {
           label: 'Configure',

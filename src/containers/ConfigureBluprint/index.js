@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React, { PropTypes } from 'react'
+import {push} from 'react-router-redux'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
 import Alert from 'zooid-alert'
 import Button from 'zooid-button'
 import Heading from 'zooid-heading'
@@ -9,8 +9,10 @@ import Page from 'zooid-page'
 import BluprintConfigBuilder from 'zooid-ui-bluprint-config-builder'
 import { TOOLS_SCHEMA_REGISTRY_URL } from 'config'
 
-import CreateBluprintSteps from '../../components/CreateBluprintSteps'
+
 import styles from './styles.css'
+
+import { setActiveBreadcrumb, goToBreadcrumb } from '../../modules/Breadcrumbs'
 
 import { getFlow } from '../../actions/flow'
 import { getOperationSchemas } from '../../actions/schemas'
@@ -26,6 +28,7 @@ const propTypes = {
   dispatch: PropTypes.func,
   flow: PropTypes.object,
   params: PropTypes.object,
+  routing: PropTypes.object,
   schemas: PropTypes.object,
 }
 
@@ -38,7 +41,9 @@ class ConfigureBluprint extends React.Component {
   }
 
   componentDidMount() {
-    const { dispatch, params, flow, manifest} = this.props
+    const { dispatch, params } = this.props
+
+    dispatch(setActiveBreadcrumb('Configure'))
     dispatch(getBluprint(params.bluprintUuid))
     dispatch(getOperationSchemas(TOOLS_SCHEMA_REGISTRY_URL))
   }
@@ -62,16 +67,17 @@ class ConfigureBluprint extends React.Component {
   }
 
   handleBluprintUpdate() {
-    const { bluprint, dispatch } = this.props
+    const { bluprint, dispatch, routing } = this.props
 
     dispatch(updateBluprint(bluprint))
       .then(() => {
+        const {pathname} = routing.locationBeforeTransitions
+
         if (_.isEmpty(bluprint.sharedDevices)) {
-          dispatch(push(`/bluprints/${bluprint.device.uuid}/finish`))
-          return
+          return dispatch(push(`/bluprints/${bluprint.device.uuid}`))
         }
 
-        dispatch(push(`/bluprints/${bluprint.device.uuid}/update-permissions`))
+        dispatch(goToBreadcrumb(pathname, 'update-permissions'))
       })
       .catch(() => {
         console.log('Update failed')
@@ -125,15 +131,8 @@ class ConfigureBluprint extends React.Component {
 
     const { name } = device
 
-    const steps = [
-      { label: 'Create a Bluprint', state: 'COMPLETED' },
-      { label: 'Configure', state: 'ACTIVE' },
-      { label: 'Finish' },
-    ]
-
     return (
       <Page className={styles.NewBluprintPage}>
-        <CreateBluprintSteps steps={steps} />
         <div className={styles.root}>
           <Heading level={4}>Configure Bluprint: {name}</Heading>
 
@@ -153,8 +152,8 @@ class ConfigureBluprint extends React.Component {
   }
 }
 
-const mapStateToProps = ({ bluprint, flow, schemas }) => {
-  return { bluprint, flow, schemas }
+const mapStateToProps = ({ bluprint, flow, schemas, routing }) => {
+  return { bluprint, flow, schemas, routing }
 }
 
 ConfigureBluprint.propTypes = propTypes

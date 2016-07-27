@@ -34,21 +34,11 @@ class FinishCreateBluprint extends React.Component {
     if (fetching) return <Page className={styles.FinishCreateBluprintPage} loading />
     if (_.isEmpty(device)) return null
 
-    const steps = [
-      { label: 'Create a Bluprint', state: 'COMPLETED' },
-      { label: 'Configure', state: 'COMPLETED' },
-      { label: 'Update Permissions', state: 'COMPLETED' },
-      { label: 'Finish', state: 'ACTIVE' },
-    ]
     return (
-      <Page className={styles.NewBluprintPage}>
-        <CreateBluprintSteps steps={steps} />
-
-        <div className={styles.root}>
-          <Heading level={4}>Bluprint: {name}</Heading>
-          <p>All Done!</p>
-        </div>
-      </Page>
+      <div className={styles.root}>
+        <Heading level={4}>Bluprint: {name}</Heading>
+        <p>All Done!</p>
+      </div>
     )
   }
 }

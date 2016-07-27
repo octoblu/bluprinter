@@ -1,0 +1,20 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 232px;
+  cursor: pointer;
+}
+
+.root:hover {
+  text-decoration: underline;
+}
+
+.deviceIcon {
+  margin-bottom: 1em;
+}
+
+.deviceName {
+  text-align: center
+}

@@ -9,12 +9,13 @@ import FinishCreateBluprint from '../containers/FinishCreateBluprint'
 import Home from '../containers/Home'
 import ImportBluprint from '../containers/ImportBluprint'
 import Logout from '../containers/Logout'
-import NewBluprint from '../containers/NewBluprint'
+import CreateBluprint from '../containers/CreateBluprint'
 import NotFound from '../containers/NotFound'
 import RunIotApp from '../containers/RunIotApp'
+import CreateBluprintWizard from '../containers/CreateBluprintWizard'
+import UpdateBluprintWizard from '../containers/UpdateBluprintWizard'
 import UpdatePermissions from '../containers/UpdatePermissions'
 
-import CreateBluprintForm from '../components/CreateBluprintForm'
 
 import { storeAuthenticationAndRedirect } from '../services/auth-service'
 
@@ -23,8 +24,20 @@ export default ({ history }) => {
     <Router history={history}>
       <Route path="/" component={App}>
         <Route path="auth/callback" onEnter={storeAuthenticationAndRedirect} />
-        <Route path="bluprints/new/:flowUuid" component={NewBluprint}>
-          <IndexRoute component={CreateBluprintForm} />
+
+        <Route path="bluprints/setup" component={CreateBluprintWizard}>
+          <Route path="new/:flowUuid" component={CreateBluprint} />
+          <Route path=":bluprintUuid/configure" component={ConfigureBluprint} />
+          <Route path=":bluprintUuid/update-permissions" component={UpdatePermissions} />
+          <Route path=":bluprintUuid/finish" component={FinishCreateBluprint} />
+        </Route>
+
+
+        <Route path="bluprints/update/:bluprintUuid" component={UpdateBluprintWizard}>
+          <IndexRoute component={UpdateBluprint}/>
+          <Route path="configure" component={ConfigureBluprint} />
+          <Route path="update-permissions" component={UpdatePermissions} />
+          <Route path="finish" component={FinishCreateBluprint} />
         </Route>
 
         <Route path="bluprints/:bluprintUuid/update" component={UpdateBluprint}/>
