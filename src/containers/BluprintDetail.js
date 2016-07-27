@@ -1,21 +1,29 @@
 import _ from 'lodash'
 import React, { PropTypes } from 'react'
 import {browserHistory} from 'react-router'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import MeshbluHttp from 'browser-meshblu-http'
+import Button from 'zooid-button'
+import Card from 'zooid-card'
 import Input from 'zooid-input'
 import Page from 'zooid-page'
-import Card from 'zooid-card'
 import { OCTOBLU_URL } from 'config'
 
-import ShareUrl from '../components/ShareUrl/'
-import Dialog from '../components/Dialog/'
-import BluprintPageHeader from '../components/BluprintPageHeader/'
 import BluprintManifestList from '../components/BluprintManifestList/'
 import BluprintVersionSelect from '../components/BluprintVersionSelect/'
+import DeviceHeader from '../components/DeviceHeader/'
+import Dialog from '../components/Dialog/'
+import ShareUrl from '../components/ShareUrl/'
 
+import { getBluprint } from '../actions/bluprint/'
 import { getMeshbluConfig } from '../services/auth-service'
 
 const propTypes = {
+  device: PropTypes.object,
+  error: PropTypes.object,
+  fetching: PropTypes.bool,
+  dispatch: PropTypes.func,
   routeParams: PropTypes.object,
 }
 
@@ -28,7 +36,6 @@ class BluprintDetail extends React.Component {
       device: null,
       error: null,
       loading: true,
-      selectableDevices: [],
       deletingBluprint: false,
       publicBluprint: false,
       showDeleteDialog: false,
@@ -36,28 +43,17 @@ class BluprintDetail extends React.Component {
   }
 
   componentDidMount() {
-    const { uuid } = this.props.routeParams
-    const meshbluConfig = getMeshbluConfig()
-    const meshblu = new MeshbluHttp(meshbluConfig)
+    const { dispatch, routeParams } = this.props
+    const { uuid } = routeParams
 
-    meshblu.device(uuid, (error, device) => {
-      if (error) {
-        this.setState({ error, loading: false })
-        return
-      }
-
-      this.setState({ device, loading: false })
-    })
-
-    meshblu.search({ query: { owner: meshbluConfig.uuid } , projection: {name: true, type: true, uuid: true}}, (error, selectableDevices) =>{
-      this.setState({selectableDevices})
-    })
+    dispatch(getBluprint(uuid))
   }
 
   handleDeleteBluprint = () => {
     this.setState({deletingBluprint: true, showDeleteDialog: false})
+
     const meshbluConfig = getMeshbluConfig()
-    const meshblu = new MeshbluHttp(meshbluConfig)
+    const meshblu       = new MeshbluHttp(meshbluConfig)
 
     meshblu.unregister(this.state.device.uuid, () => {
       window.location = `${OCTOBLU_URL}/things/my`
@@ -72,8 +68,9 @@ class BluprintDetail extends React.Component {
     this.setState({showDeleteDialog: false})
   }
 
-  handleImport = () => {
-    browserHistory.push(`bluprints/${this.state.device.uuid}/import`)
+  handlePush = (path) => {
+    const {dispatch} = this.props
+    dispatch(push(path))
   }
 
   handlePublic = () => {
@@ -84,38 +81,44 @@ class BluprintDetail extends React.Component {
     console.log("VERSION SELECTED!")
   }
 
-
   render() {
-    const {
-      deletingBluprint,
-      device,
-      error,
-      loading,
-      publicBluprint,
-      showDeleteDialog,
-    } = this.state
+    const { device, error, fetching } = this.props
+    const { publicBluprint, showDeleteDialog } = this.state
 
-    if (loading) return <Page loading={loading} />
+    if (fetching) return <Page loading />
     if (error)   return <Page error={error} />
     if (_.isEmpty(device)) return <Page><div>Device not found.</div></Page>
 
-    const { bluprint, name } = device
+    const { bluprint, name, uuid } = device
 
     return (
       <Page>
-        <Dialog
-          showDialog={showDeleteDialog}
-          body="Are you sure you want to delete this bluprint?"
-          onCancel={this.cancelDeleteBluprint}
-          onConfirm={this.handleDeleteBluprint}
-        />
         <Card>
-          <BluprintPageHeader
-            device={device}
-            onDelete={this.checkBeforeDeleting}
-            deletingBluprint={deletingBluprint}
-            onImport={this.handleImport}
-          />
+          <DeviceHeader device={device}>
+            <div>
+              <Button
+                onClick={() => this.handlePush(`/bluprints/${uuid}/import`)}
+                kind="hollow-neutral"
+                disabled={false}
+                size="small"
+              >
+                Import
+              </Button>
+
+              <Button
+                onClick={() => this.handlePush(`/bluprints/${uuid}/update`)}
+                kind="hollow-neutral"
+                disabled={false}
+                size="small"
+              >
+                Update
+              </Button>
+
+              <Button onClick={this.checkBeforeDeleting} kind="hollow-danger" disabled={false} size="small">
+                Delete
+              </Button>
+            </div>
+          </DeviceHeader>
 
           <Input label="Name" name="bluprintName" defaultValue={name} />
 
@@ -125,12 +128,28 @@ class BluprintDetail extends React.Component {
 
           <BluprintManifestList manifest={bluprint.manifest} />
         </Card>
+
+        <Dialog
+          showDialog={showDeleteDialog}
+          body="Are you sure you want to delete this bluprint?"
+          onCancel={this.cancelDeleteBluprint}
+          onConfirm={this.handleDeleteBluprint}
+        />
       </Page>
     )
   }
 }
 
-
 BluprintDetail.propTypes = propTypes
 
-export default BluprintDetail
+const mapStateToProps = ({bluprint}) => {
+  const { device, error, fetching } = bluprint
+
+  return {
+    device,
+    error,
+    fetching,
+  }
+}
+
+export default connect(mapStateToProps)(BluprintDetail)

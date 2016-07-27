@@ -245,12 +245,16 @@ describe('Bluprint Reducer', () => {
     const octobluLinks =  {
       links: [
         {
-          title: 'Bluprint Detail',
-          url: `${BLUPRINTER_URL}/bluprints/my-fancy-bluprint-uuid`,
+          title: 'Import',
+          url: `${BLUPRINTER_URL}/bluprints/my-fancy-bluprint-uuid/import`,
         },
         {
-          title: 'Import Bluprint',
-          url: `${BLUPRINTER_URL}/bluprints/my-fancy-bluprint-uuid/import`,
+          title: 'Update',
+          url: `${BLUPRINTER_URL}/bluprints/my-fancy-bluprint-uuid/update`,
+        },
+        {
+          title: 'Detail',
+          url: `${BLUPRINTER_URL}/bluprints/my-fancy-bluprint-uuid`,
         },
       ],
     }
