@@ -250,7 +250,7 @@ describe('Bluprint Reducer', () => {
         },
         {
           title: 'Update',
-          url: `${BLUPRINTER_URL}/bluprints/my-fancy-bluprint-uuid/update`,
+          url: `${BLUPRINTER_URL}/bluprints/update/my-fancy-bluprint-uuid`,
         },
         {
           title: 'Detail',

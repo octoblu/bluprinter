@@ -115,14 +115,14 @@ export default function types(state = initialState, action) {
 
     case actionTypes.SET_OCTOBLU_LINKS: {
       const octobluLinks = {
-        links: [          
+        links: [
           {
             title: 'Import',
             url: `${BLUPRINTER_URL}/bluprints/${action.payload}/import`,
           },
           {
             title: 'Update',
-            url: `${BLUPRINTER_URL}/bluprints/${action.payload}/update`,
+            url: `${BLUPRINTER_URL}/bluprints/update/${action.payload}`,
           },
           {
             title: 'Detail',
