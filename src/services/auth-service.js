@@ -9,7 +9,9 @@ export function getMeshbluConfig() {
   if (!bearerToken) return null
 
   const bearerTokenEnvelope = atob(bearerToken)
+  console.log('pack', bearerTokenEnvelope)
   const bearerTokenPieces   = bearerTokenEnvelope.split(':')
+  console.log('pieces', bearerTokenPieces)
 
   return {
     uuid: bearerTokenPieces[0],
