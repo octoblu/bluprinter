@@ -1,5 +1,5 @@
 import React from 'react'
-import { IndexRoute, Router, Route } from 'react-router'
+import { IndexRoute, Redirect, Router, Route } from 'react-router'
 
 import App from '../containers/App'
 import BluprintDetail from '../containers/BluprintDetail'
@@ -31,6 +31,9 @@ export default ({ history }) => {
           <Route path=":bluprintUuid/update-permissions" component={UpdatePermissions} />
           <Route path=":bluprintUuid/finish" component={FinishCreateBluprint} />
         </Route>
+
+        <Redirect from="flows/:flowUuid/new" to="bluprints/setup/new/:flowUuid" />
+        <Redirect from="bluprints/new/:flowUuid" to="bluprints/setup/new/:flowUuid" />
 
 
         <Route path="bluprints/update/:bluprintUuid" component={UpdateBluprintWizard}>
