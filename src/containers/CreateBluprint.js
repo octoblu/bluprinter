@@ -20,7 +20,7 @@ const propTypes = {
 class CreateBluprint extends React.Component {
   componentDidMount() {
     const { dispatch, params } = this.props
-  
+
     dispatch(getFlow(params.flowUuid)).then(() => {
       const { flow } = this.props
       dispatch(setBluprintManifest(flow.device.draft.nodes))
@@ -33,8 +33,7 @@ class CreateBluprint extends React.Component {
 
     if (isLoading) return <Spinner />
     if (error) return <Alert type="error">{error}</Alert>
-    if (_.isEmpty(flow)) return <Alert>Flow not found.</Alert>
-
+    if (_.isEmpty(flow.device)) return <Alert>Flow not found.</Alert>
     return (
       <CreateBluprintForm flowId={flow.device.uuid} />
     )
