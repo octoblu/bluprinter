@@ -36,6 +36,9 @@ module.exports = {
       config: path.join(__dirname, 'src', 'config', 'production')
     }
   },
+  node: {
+    fs: "empty"
+  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
