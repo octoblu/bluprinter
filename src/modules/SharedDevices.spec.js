@@ -78,13 +78,13 @@ describe('SharedDevices', () => {
     ]
     const store = mockStore({sharedDevices: {}})
 
-    it('search for the list of devices in meshblu', (done) => {
+    it('search for the list of devices in meshblu', () => {
       return store.dispatch(
         getSharedDevices(sharedDevices, meshbluConfig)
       ).then(() => {
         searchDeviceHandler.done()
         expect(store.getActions()).to.deep.equal(expectedActions)
-        done()
+        // done()
       })
     })
   })
