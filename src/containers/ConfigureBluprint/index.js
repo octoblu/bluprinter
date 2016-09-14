@@ -59,7 +59,7 @@ class ConfigureBluprint extends React.Component {
     }
   }
 
-  handleConfigUpdate({ configSchema, sharedDevices }) {
+  handleConfigUpdate({ configSchema, sharedDevices }) {    
     const { dispatch } = this.props
 
     dispatch(setBluprintConfigSchema(configSchema))
@@ -104,10 +104,9 @@ class ConfigureBluprint extends React.Component {
 
   renderBluprintConfigBuilder() {
     const { flow, schemas } = this.props
-
-    if (_.isEmpty(flow)) return null
-    if (_.isEmpty(schemas.operationSchemas)) return null
-    if (_.isEmpty(schemas.deviceSchemas)) return null
+    if (_.isEmpty(flow)) return <h1>Waiting for flow</h1>
+    if (_.isEmpty(schemas.operationSchemas)) return <h1>Waiting for operation schemas</h1>
+    if (!schemas.deviceSchemas) return <h1>Waiting for device schemas</h1>
 
     return (
       <BluprintConfigBuilder

@@ -58,10 +58,10 @@ export default class NodeService {
       this.getAllTypes().then((types) => {
         this.types = types
         var manifest = _.map(nodes, (node) => {
-            const {name, id, type, deviceId} = node
+            const {name, id, type, deviceId, eventType} = node
             const nodeType = this.getDocUrl(node)
             const {documentation} = nodeType
-            return {name, id, type, documentation, deviceId}
+            return {name, id, type, documentation, deviceId, eventType}
         })
         resolve(manifest)
       })

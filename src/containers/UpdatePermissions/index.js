@@ -40,7 +40,8 @@ class UpdatePermissions extends React.Component {
     if (_.isEmpty(device)) return
     if (_.isEmpty(sharedDevices.devices)) {
       const {bluprint: bluprintDevice} = device
-      this.props.dispatch(getSharedDevices(bluprintDevice.sharedDevices))
+      const sharedDeviceUuids = _.map(bluprint.sharedDevices, 'uuid')
+      this.props.dispatch(getSharedDevices(sharedDeviceUuids))
       return
     }
   }
@@ -55,6 +56,7 @@ class UpdatePermissions extends React.Component {
   }
 
   render() {
+    console.log('UpdatePermissions', this.props)
     const { bluprint, sharedDevices } = this.props
     const { device, error, fetching, } = bluprint
 

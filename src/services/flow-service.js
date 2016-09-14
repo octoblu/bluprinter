@@ -116,23 +116,14 @@ export default class FlowService {
     return result
   }
 
-  _updatePermissionsV1 = ({uuid, v1devices}, callback) => {
-    async.each(v1devices, (item, cb) => {
-      const deviceUpdate = {$addToSet: { receiveWhitelist: uuid, sendWhitelist: uuid }}
-      this.meshblu.updateDangerously(item, deviceUpdate, cb)
-    }, callback)
-  }
+  updatePermissions = ({uuid, appData, schema, messageDevices, configureDevices}, callback) => {
+    const devicesInFlow = _.map(this._getMeshbluDevices(schema), (value) => appData[value])
+    const update = {$addToSet: { sendWhitelist: { $each: _.union(devicesInFlow, messageDevices) } }}
 
-  _updatePermissionsV2 = ({uuid, v2devices}, callback) => {
-    async.each(v2devices, (item, cb) => {
-      const deviceUpdate = {
-        $addToSet: {
-          'meshblu.whitelists.message.from': {uuid},
-          'meshblu.whitelists.broadcast.sent': {uuid}
-        }
-      }
-      this.meshblu.updateDangerously(item, deviceUpdate, cb)
-    }, callback)
+    this.meshblu.updateDangerously(uuid, update, (error) => {
+      if (error) return callback(error)
+      this._allowSendAndSubscribeToBroadcast({uuid, devices:devicesInFlow}, callback)
+    })
   }
 
   _allowSendAndSubscribeToBroadcast = ({uuid, devices}, callback) => {
@@ -155,13 +146,28 @@ export default class FlowService {
     })
   }
 
-  updatePermissions = ({uuid, appData, schema, messageFromDevices}, callback) => {
-    const devicesInFlow = _.map(this._getMeshbluDevices(schema), (value) => appData[value])
-    const update = {$addToSet: { sendWhitelist: { $each: _.union(devicesInFlow, messageFromDevices) } }}
 
-    this.meshblu.updateDangerously(uuid, update, (error) => {
-      if (error) return callback(error)
-      this._allowSendAndSubscribeToBroadcast({uuid, devices:devicesInFlow}, callback)
-    })
+  _updatePermissionsV1 = ({uuid, v1devices}, callback) => {
+    async.each(v1devices, (item, cb) => {
+      const deviceUpdate = {$addToSet: { receiveWhitelist: uuid, sendWhitelist: uuid }}
+      this.meshblu.updateDangerously(item, deviceUpdate, cb)
+    }, callback)
+  }
+
+  _updatePermissionsV2 = ({uuid, v2devices}, callback) => {
+    async.each(v2devices, (item, cb) => {
+      const deviceUpdate = {
+        $addToSet: {
+          'meshblu.whitelists.message.from': {uuid},
+          'meshblu.whitelists.broadcast.sent': {uuid}
+        }
+      }
+      this.meshblu.updateDangerously(item, deviceUpdate, cb)
+    }, callback)
+  }
+
+
+  createSubscriptions = (options, callback) => {
+    console.log(options)
   }
 }

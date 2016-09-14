@@ -39,7 +39,6 @@ class ImportBluprint extends React.Component {
 
   componentDidMount() {
     this.meshblu.device(this.bluprintId, (error, device) => {
-      console.log("Bluprint Device", device)
 
       const latestSchema = this.getLatestConfigSchema(device.bluprint)
       const {manifest}   = this.getLatestVersion(device.bluprint)
@@ -60,9 +59,19 @@ class ImportBluprint extends React.Component {
   getMessageFromDevices = (bluprint) => {
     const {manifest, sharedDevices} = this.getLatestVersion(bluprint)
     return _(manifest)
+      .filter((node) => _.has(node, 'deviceId') && node.eventType !== 'configure')
       .map('deviceId')
       .compact()
-      .union(sharedDevices)
+      .uniq()
+      .value()
+  }
+
+  getConfigureDevices = (bluprint) => {
+    const {manifest, sharedDevices} = this.getLatestVersion(bluprint)
+    return _(manifest)
+      .filter({eventType: 'configure'})
+      .map('deviceId')
+      .compact()
       .uniq()
       .value()
   }
@@ -75,11 +84,13 @@ class ImportBluprint extends React.Component {
       const {bluprint}         = this.state
       const {flowId}           = flow
       const schema             = this.getLatestConfigSchema(bluprint)
-      const messageFromDevices = this.getMessageFromDevices(bluprint)
+      const messageDevices     = this.getMessageDevices(bluprint)
+      const configureDevices   = this.getConfigureDevices(bluprint)
 
-      const options = {uuid: flowId, appData: flowData, schema: schema, messageFromDevices: messageFromDevices}
+      const options = {uuid: flowId, appData: flowData, schema, messageDevices, configureDevices}
       async.series([
         async.apply(this.flowService.updatePermissions, options),
+        async.apply(this.flowService.createSubscriptions, options),
         async.apply(this.linkFlowToIoTApp, {flowId, flowData}),
         async.apply(this.deployFlow, {flowId}),
         async.apply(this.updateLinks, {flowId})
