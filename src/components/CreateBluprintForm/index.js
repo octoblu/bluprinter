@@ -23,8 +23,6 @@ const propTypes = {
 class CreateBluprintForm extends React.Component {
   constructor(props) {
     super(props)
-
-    this.handleCreateBluprint = this.handleCreateBluprint.bind(this)
     props.dispatch(setActiveBreadcrumb('Create a Bluprint'))
   }
 
@@ -33,7 +31,7 @@ class CreateBluprintForm extends React.Component {
     this.props.dispatch(push(`/bluprints/setup/${bluprint.device.uuid}/configure`))
   }
 
-  handleCreateBluprint(event) {
+  handleCreateBluprint = (event) => {
     event.preventDefault()
 
     const { bluprint, flowId } = this.props

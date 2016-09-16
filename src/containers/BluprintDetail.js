@@ -122,8 +122,6 @@ class BluprintDetail extends React.Component {
 
           <Input label="Name" name="bluprintName" defaultValue={name} />
 
-          <BluprintVersionSelect latest={bluprint.latest} versions={bluprint.versions} onChange={this.handleVersionSelect} />
-
           <ShareUrl uuid={device.uuid} publicBluprint={publicBluprint} onChange={this.handlePublic} />
 
           <BluprintManifestList manifest={bluprint.manifest} />

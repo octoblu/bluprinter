@@ -116,10 +116,9 @@ export default class FlowService {
     return result
   }
 
-  updatePermissions = ({uuid, appData, schema, messageDevices, configureDevices}, callback) => {
+  updatePermissions = ({uuid, appData, schema, messageFromDevices, configureDevices}, callback) => {
     const devicesInFlow = _.map(this._getMeshbluDevices(schema), (value) => appData[value])
-    const update = {$addToSet: { sendWhitelist: { $each: _.union(devicesInFlow, messageDevices) } }}
-
+    const update = {$addToSet: { sendWhitelist: { $each: _.union(devicesInFlow, messageFromDevices) } }}
     this.meshblu.updateDangerously(uuid, update, (error) => {
       if (error) return callback(error)
       this._allowSendAndSubscribeToBroadcast({uuid, devices:devicesInFlow}, callback)
@@ -168,6 +167,6 @@ export default class FlowService {
 
 
   createSubscriptions = (options, callback) => {
-    console.log(options)
+    callback()
   }
 }

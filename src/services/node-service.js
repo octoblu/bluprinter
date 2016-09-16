@@ -34,14 +34,10 @@ export default class NodeService {
 
   getAllTypes() {
     const types = {}
-    return this.getOperators().then((operators) => {
-      types.operators = operators
-    })
-    .then(this.getThings)
-    .then((nodeTypes) => {
-      types.nodeTypes = nodeTypes
-      return types
-    })
+    return this.getOperators().then((operators) => types.operators = operators)
+      .then(this.getThings)
+      .then((nodeTypes) => types.nodeTypes = nodeTypes)
+      .then(() => types)
   }
 
   getDocUrl(node) {

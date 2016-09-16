@@ -140,27 +140,18 @@ describe('Bluprint Actions', () => {
       .set('Authorization', `Basic ${userAuth}`)
       .send({
         $set: {
-          version: 1,
-          'bluprint.sharedDevices': [],
-          'bluprint.schemas.configure': {
-            default: {}
-          },
-          'bluprint.schemas.message': {
-            default: {}
-          },
-          'bluprint.versions': [{
-            version: 1,
-            manifest: [],
+          bluprint: {
             sharedDevices: [],
-            schemas: {
+            manifest: [],
+            schemas:{
               configure: {
                 default: {}
               },
               message: {
                 default: {}
-              }
+              },
             }
-          }],
+          },
           octoblu: []
         }
       })
@@ -197,6 +188,7 @@ describe('Bluprint Actions', () => {
         updateBluprintHandler.done()
         expect(store.getActions()).to.deep.equal(expectedActions)
       })
+      .catch((error) => console.log('omg error', error))
     })
   })
 
@@ -216,7 +208,6 @@ describe('Bluprint Actions', () => {
     const bluprint = {
       uuid: 'my-bluprint-uuid',
       bluprint: {
-        version: '1.0.0',
         flowId: 'my-flow-uuid',
       }
     }
@@ -233,7 +224,7 @@ describe('Bluprint Actions', () => {
 
     beforeEach((done) => {
       publishBluprintHandler = nanocyteFlowDeployMock
-      .post('/bluprint/my-bluprint-uuid/1.0.0')
+      .post('/bluprint/my-bluprint-uuid')
       .set('Authorization', `Basic ${userAuth}`)
       .send({flowId: 'my-flow-uuid'})
       .reply(201, 'SUCCESS')

@@ -40,8 +40,8 @@ class ImportBluprint extends React.Component {
   componentDidMount() {
     this.meshblu.device(this.bluprintId, (error, device) => {
 
-      const latestSchema = this.getLatestConfigSchema(device.bluprint)
-      const {manifest}   = this.getLatestVersion(device.bluprint)
+      const latestSchema = device.bluprint.schemas.configure.default
+      const {manifest}   = device.bluprint
 
       this.setState({bluprint: device.bluprint, name: device.name, appId: this.bluprintId, manifest, latestSchema})
     })
@@ -57,7 +57,7 @@ class ImportBluprint extends React.Component {
   }
 
   getMessageFromDevices = (bluprint) => {
-    const {manifest, sharedDevices} = this.getLatestVersion(bluprint)
+    const {manifest, sharedDevices} = bluprint
     return _(manifest)
       .filter((node) => _.has(node, 'deviceId') && node.eventType !== 'configure')
       .map('deviceId')
@@ -67,7 +67,7 @@ class ImportBluprint extends React.Component {
   }
 
   getConfigureDevices = (bluprint) => {
-    const {manifest, sharedDevices} = this.getLatestVersion(bluprint)
+    const {manifest, sharedDevices} = bluprint
     return _(manifest)
       .filter({eventType: 'configure'})
       .map('deviceId')
@@ -84,7 +84,7 @@ class ImportBluprint extends React.Component {
       const {bluprint}         = this.state
       const {flowId}           = flow
       const schema             = this.getLatestConfigSchema(bluprint)
-      const messageDevices     = this.getMessageDevices(bluprint)
+      const messageDevices     = this.getMessageFromDevices(bluprint)
       const configureDevices   = this.getConfigureDevices(bluprint)
 
       const options = {uuid: flowId, appData: flowData, schema, messageDevices, configureDevices}
@@ -197,16 +197,12 @@ class ImportBluprint extends React.Component {
     return _.extend({}, flowData, deviceData)
   }
 
-  getLatestVersion = (bluprint) => {
-    return  _.find(bluprint.versions, {version: bluprint.latest})
-  }
-
   getLatestConfigSchema = (bluprint) => {
-    return this.getLatestVersion(bluprint).schemas.configure.default
+    return bluprint.schemas.configure.default
   }
 
   getLatestMessageSchema = (bluprint) => {
-    return this.getLatestVersion(bluprint).schemas.message.default
+    return bluprint.schemas.message.default
   }
 
   updateDeviceName = ({target}) => {

@@ -177,7 +177,6 @@ describe('FlowService', function () {
             }
           })
           .reply(200)
-
       flowService.updatePermissions({uuid: 'the-uuid', appData, schema, messageFromDevices}, done)
     })
 

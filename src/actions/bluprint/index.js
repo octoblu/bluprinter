@@ -42,12 +42,12 @@ export function deployBluprintFailure(error) {
   }
 }
 
-export function deployBluprint({uuid, version, flowId}, flowDeployUrl = FLOW_DEPLOY_URL, meshbluConfig = getMeshbluConfig()) {
+export function deployBluprint({uuid, flowId}, flowDeployUrl = FLOW_DEPLOY_URL, meshbluConfig = getMeshbluConfig()) {
   return dispatch => {
     dispatch(deployBluprintRequest())
     return new Promise((resolve, reject) => {
       superagent
-        .post(`${FLOW_DEPLOY_URL}/bluprint/${uuid}/${version}`)
+        .post(`${FLOW_DEPLOY_URL}/bluprint/${uuid}`)
         .auth(meshbluConfig.uuid, meshbluConfig.token)
         .send({flowId})
         .end((error) => {
@@ -85,7 +85,6 @@ export function setBluprintManifest(nodes, meshbluConfig = getMeshbluConfig()) {
     const nodeService = new NodeService(meshbluConfig)
 
     dispatch(setBluprintManifestRequest())
-
     return nodeService.createManifest(nodes)
       .then((manifest) => {
         return dispatch(setBluprintManifestSuccess(manifest))
@@ -148,18 +147,9 @@ export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
     const {uuid} = device
     const updateQuery = {
       $set: {
-        version: 1,
-        'bluprint.sharedDevices': sharedDevices,
-        'bluprint.schemas.configure': {
-          default: configureSchema
-        },
-        'bluprint.schemas.message': {
-          default: messageSchema
-        },
-        'bluprint.versions': [{
-          version: 1,
-          manifest,
+        bluprint: {
           sharedDevices,
+          manifest,
           schemas: {
             configure: {
               default: configureSchema
@@ -168,7 +158,7 @@ export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
               default: messageSchema
             }
           }
-        }],
+        },
         octoblu: octobluLinks,
       }
     }
@@ -183,10 +173,7 @@ export function updateBluprint(bluprint, meshbluConfig = getMeshbluConfig()) {
             )
           )
         }
-        dispatch(deployBluprint({
-          uuid,
-          flowId: device.bluprint.flowId,
-          version: device.bluprint.latest}))
+        dispatch(deployBluprint({uuid, flowId: device.bluprint.flowId}))
         return resolve(dispatch(updateBluprintSuccess()))
       })
     })
@@ -284,7 +271,8 @@ function deviceDefaults({ description, flowId, name, visibility, manifest }) {
     bluprint: {
       version: '1.0.0',
       flowId,
-      latest: 1,
+      manifest,
+      sharedDevices: [],
       schemas: {
         version: '2.0.0',
         configure: {
@@ -294,21 +282,6 @@ function deviceDefaults({ description, flowId, name, visibility, manifest }) {
           default: {},
         }
       },
-      versions: [
-        {
-          manifest,
-          version: 1,
-          sharedDevices: {},
-          schemas: {
-            configure: {
-              default: {},
-            },
-            message: {
-              default: {},
-            }
-          },
-        },
-      ],
     },
     meshblu: {
       version: '2.0.0',

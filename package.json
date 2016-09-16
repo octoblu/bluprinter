@@ -73,12 +73,12 @@
     "zooid-heading": "^1.0.1",
     "zooid-input": "^2.2.0",
     "zooid-list": "^2.0.0",
-    "zooid-meshblu-device-editor": "^10.0.3",
+    "zooid-meshblu-device-editor": "^10.0.4",
     "zooid-page": "^2.0.0",
     "zooid-spinner": "^1.0.1",
     "zooid-switch": "^2.0.2",
     "zooid-ui": "^8.0.0",
-    "zooid-ui-bluprint-config-builder": "^7.0.0"
+    "zooid-ui-bluprint-config-builder": "^7.1.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
