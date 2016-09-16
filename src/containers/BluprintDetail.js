@@ -11,7 +11,6 @@ import Page from 'zooid-page'
 import { OCTOBLU_URL } from 'config'
 
 import BluprintManifestList from '../components/BluprintManifestList/'
-import BluprintVersionSelect from '../components/BluprintVersionSelect/'
 import DeviceHeader from '../components/DeviceHeader/'
 import Dialog from '../components/Dialog/'
 import ShareUrl from '../components/ShareUrl/'
