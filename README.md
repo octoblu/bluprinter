@@ -1,6 +1,14 @@
 # bluprinter
 You can have any color you like, as long as it's blu
 
+[![Build Status](https://travis-ci.org/octoblu/bluprinter.svg?branch=master)](https://travis-ci.org/octoblu/bluprinter)
+[![Test Coverage](https://codecov.io/gh/octoblu/bluprinter/branch/master/graph/badge.svg)](https://codecov.io/gh/octoblu/bluprinter)
+[![Dependency status](http://img.shields.io/david/octoblu/bluprinter.svg?style=flat)](https://david-dm.org/octoblu/bluprinter)
+[![devDependency Status](http://img.shields.io/david/dev/octoblu/bluprinter.svg?style=flat)](https://david-dm.org/octoblu/bluprinter#info=devDependencies)
+[![Slack Status](http://community-slack.octoblu.com/badge.svg)](http://community-slack.octoblu.com)
+
+[![NPM](https://nodei.co/npm/bluprinter.svg?style=flat)](https://npmjs.org/package/bluprinter)
+
 # bluprinter detail Page
 - [ ] actions (delete, import)
 - [ ] name
