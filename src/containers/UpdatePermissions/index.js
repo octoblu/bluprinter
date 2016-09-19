@@ -56,7 +56,6 @@ class UpdatePermissions extends React.Component {
   }
 
   render() {
-    console.log('UpdatePermissions', this.props)
     const { bluprint, sharedDevices } = this.props
     const { device, error, fetching, } = bluprint
 

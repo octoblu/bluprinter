@@ -53,12 +53,14 @@ export default class NodeService {
     return new Promise((resolve, reject) => {
       this.getAllTypes().then((types) => {
         this.types = types
-        var manifest = _.map(nodes, (node) => {
-            const {name, id, type, deviceId, eventType} = node
+        var manifest = _.compact( _.map(nodes, (node) => {
+            if(node.category === 'operation') return null
+            let {name, id, type, deviceId, eventType, category} = node
+            eventType = eventType || 'message'
             const nodeType = this.getDocUrl(node)
             const {documentation} = nodeType
-            return {name, id, type, documentation, deviceId, eventType}
-        })
+            return {name, id, type, documentation, deviceId, category, eventType}
+        }))
         resolve(manifest)
       })
     })

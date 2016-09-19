@@ -55,27 +55,7 @@ class ImportBluprint extends React.Component {
       this.setState({selectableDevices})
     })
   }
-
-  getMessageFromDevices = (bluprint) => {
-    const {manifest, sharedDevices} = bluprint
-    return _(manifest)
-      .filter((node) => _.has(node, 'deviceId') && node.eventType !== 'configure')
-      .map('deviceId')
-      .compact()
-      .uniq()
-      .value()
-  }
-
-  getConfigureDevices = (bluprint) => {
-    const {manifest, sharedDevices} = bluprint
-    return _(manifest)
-      .filter({eventType: 'configure'})
-      .map('deviceId')
-      .compact()
-      .uniq()
-      .value()
-  }
-
+  
   importBluprint = (flowData) => {
     this.setState({loading: true})
     this.createFlow((error, flow) => {
@@ -83,11 +63,10 @@ class ImportBluprint extends React.Component {
 
       const {bluprint}         = this.state
       const {flowId}           = flow
-      const schema             = this.getLatestConfigSchema(bluprint)
-      const messageDevices     = this.getMessageFromDevices(bluprint)
-      const configureDevices   = this.getConfigureDevices(bluprint)
+      const schema             = _.get(bluprint, 'schemas.configure.default')
+      const manifest           = bluprint.manifest
 
-      const options = {uuid: flowId, appData: flowData, schema, messageDevices, configureDevices}
+      const options = {uuid: flowId, appData: flowData, manifest, schema}
       async.series([
         async.apply(this.flowService.updatePermissions, options),
         async.apply(this.flowService.createSubscriptions, options),
@@ -195,10 +174,6 @@ class ImportBluprint extends React.Component {
     }
 
     return _.extend({}, flowData, deviceData)
-  }
-
-  getLatestConfigSchema = (bluprint) => {
-    return bluprint.schemas.configure.default
   }
 
   getLatestMessageSchema = (bluprint) => {
