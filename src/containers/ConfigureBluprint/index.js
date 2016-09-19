@@ -33,13 +33,6 @@ const propTypes = {
 }
 
 class ConfigureBluprint extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.handleConfigUpdate   = this.handleConfigUpdate.bind(this)
-    this.handleBluprintUpdate = this.handleBluprintUpdate.bind(this)
-  }
-
   componentDidMount() {
     const { dispatch, params } = this.props
 
@@ -59,14 +52,14 @@ class ConfigureBluprint extends React.Component {
     }
   }
 
-  handleConfigUpdate({ configSchema, sharedDevices }) {
+  handleConfigUpdate = ({ configSchema, sharedDevices }) => {
     const { dispatch } = this.props
 
     dispatch(setBluprintConfigSchema(configSchema))
     dispatch(setBluprintSharedDevices(sharedDevices))
   }
 
-  handleBluprintUpdate() {
+  handleBluprintUpdate = () => {
     const { bluprint, dispatch, routing } = this.props
 
     dispatch(updateBluprint(bluprint))

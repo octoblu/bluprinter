@@ -168,9 +168,12 @@ export default class FlowService {
 
   createSubscriptions = ({uuid, schema, appData}, callback) => {
     const devices = _.map(this._getMeshbluDevices(schema), (deviceKey) => appData[deviceKey])
-    const subscriptions = _.map(devices, (deviceUuid) => {
-      return { subscriberUuid: uuid, emitterUuid: deviceUuid, type: 'broadcast.sent'}
-    })
+    const subscriptions = _.flatten( _.map( devices, (deviceUuid) => {
+      return [
+        { subscriberUuid: uuid, emitterUuid: deviceUuid, type: 'broadcast.sent'},
+        { subscriberUuid: uuid, emitterUuid: deviceUuid, type: 'configure.sent'},
+      ]
+    }))
 
     async.eachSeries(subscriptions, (subscription, cb) => {
       this.meshblu.createSubscription(subscription, cb)
