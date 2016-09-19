@@ -21,3 +21,6 @@ deploy:
   region: us-west-2
   on:
     tags: true
+branches:
+  only:
+  - "/^v[0-9]/"
