@@ -122,6 +122,195 @@ describe('FlowService', function () {
     })
   })
 
+  describe.only('->_getDevicesAndEventTypes', function() {
+    describe('when called with a bunch of complicated objects', function(){
+      beforeEach(function(){
+        this.manifest = [
+          {
+            "name": "Message Device",
+            "id": "0f15ba60-7c57-11e6-8e1e-63491afd6875",
+            "type": "octoblu:flow",
+            "documentation": "",
+            "category": "device",
+            "eventType": "message"
+          },
+          {
+            "name": "Configure Device",
+            "id": "02c766d0-7e98-11e6-a842-b1b930235465",
+            "type": "octoblu:flow",
+            "documentation": "",
+            "category": "device",
+            "eventType": "configure"
+          }
+        ]
+        this.schema = {
+          "type": "object",
+          "properties": {
+            "messageDevice": {
+              "type": "string",
+              "x-meshblu-device-filter": {
+                "type": "octoblu:flow"
+              },
+              "format": "meshblu-device",
+              "x-node-map": [
+                {
+                  "id": "0f15ba60-7c57-11e6-8e1e-63491afd6875",
+                  "property": "uuid"
+                }
+              ]
+            },
+            "configureDevice": {
+              "type": "string",
+              "x-meshblu-device-filter": {
+                "type": "octoblu:flow"
+              },
+              "format": "meshblu-device",
+              "x-node-map": [
+                {
+                  "id": "02c766d0-7e98-11e6-a842-b1b930235465",
+                  "property": "uuid"
+                }
+              ]
+            }
+          }
+        }
+        this.appData = {
+          "messageDevice": "694b3b74-dc71-411f-8c5a-d0ba6976f4b4",
+          "configureDevice": "c8addefd-0b4d-4a14-a100-b786db47e446"
+        }
+      })
+      it ('should return a list of device uuids and their event types', function(){
+        const expectedResult = [
+          {
+              uuid: "694b3b74-dc71-411f-8c5a-d0ba6976f4b4",
+              eventTypes: ['message']
+          },
+          {
+              uuid: "c8addefd-0b4d-4a14-a100-b786db47e446",
+              eventTypes: ['configure']
+          }
+        ]
+        const result = flowService._getDevicesAndEventTypes({manifest: this.manifest, schema: this.schema, appData: this.appData})
+        expect(result).to.deep.contain.same.members(expectedResult)
+      })
+    })
+    describe('when called with a schema that points to more than one node', function(){
+      beforeEach(function(){
+        this.manifest = [
+          {
+            "name": "Message Device",
+            "id": "0f15ba60-7c57-11e6-8e1e-63491afd6875",
+            "type": "octoblu:flow",
+            "documentation": "",
+            "category": "device",
+            "eventType": "message"
+          },
+          {
+            "name": "Configure Device",
+            "id": "02c766d0-7e98-11e6-a842-b1b930235465",
+            "type": "octoblu:flow",
+            "documentation": "",
+            "category": "device",
+            "eventType": "configure"
+          }
+        ]
+          this.schema = {
+            "type": "object",
+            "properties": {
+              "messageDevice": {
+                "type": "string",
+                "x-meshblu-device-filter": {
+                  "type": "octoblu:flow"
+                },
+                "format": "meshblu-device",
+                "x-node-map": [
+                  {
+                    "id": "0f15ba60-7c57-11e6-8e1e-63491afd6875",
+                    "property": "uuid"
+                  },
+                  {
+                    "id": "02c766d0-7e98-11e6-a842-b1b930235465",
+                    "property": "uuid"
+                  },
+                ]
+              }
+            }
+        }
+        this.appData = {
+          "messageDevice": "694b3b74-dc71-411f-8c5a-d0ba6976f4b4"
+        }
+      })
+
+      it ('should return a list of device uuids and their event types', function(){
+        const expectedResult = [
+          {
+              uuid: "694b3b74-dc71-411f-8c5a-d0ba6976f4b4",
+              eventTypes: ['message', 'configure']
+          },
+        ]
+        const result = flowService._getDevicesAndEventTypes({manifest: this.manifest, schema: this.schema, appData: this.appData})
+        expect(result).to.deep.contain.same.members(expectedResult)
+      })
+    })
+    describe('when called with a schema that points to more than one node with the same eventType', function(){
+      beforeEach(function(){
+        this.manifest = [
+          {
+            "name": "Message Device",
+            "id": "0f15ba60-7c57-11e6-8e1e-63491afd6875",
+            "type": "octoblu:flow",
+            "documentation": "",
+            "category": "device",
+            "eventType": "message"
+          },
+          {
+            "name": "Configure Device",
+            "id": "02c766d0-7e98-11e6-a842-b1b930235465",
+            "type": "octoblu:flow",
+            "documentation": "",
+            "category": "device",
+            "eventType": "message"
+          }
+        ]
+          this.schema = {
+            "type": "object",
+            "properties": {
+              "messageDevice": {
+                "type": "string",
+                "x-meshblu-device-filter": {
+                  "type": "octoblu:flow"
+                },
+                "format": "meshblu-device",
+                "x-node-map": [
+                  {
+                    "id": "0f15ba60-7c57-11e6-8e1e-63491afd6875",
+                    "property": "uuid"
+                  },
+                  {
+                    "id": "02c766d0-7e98-11e6-a842-b1b930235465",
+                    "property": "uuid"
+                  },
+                ]
+              }
+            }
+        }
+        this.appData = {
+          "messageDevice": "694b3b74-dc71-411f-8c5a-d0ba6976f4b4"
+        }
+      })
+
+      it ('should return a list of device uuids and their event types', function(){
+        const expectedResult = [
+          {
+              uuid: "694b3b74-dc71-411f-8c5a-d0ba6976f4b4",
+              eventTypes: ['message']
+          },
+        ]
+        const result = flowService._getDevicesAndEventTypes({manifest: this.manifest, schema: this.schema, appData: this.appData})
+        expect(result).to.deep.contain.same.members(expectedResult)
+      })
+    })
+  })
   describe('when called and the app is configured with a v2 device', function () {
     beforeEach(function (done) {
       const messageFromDevices = ['the-interval-service']

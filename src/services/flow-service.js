@@ -3,7 +3,7 @@ import superagent from 'superagent'
 import MeshbluHttp from 'browser-meshblu-http'
 import { TOOLS_SCHEMA_REGISTRY_URL } from 'config'
 import { getMeshbluConfig } from './auth-service'
-import Promise, { using } from 'bluebird'
+import Promise from 'bluebird'
 import $RefParser from 'json-schema-ref-parser'
 import async from 'async'
 
@@ -31,8 +31,8 @@ export default class FlowService {
 
   setDeviceSchemas = (nodes) => {
     const deviceUuids = _(nodes)
-      .filter(({category}) =>{
-        return (category == 'device' || category == "endo")
+      .filter(({category}) => {
+        return (category === 'device' || category === "endo")
       })
       .uniqBy('type')
       .map('uuid')
@@ -106,23 +106,36 @@ export default class FlowService {
     return messageSchema
   }
 
-  _getMeshbluDevices = (schema) => {
-    let result = []
-    _.forEach(schema.properties, (value, key) => {
-      if (value.format == 'meshblu-device') {
-        result.push(key)
+  _getDevicesAndEventTypes = ({schema, manifest, appData}) => {
+    let resultSet = {}
+    _.each(manifest, (node) => {
+      const key = _.find( _.keys(schema.properties), (property) => {
+        return _.some(schema.properties[property]['x-node-map'], {id: node.id})
+      })
+      if (key !== undefined) {
+        const appUuid = appData[key]
+        if (resultSet[key] === undefined) {
+          resultSet[key] = {uuid: appUuid, eventTypes: []}
+        }
+        if (_.includes(resultSet[key].eventTypes, node.eventType)) return
+
+        resultSet[key].eventTypes.push(node.eventType)
       }
     })
-    return result
+    return _.values(resultSet)
   }
 
-  updatePermissions = ({uuid, appData, schema, messageFromDevices, configureDevices}, callback) => {
-    const devicesInFlow = _.map(this._getMeshbluDevices(schema), (value) => appData[value])
-    const update = {$addToSet: { sendWhitelist: { $each: _.union(devicesInFlow, messageFromDevices) } }}
-    this.meshblu.updateDangerously(uuid, update, (error) => {
-      if (error) return callback(error)
-      this._allowSendAndSubscribeToBroadcast({uuid, devices:devicesInFlow}, callback)
-    })
+  updatePermissions = ({uuid, schema, appData, devicesInFlow, manifest}, callback) => {
+    const deviceEventTypes  = this._getDevicesAndEventTypes({schema, manifest, appData})
+    const messageDevices    = _.map(_.filter(deviceEventTypes, (deviceEventType) => _.includes(deviceEventType.eventTypes, 'message')), 'uuid')
+    const configureDevices  = _.map(_.filter(deviceEventTypes, (deviceEventType) => _.includes(deviceEventType.eventTypes, 'configure')), 'uuid')
+    const update = {$addToSet: { sendWhitelist: { $each: _.union(devicesInFlow, messageDevices) } }}
+
+    async.series([
+      async.apply(this.meshblu.updateDangerously, uuid, update),
+      async.apply(this._allowSendAndSubscribeToBroadcast, {uuid, devices:messageDevices}),
+      async.apply(this._allowConfigureAndSubscribeToConfigure, {uuid, devices:configureDevices}),
+    ], callback)
   }
 
   _allowSendAndSubscribeToBroadcast = ({uuid, devices}, callback) => {
@@ -137,23 +150,42 @@ export default class FlowService {
       const v2devices = _.map(result, 'uuid')
       const v1devices = _.difference(devices, v2devices)
 
-      this._updatePermissionsV1({uuid, v1devices}, (error) => {
+      this._updateMessagePermissionsV1({uuid, v1devices}, (error) => {
         if (error) return callback(error)
 
-        this._updatePermissionsV2({uuid, v2devices}, callback)
+        this._updateMessagePermissionsV2({uuid, v2devices}, callback)
       })
     })
   }
 
+  _allowConfigureAndSubscribeToConfigure = ({uuid, devices}, callback) => {
+      const search = {
+        query: {uuid: {$in: devices}, 'meshblu.version': '2.0.0'},
+        projection: {uuid: true}
+      }
 
-  _updatePermissionsV1 = ({uuid, v1devices}, callback) => {
+    this.meshblu.search(search, (error, result) => {
+      if (error) return callback(error)
+
+      const v2devices = _.map(result, 'uuid')
+      const v1devices = _.difference(devices, v2devices)
+
+      this._updateConfigurePermissionsV1({uuid, v1devices}, (error) => {
+        if (error) return callback(error)
+
+        this._updateConfigurePermissionsV2({uuid, v2devices}, callback)
+      })
+    })
+  }
+
+  _updateMessagePermissionsV1 = ({uuid, v1devices}, callback) => {
     async.each(v1devices, (item, cb) => {
       const deviceUpdate = {$addToSet: { receiveWhitelist: uuid, sendWhitelist: uuid }}
       this.meshblu.updateDangerously(item, deviceUpdate, cb)
     }, callback)
   }
 
-  _updatePermissionsV2 = ({uuid, v2devices}, callback) => {
+  _updateMessagePermissionsV2 = ({uuid, v2devices}, callback) => {
     async.each(v2devices, (item, cb) => {
       const deviceUpdate = {
         $addToSet: {
@@ -165,14 +197,39 @@ export default class FlowService {
     }, callback)
   }
 
+  _updateConfigurePermissionsV1 = ({uuid, v1devices}, callback) => {
+    async.each(v1devices, (item, cb) => {
+      const deviceUpdate = {$addToSet: { configureWhitelist: uuid }}
+      this.meshblu.updateDangerously(item, deviceUpdate, cb)
+    }, callback)
+  }
 
-  createSubscriptions = ({uuid, schema, appData}, callback) => {
-    const devices = _.map(this._getMeshbluDevices(schema), (deviceKey) => appData[deviceKey])
-    const subscriptions = _.flatten( _.map( devices, (deviceUuid) => {
-      return [
-        { subscriberUuid: uuid, emitterUuid: deviceUuid, type: 'broadcast.sent'},
-        { subscriberUuid: uuid, emitterUuid: deviceUuid, type: 'configure.sent'},
-      ]
+  _updateConfigurePermissionsV2 = ({uuid, v2devices}, callback) => {
+    async.each(v2devices, (item, cb) => {
+      const deviceUpdate = {
+        $addToSet: {
+          'meshblu.whitelists.configure.update': {uuid},
+          'meshblu.whitelists.configure.send': {uuid}
+        }
+      }
+      this.meshblu.updateDangerously(item, deviceUpdate, cb)
+    }, callback)
+  }
+
+  createSubscriptions = ({uuid, schema, manifest, appData}, callback) => {
+    const deviceEventTypes = this._getDevicesAndEventTypes({schema, manifest, appData})
+
+    const subscriptions = _.flatten( _.map(deviceEventTypes, (deviceEventType) => {
+      const deviceUuid = deviceEventType.uuid
+      const eventTypes = deviceEventType.eventTypes
+      const subscriptionsForDevice = []
+      if(_.includes(eventTypes, 'message')) {
+        subscriptionsForDevice.push({subscriberUuid: uuid, emitterUuid: deviceUuid, type: 'broadcast.sent'})
+      }
+      if(_.includes(eventTypes, 'configure')) {
+        subscriptionsForDevice.push({subscriberUuid: uuid, emitterUuid: deviceUuid, type: 'configure.sent'})
+      }
+      return subscriptionsForDevice
     }))
 
     async.eachSeries(subscriptions, (subscription, cb) => {
