@@ -55,7 +55,7 @@ class ImportBluprint extends React.Component {
       this.setState({selectableDevices})
     })
   }
-  
+
   importBluprint = (flowData) => {
     this.setState({loading: true})
     this.createFlow((error, flow) => {
@@ -70,11 +70,10 @@ class ImportBluprint extends React.Component {
       async.series([
         async.apply(this.flowService.updatePermissions, options),
         async.apply(this.flowService.createSubscriptions, options),
-        async.apply(this.linkFlowToIoTApp, {flowId, flowData}),
         async.apply(this.deployFlow, {flowId}),
-        async.apply(this.updateLinks, {flowId})
+        async.apply(this.linkFlowToIoTApp, {flowId, flowData})
       ], (error) => {
-        if(error) return console.log('updateLinks', error)
+        if(error) return console.log('An error occurred during some import step', error)
         window.location = `${OCTOBLU_URL}/device/${flowId}`
       })
     })
@@ -93,22 +92,6 @@ class ImportBluprint extends React.Component {
       })
   }
 
-  updateLinks = ({flowId}, callback) => {
-    const { protocol, hostname, port } = window.location
-
-    const update = {
-      $set: {
-        octoblu: {
-          links: [{
-            title: 'Run App',
-            url: url.format({ protocol, hostname, port, pathname: `/app/${flowId}` })
-          }]
-        }
-      }
-    }
-    this.meshblu.updateDangerously(flowId, update, callback)
-  }
-
   deployFlow = ({flowId}, callback) => {
     const {uuid, token} = getMeshbluConfig()
     superagent
@@ -122,58 +105,52 @@ class ImportBluprint extends React.Component {
   }
 
   linkFlowToIoTApp = ({flowId, flowData}, callback) => {
-    this.meshblu.update(flowId, this.getDeviceData({flowId, flowData}), callback)
+    this.meshblu.updateDangerously(flowId, this.getDeviceUpdate({flowId, flowData}), callback)
   }
 
-  getDeviceData = ({flowId, flowData}) => {
-    console.log("WARNING: USE UPDATE DANGEROUSLY!! This is only working because of an order-of-operations thing.")
+  getDeviceUpdate = ({flowId, flowData}) => {
     const {bluprint} = this.state
     const {protocol, hostname, port} = window.location
 
-    const deviceData = {
-      name: this.appName,
-      type: 'iot-app',
-      logo: 'https://s3-us-west-2.amazonaws.com/octoblu-icons/device/iot-app.svg',
-      octoblu: {
-        links: [{
+    const updateData =  {
+      $set: {
+        name: this.appName,
+        type: 'iot-app',
+        logo: 'https://s3-us-west-2.amazonaws.com/octoblu-icons/device/iot-app.svg',
+        bluprint: {
+          bluprintId: this.bluprintId,
+          version: bluprint.latest
+        },
+        schemas: {
+          version: '2.0.0',
+          configure: {
+            default: {
+              $ref: `meshbludevice://${this.bluprintId}/#/bluprint/schemas/configure/default`
+            }
+          },
+          message: {
+            default: {
+              $ref: `meshbludevice://${this.bluprintId}/#/bluprint/schemas/message/default`
+            }
+          }
+        }
+      },
+      $addToSet: {
+        'octoblu.links': {
           title: 'Run App',
           url: url.format({ protocol, hostname, port, pathname: `/app/${flowId}` }),
-        }]
-      },
-      meshblu: {
-        forwarders: {
-          configure: {
-            sent: [ {
-                type: "webhook",
-                url: `${FLOW_DEPLOY_URL}/bluprint/${this.bluprintId}/link`,
-                method: "POST",
-                generateAndForwardMeshbluCredentials: true
-              }
-            ]
-          }
-        }
-      },
-      bluprint: {
-        bluprintId: this.bluprintId,
-        version: bluprint.latest
-      },
-
-      schemas: {
-        version: '2.0.0',
-        configure: {
-          default: {
-            $ref: `meshbludevice://${this.bluprintId}/#/bluprint/schemas/configure/default`
-          }
         },
-        message: {
-          default: {
-            $ref: `meshbludevice://${this.bluprintId}/#/bluprint/schemas/message/default`
-          }
-        }
+        'meshblu.forwarders.configure.sent': {
+          type: "webhook",
+          url: `${FLOW_DEPLOY_URL}/bluprint/${this.bluprintId}/link`,
+          method: "POST",
+          generateAndForwardMeshbluCredentials: true
+        },
       },
     }
 
-    return _.extend({}, flowData, deviceData)
+    _.extend(updateData.$set, flowData)
+    return updateData
   }
 
   getLatestMessageSchema = (bluprint) => {
