@@ -122,7 +122,7 @@ describe('FlowService', function () {
     })
   })
 
-  describe.only('->_getDevicesAndEventTypes', function() {
+  describe('->_getDevicesAndEventTypes', function() {
     describe('when called with a bunch of complicated objects', function(){
       beforeEach(function(){
         this.manifest = [

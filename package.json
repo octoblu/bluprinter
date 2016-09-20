@@ -9,7 +9,7 @@
     "start": "node scripts/start.js",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "test": "mocha",
+    "test": "env NODE_ENV=test mocha",
     "test:watch": "mocha -w -R mocha-multi --reporter-options spec=-,mocha-osx-reporter=-",
     "coverage": "nyc npm test",
     "mocha:json": "env NPM_ENV=test mocha --reporter json > coverage/mocha.json"
@@ -107,6 +107,7 @@
     "eventsource-polyfill": "^0.9.6",
     "express": "^4.14.0",
     "file-loader": "^0.9.0",
+    "ignore-styles": "^5.0.1",
     "jsdom": "^9.4.1",
     "json-loader": "^0.5.4",
     "meshblu-http": "^7.0.0",
@@ -138,6 +139,10 @@
     ],
     "extension": [
       ".coffee"
+    ],
+    "require": [
+      "babel-core/register",
+      "babel-polyfill"
     ]
   }
 }

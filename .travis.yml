@@ -25,5 +25,5 @@ branches:
 after_success:
 - npm run coverage
 - npm run mocha:json
-- bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash) -t 485b40c9-21cc-49f6-b6dd-d5a4a40eb09d
 - bash <(curl -s https://codecov.octoblu.com/bash)
