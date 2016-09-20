@@ -9,10 +9,10 @@
     "start": "node scripts/start.js",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "test": "env NODE_ENV=test mocha",
+    "test": "mocha",
     "test:watch": "mocha -w -R mocha-multi --reporter-options spec=-,mocha-osx-reporter=-",
     "coverage": "nyc npm test",
-    "mocha:json": "env NPM_ENV=test mocha --reporter json > coverage/mocha.json"
+    "mocha:json": "mocha --reporter json > coverage/mocha.json"
   },
   "keywords": [
     "zooid",
