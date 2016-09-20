@@ -41,3 +41,4 @@ node_modules
 .tmp/
 
 dpl_*
+.nyc_output

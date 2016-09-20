@@ -3,8 +3,6 @@ node_js:
 - '5'
 env:
   global: CDN=https://bluprinter-static.octoblu.com
-after_success:
-- bash <(curl -s https://codecov.io/bash) -t 485b40c9-21cc-49f6-b6dd-d5a4a40eb09d
 - npm run build
 - export PKG_VERSION="$(node -e 'console.log(require("./package.json").version)')"
 - if [ -z "$PKG_VERSION" ]; then echo 'Missing PKG_VERSION env' && exit 1; fi
@@ -24,3 +22,8 @@ deploy:
 branches:
   only:
   - "/^v[0-9]/"
+after_success:
+- npm run coverage
+- npm run mocha:json
+- bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.octoblu.com/bash)
