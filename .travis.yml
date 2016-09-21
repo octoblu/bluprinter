@@ -3,6 +3,7 @@ node_js:
 - '5'
 env:
   global: CDN=https://bluprinter-static.octoblu.com
+before_deploy:
 - npm run build
 - export PKG_VERSION="$(node -e 'console.log(require("./package.json").version)')"
 - if [ -z "$PKG_VERSION" ]; then echo 'Missing PKG_VERSION env' && exit 1; fi
