@@ -328,7 +328,7 @@ export function createBluprint(deviceOptions) {
       if (error) {
         return dispatch(createBluprintFailure(new Error('Could not create Bluprint device')))
       }
-      meshblu.updateDangerously(flowId, {$set: {bluprint: flowId}}, (error) => {
+      meshblu.updateDangerously(flowId, {$set: {bluprint: device.uuid}}, (error) => {
         if(error) {
           console.log('error updating flow', error)
           return
