@@ -1,6 +1,6 @@
 {
   "name": "bluprinter",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "bluprinter",
   "main": "index.js",
   "scripts": {
@@ -83,6 +83,7 @@
     "zooid-ui-bluprint-config-builder": "^8.0.2"
   },
   "devDependencies": {
+    "amdefine": "^1.0.0",
     "autoprefixer": "^6.3.6",
     "babel-core": "^6.10.4",
     "babel-eslint": "^6.1.2",
