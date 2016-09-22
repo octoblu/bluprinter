@@ -65,8 +65,9 @@ class ImportBluprint extends React.Component {
       const {flowId}           = flow
       const schema             = _.get(bluprint, 'schemas.configure.default')
       const manifest           = bluprint.manifest
+      const sharedDevices      = bluprint.sharedDevices
 
-      const options = {uuid: flowId, appData: flowData, manifest, schema}
+      const options = {uuid: flowId, appData: flowData, manifest, sharedDevices, schema}
       async.series([
         async.apply(this.flowService.updatePermissions, options),
         async.apply(this.flowService.createSubscriptions, options),

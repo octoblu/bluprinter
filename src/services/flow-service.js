@@ -106,7 +106,7 @@ export default class FlowService {
     return messageSchema
   }
 
-  _getDevicesAndEventTypes = ({schema, manifest, appData}) => {
+  _getDevicesAndEventTypes = ({schema, sharedDevices, manifest, appData}) => {
     let resultSet = {}
     _.each(manifest, (node) => {
       const key = _.find( _.keys(schema.properties), (property) => {
@@ -122,11 +122,11 @@ export default class FlowService {
         resultSet[key].eventTypes.push(node.eventType)
       }
     })
-    return _.values(resultSet)
+    return _.union( _.values(resultSet), sharedDevices)
   }
 
-  updatePermissions = ({uuid, schema, appData, devicesInFlow, manifest}, callback) => {
-    const deviceEventTypes  = this._getDevicesAndEventTypes({schema, manifest, appData})
+  updatePermissions = ({uuid, schema, appData, devicesInFlow, sharedDevices, manifest}, callback) => {
+    const deviceEventTypes  = this._getDevicesAndEventTypes({schema, manifest, sharedDevices, appData})
     const messageDevices    = _.map(_.filter(deviceEventTypes, (deviceEventType) => _.includes(deviceEventType.eventTypes, 'message')), 'uuid')
     const configureDevices  = _.map(_.filter(deviceEventTypes, (deviceEventType) => _.includes(deviceEventType.eventTypes, 'configure')), 'uuid')
     const update = {$addToSet: { sendWhitelist: { $each: _.union(devicesInFlow, messageDevices) } }}

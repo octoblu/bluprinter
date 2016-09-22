@@ -54,7 +54,6 @@ export default class NodeService {
       this.getAllTypes().then((types) => {
         this.types = types
         var manifest = _.compact( _.map(nodes, (node) => {
-            if(node.category === 'operation') return null
             let {name, id, type, deviceId, eventType, category} = node
             eventType = eventType || 'message'
             const nodeType = this.getDocUrl(node)

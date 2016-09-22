@@ -178,6 +178,10 @@ xdescribe('FlowService', function () {
           "messageDevice": "694b3b74-dc71-411f-8c5a-d0ba6976f4b4",
           "configureDevice": "c8addefd-0b4d-4a14-a100-b786db47e446"
         }
+        this.sharedDevices = [
+          {uuid: '1', eventTypes: ['configure']},
+          {uuid: '2', eventTypes: ['message']}
+        ]
       })
       it ('should return a list of device uuids and their event types', function(){
         const expectedResult = [
@@ -188,9 +192,17 @@ xdescribe('FlowService', function () {
           {
               uuid: "c8addefd-0b4d-4a14-a100-b786db47e446",
               eventTypes: ['configure']
+          },
+          {
+            uuid: '1',
+            eventTypes: ['configure']
+          },
+          {
+            uuid: '2',
+            eventTypes: ['message']
           }
         ]
-        const result = flowService._getDevicesAndEventTypes({manifest: this.manifest, schema: this.schema, appData: this.appData})
+        const result = flowService._getDevicesAndEventTypes({manifest: this.manifest, schema: this.schema, appData: this.appData, sharedDevices: this.sharedDevices})
         expect(result).to.deep.contain.same.members(expectedResult)
       })
     })
