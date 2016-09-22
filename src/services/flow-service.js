@@ -209,7 +209,7 @@ export default class FlowService {
       const deviceUpdate = {
         $addToSet: {
           'meshblu.whitelists.configure.update': {uuid},
-          'meshblu.whitelists.configure.send': {uuid}
+          'meshblu.whitelists.configure.sent': {uuid}
         }
       }
       this.meshblu.updateDangerously(item, deviceUpdate, cb)

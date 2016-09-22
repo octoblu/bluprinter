@@ -1,6 +1,6 @@
 {
   "name": "bluprinter",
-  "version": "3.3.7",
+  "version": "3.3.8",
   "description": "bluprinter",
   "main": "index.js",
   "scripts": {
