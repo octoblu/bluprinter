@@ -47,14 +47,16 @@ export function getOperationSchemas(toolsSchemaRegistryUrl) {
 
 
 const reduceSchemas = (result, value) => {
-  const type = _.last(value.type.split(':'))
+  const {uuid} = value
 
   if (value.schemas) {
-    result[type] = value.schemas.message
+    result[uuid] = value.schemas
   } else {
-    result[type] = value.messageSchema
+    result[uuid] = {
+      message: value.messageSchema,
+      configure: value.configureSchema,
+    }
   }
-
   return result
 }
 
@@ -87,8 +89,8 @@ export function setDeviceSchemas(flowDevice, meshbluConfig = getMeshbluConfig())
 
     const deviceUuids = _(nodes)
       .filter({category: 'device'})
-      .uniqBy('type')
       .map('uuid')
+      .uniq()
       .value()
 
     return new Promise((resolve, reject) => {
@@ -96,7 +98,14 @@ export function setDeviceSchemas(flowDevice, meshbluConfig = getMeshbluConfig())
         query: {
           uuid: {$in: deviceUuids}
         },
-        projection: {type: true, 'schemas.message': true, messageSchema: true}
+        projection: {
+          'type': true,
+          'schemas.message': true,
+          'schemas.configure': true,
+          'schemas.version': true,
+          'messageSchema': true,
+          'configureSchema': true,
+        }
       }
 
       meshblu.search(search, (searchError, devices) => {
