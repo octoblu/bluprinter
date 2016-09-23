@@ -224,6 +224,14 @@ xdescribe('FlowService', function () {
             "documentation": "",
             "category": "device",
             "eventType": "configure"
+          },
+          {
+            "name": "Not A Device",
+            "id": "5",
+            "type": "octoblu:flower",
+            "documentation": "",
+            "category": "flower"
+                        
           }
         ]
           this.schema = {
@@ -282,7 +290,15 @@ xdescribe('FlowService', function () {
             "documentation": "",
             "category": "device",
             "eventType": "message"
+          },
+          {
+            "name": "Not A Device",
+            "id": "02c766d0-7e98-11e6-a842-b1b930235465",
+            "type": "octoblu:flower",
+            "documentation": "",
+            "category": "flower"
           }
+
         ]
           this.schema = {
             "type": "object",

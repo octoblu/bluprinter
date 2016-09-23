@@ -109,8 +109,9 @@ export default class FlowService {
   _getDevicesAndEventTypes = ({schema, sharedDevices, manifest, appData}) => {
     let resultSet = {}
     _.each(manifest, (node) => {
+      if(!manifest.category === 'device') { return }
       const key = _.find( _.keys(schema.properties), (property) => {
-        return _.some(schema.properties[property]['x-node-map'], {id: node.id})
+        return _.some(schema.properties[property]['x-node-map'], {id: node.id, property: 'uuid'})
       })
       if (key !== undefined) {
         const appUuid = appData[key]
