@@ -107,6 +107,7 @@ export default class FlowService {
   }
 
   _getDevicesAndEventTypes = ({schema, sharedDevices, manifest, appData}) => {
+    schema = schema.properties.options
     let resultSet = {}
     _.each(manifest, (node) => {
       if(!manifest.category === 'device') { return }
