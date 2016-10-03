@@ -1,0 +1,8 @@
+export const MESHBLU_HOST              = 'meshblu.octoblu.com'
+export const OAUTH_CLIENT_ID           = '9d493bb2-8bab-4004-a78c-ea0f00ce3882'
+export const OAUTH_PROVIDER_URI        = 'https://oauth.octoblu.com'
+export const OCTOBLU_URL               = 'https://app.octoblu.com'
+export const BLUPRINTER_URL            = 'https://bluprinter.localtunnel.me'
+export const FLOW_DEPLOY_URL           = 'https://nanocyte-flow-deploy.octoblu.com'
+export const TOOLS_SCHEMA_REGISTRY_URL = 'https://s3-us-west-2.amazonaws.com/tool-schema-registry/latest/schema-registry.json'
+export const NODE_SERVICE_URL          = 'https://nanocyte-flow-deploy.octoblu.com'
