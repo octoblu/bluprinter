@@ -328,7 +328,15 @@ export function createBluprint(deviceOptions) {
       if (error) {
         return dispatch(createBluprintFailure(new Error('Could not create Bluprint device')))
       }
-      meshblu.updateDangerously(flowId, {$set: {bluprint: device.uuid}}, (error) => {
+      const update = {
+        $set: {
+          bluprint: device.uuid
+        },
+        $addToSet: {
+          discoverWhitelist: device.uuid
+        },
+      }
+      meshblu.updateDangerously(flowId, update, (error) => {
         if(error) {
           console.log('error updating flow', error)
           return
