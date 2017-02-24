@@ -137,6 +137,7 @@ class ImportBluprint extends React.Component {
         }
       },
       $addToSet: {
+        discoverWhitelist: this.bluprintId,
         'octoblu.links': {
           title: 'Run App',
           url: url.format({ protocol, hostname, port, pathname: `/app/${flowId}` }),
