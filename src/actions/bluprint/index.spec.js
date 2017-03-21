@@ -10,7 +10,6 @@ import {
   getBluprint,
   setBluprintConfigSchema,
   setBluprintSharedDevices,
-  setBluprintManifest,
   setOctobluLinks,
   updateBluprint,
 } from './'

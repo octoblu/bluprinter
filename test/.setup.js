@@ -1,24 +1,21 @@
-const jsdom = require('jsdom').jsdom;
-const hook = require('css-modules-require-hook')
-const exposedProperties = ['window', 'navigator', 'document'];
+require('babel-register')()
+var hook = require('css-modules-require-hook')
 
-hook({
-  extensions: [ '.css' ],
-  generateScopedName: '[local]___[hash:base64:5]',
-})
+hook({ extensions: [ '.css' ] })
 
-global.document = jsdom('');
-global.window = document.defaultView;
+var jsdom             = require('jsdom').jsdom
+var exposedProperties = ['window', 'navigator', 'document']
+
+global.document = jsdom('')
+global.window = document.defaultView
+
 Object.keys(document.defaultView).forEach((property) => {
   if (typeof global[property] === 'undefined') {
-    exposedProperties.push(property);
-    global[property] = document.defaultView[property];
+    exposedProperties.push(property)
+    global[property] = document.defaultView[property]
   }
-});
+})
 
-global.navigator = {
-  userAgent: 'node.js'
-};
+global.navigator = { userAgent: 'node.js' }
 
-const documentRef = document;
-
+const documentRef = document
