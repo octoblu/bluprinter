@@ -1,6 +1,6 @@
 import atob from 'atob'
 import cookie from 'react-cookie'
-import { MESHBLU_HOST } from 'config'
+import { MESHBLU_DOMAIN, RESOLVE_SRV } from 'config'
 import MeshbluHttp from 'browser-meshblu-http'
 
 export function getMeshbluConfig() {
@@ -14,8 +14,8 @@ export function getMeshbluConfig() {
   return {
     uuid: bearerTokenPieces[0],
     token: bearerTokenPieces[1],
-    hostname: MESHBLU_HOST,
-    port: 443,
+    domain: MESHBLU_DOMAIN,
+    resolveSrv: RESOLVE_SRV,
   }
 }
 

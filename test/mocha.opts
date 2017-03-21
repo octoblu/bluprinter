@@ -1,7 +1,4 @@
 test/.setup.js
 src/**/*.spec.js
---require env-test
---require babel-register
---require ignore-styles
 --recursive
 --bail

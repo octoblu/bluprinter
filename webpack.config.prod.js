@@ -1,6 +1,5 @@
 var path         = require('path');
 var webpack      = require('webpack');
-var autoprefixer = require('autoprefixer');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var PKG_VERSION = require('./package.json').version
 
@@ -28,16 +27,16 @@ module.exports = {
     filename: 'js/[name].js',
     chunkFilename: 'js/[name].[chunkhash:8].chunk.js',
     // We inferred the "public path" (such as / or /my-project) from homepage.
-    publicPath: process.env.CDN + '/v' + PKG_VERSION
-  },
-  resolve: {
-    extensions: ['', '.js', '.jsx', '.json'],
-    alias: {
-      config: path.join(__dirname, 'src', 'config', 'production')
-    }
+    publicPath: '/'
   },
   node: {
-    fs: "empty"
+    fs: 'empty'
+  },
+  resolve: {
+    extensions: ['.js', '.jsx', '.json'],
+    alias: {
+      config: path.join(__dirname, 'src', 'config', 'development')
+    }
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -61,46 +60,32 @@ module.exports = {
         minifyCSS: true,
         minifyURLs: true
       }
-    }),
-    // This helps ensure the builds are consistent if source hasn't changed:
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    // Try to dedupe duplicated modules, if any:
-    new webpack.optimize.DedupePlugin(),
-    // Minify the code.
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        screw_ie8: true, // React doesn't support IE8
-        warnings: false
-      },
-      mangle: {
-        screw_ie8: true
-      },
-      output: {
-        comments: false,
-        screw_ie8: true
-      }
-    }),
+    })
   ],
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
-        loaders: ['babel'],
+        loaders: ['babel-loader'],
         include: path.join(__dirname, 'src')
       },
       {
         test: /\.css$/,
         include: path.join(__dirname, 'node_modules'),
-        loader: 'style-loader!css-loader!postcss-loader'
+        loader: 'style-loader!css-loader',
       },
       {
         test:   /\.css$/,
-        loader: 'style-loader!css-loader?modules&localIdentName=[name]__[local]___[hash:base64:5]&importLoaders=1!postcss-loader',
+        loader: 'style-loader!css-loader?modules&localIdentName=[name]__[local]___[hash:base64:5]&importLoaders=1',
         include: path.join(__dirname, 'src')
       },
       {
         test: /\.json$/,
-        loader: 'json'
+        include: [
+          path.join(__dirname, 'src'),
+          path.join(__dirname, 'node_modules')
+        ],
+        loader: 'json-loader'
       },
       {
         test: /\.(ico|jpg|png|gif|eot|otf|svg|ttf|woff|woff2)(\?.*)?$/,
@@ -109,7 +94,7 @@ module.exports = {
           path.join(__dirname, 'src'),
           path.join(__dirname, 'node_modules')
         ],
-        loader: 'file',
+        loader: 'file-loader',
         query: {
           name: '/files/[name].[ext]'
         }
@@ -118,7 +103,7 @@ module.exports = {
       {
         test: /\/favicon.ico$/,
         include: [ path.join(__dirname, 'src') ],
-        loader: 'file',
+        loader: 'file-loader',
         query: {
           name: '/favicon.ico'
         }
@@ -127,14 +112,11 @@ module.exports = {
       // resources linked with <link href="./relative/path"> HTML tags.
       {
         test: /\.html$/,
-        loader: 'html',
+        loader: 'html-loader',
         query: {
           attrs: ['link:href'],
         }
       }
     ]
   },
-  postcss: function (webpack) {
-    return [ autoprefixer ];
-  }
 };

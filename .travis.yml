@@ -1,38 +1,15 @@
 language: node_js
 node_js:
-  - '5'
-env:
-  global: 'CDN=https://bluprinter-static.octoblu.com'
-before_deploy:
-  - npm run build
-  - >-
-    export PKG_VERSION="$(node -e
-    'console.log(require("./package.json").version)')"
-  - 'if [ -z "$PKG_VERSION" ]; then echo ''Missing PKG_VERSION env'' && exit 1; fi'
-  - mkdir -p dpl_assets/v$PKG_VERSION
-  - cp -r dist/* dpl_assets/v$PKG_VERSION
-deploy:
-  - provider: s3
-    access_key_id: AKIAJH2D5IPIRHYJT5IA
-    secret_access_key:
-      secure: >-
-        C1W6eUXnanykbV5pJvAoOuVB0JYkW6cIvRlwShwV9ZBQopRQVWblppU913KvTn7vqoMnhaGJ+CXASr+KiF5O4sEaoQNhtqU3uB4suYRMvWn0OvH+PNXvvvLPQfCW0yPuyLPjuG71v/jeINDFUAA6Y3jFshxD5h/8/d21eMf/tok4kTQLVTbZx7UHjkYy3a+e0qYVkpsqStZBlnIQIV3ZifVjt7p/tWuk50oDhfJNw2Tl7Eb5I09tuocrmjoIcsGRHUzmj6I5/LjhZYQaLCPbn4kIiHv9nLRHXEkPulQixPmUY1s4NvsRTEd6pFUxuxAjbdKs5MCtWwDlUyUe8gkmMnWBoHrvROi7TE8bpIOzt9lEyrMJ3nUHyJgWISHrhUAZGbV6VexwEUKFYK1KgH3sdbZmDB0uhlRF/8usitH+r+6f1n5UQmnvqw818npaRDzw5gGjS9hESTqYduFTXrPYCj+Hvaa8WuoszMf//6FtSWv8lOYlcFtetZH7iNbZbRN9tD9gymRs1Yupvm+UXZUEOKMCBCbeOq4DA4G/rS5oo8VWB1GOuNAQoWUzdL3DsMMDm9APT2F9d8BHZzRCbAoF8c7ZcfdscR1CJEMzwcmeDSRNW9gIZNlvatnA7lBnR/0ICFjB/dlJtgSJGCTyziQcunLyTMd9IwJ9vBaAvl/IGuY=
-    bucket: bluprinter-static.octoblu.com
-    local_dir: dpl_assets
-    skip_cleanup: true
-    region: us-west-2
-    'on':
-      tags: true
+  - '7'
 branches:
   only:
     - '/^v[0-9]/'
 after_success:
+  - npm run coverage
+  - 'npm run mocha:json'
   - >-
     bash <(curl -s https://codecov.io/bash) -t
     485b40c9-21cc-49f6-b6dd-d5a4a40eb09d
-  - npm run coverage
-  - 'npm run mocha:json'
-  - 'bash <(curl -s https://codecov.io/bash)'
   - 'bash <(curl -s https://codecov.octoblu.com/bash)'
 notifications:
   webhooks:

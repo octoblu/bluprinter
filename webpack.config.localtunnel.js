@@ -1,15 +1,10 @@
-var autoprefixer      = require('autoprefixer');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path              = require('path');
 var webpack           = require('webpack');
 
 module.exports = {
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   entry: [
-    // 'eventsource-polyfill',
-    // 'webpack-hot-middleware/client',
-    // './src/index'
-
     // Include WebpackDevServer client. It connects to WebpackDevServer via
     // sockets and waits for recompile notifications. When WebpackDevServer
     // recompiles, it sends a message to the client by socket. If only CSS
@@ -38,14 +33,14 @@ module.exports = {
     filename: 'bundle.js',
     publicPath: '/'
   },
+  node: {
+    fs: 'empty'
+  },
   resolve: {
-    extensions: ['', '.js', '.jsx', '.json'],
+    extensions: ['.js', '.jsx', '.json'],
     alias: {
       config: path.join(__dirname, 'src', 'config', 'localtunnel')
     }
-  },
-  node: {
-    fs: "empty"
   },
   plugins: [
     // Generates an `index.html` file with the <script> injected.
@@ -54,28 +49,32 @@ module.exports = {
       template: path.join(__dirname, 'index.html'),
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin()
   ],
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
-        loaders: ['babel'],
+        loaders: ['babel-loader'],
         include: path.join(__dirname, 'src')
       },
       {
         test: /\.css$/,
         include: path.join(__dirname, 'node_modules'),
-        loader: 'style-loader!css-loader!postcss-loader'
+        loader: 'style-loader!css-loader'
       },
       {
         test:   /\.css$/,
-        loader: 'style-loader!css-loader?modules&localIdentName=[name]__[local]___[hash:base64:5]&importLoaders=1!postcss-loader',
-        include: path.join(__dirname, 'src')
+        include: path.join(__dirname, 'src'),
+        loader: 'style-loader!css-loader?modules&localIdentName=[name]__[local]___[hash:base64:5]&importLoaders=1'
       },
       {
         test: /\.json$/,
-        loader: 'json'
+        include: [
+          path.join(__dirname, 'src'),
+          path.join(__dirname, 'node_modules')
+        ],
+        loader: 'json-loader'
       },
       {
         test: /\.(ico|jpg|png|gif|eot|otf|svg|ttf|woff|woff2)(\?.*)?$/,
@@ -84,7 +83,7 @@ module.exports = {
           path.join(__dirname, 'node_modules')
         ],
         exclude: /\/favicon.ico$/,
-        loader: 'file',
+        loader: 'file-loader',
         query: {
           name: 'static/[name].[hash:8].[ext]'
         }
@@ -93,7 +92,7 @@ module.exports = {
       {
         test: /\/favicon.ico$/,
         include: [path.join(__dirname, 'src')],
-        loader: 'file',
+        loader: 'file-loader',
         query: {
          name: 'favicon.ico?[hash:8]'
         }
@@ -102,14 +101,11 @@ module.exports = {
       // resources linked with <link href="./relative/path"> HTML tags.
       {
         test: /\.html$/,
-        loader: 'html',
+        loader: 'html-loader',
         query: {
           attrs: ['link:href'],
         }
       }
     ]
   },
-  postcss: function () {
-    return [ autoprefixer ];
-  }
 };

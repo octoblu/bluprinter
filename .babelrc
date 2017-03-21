@@ -8,9 +8,6 @@
           { "config": "webpack.config.test.js" }
         ]
       ]
-    },
-    "development": {
-      "presets": ["react-hmre"]
     }
   }
 }

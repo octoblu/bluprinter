@@ -6,7 +6,7 @@ import Authenticated from './authenticated'
 import 'zooid-ui/dist/style.css'
 
 const propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node,
 }
 
 export default class App extends React.Component {
